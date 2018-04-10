@@ -22,6 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+        <antlr.version>4.7.1</antlr.version>
+        <antlr4.visitor>true</antlr4.visitor>
 	</properties>
 
 	<dependencies>
@@ -39,7 +41,7 @@
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr4-runtime</artifactId>
-			<version>4.7.1</version>
+			<version>${antlr.version}</version>
 		</dependency>
 
 
@@ -56,7 +58,7 @@
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr4-maven-plugin</artifactId>
-				<version>4.7</version>
+				<version>${antlr.version}</version>
 				<executions>
 					<execution>
 						<goals>

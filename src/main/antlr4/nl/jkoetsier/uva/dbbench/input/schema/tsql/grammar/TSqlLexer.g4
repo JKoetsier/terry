@@ -1,4 +1,6 @@
 /*
+Taken from https://github.com/antlr/grammars-v4/tree/master/tsql (10-4-2018)
+
 T-SQL (Transact-SQL, MSSQL) grammar.
 The MIT License (MIT).
 Copyright (c) 2017, Mark Adams (madams51703@gmail.com)
