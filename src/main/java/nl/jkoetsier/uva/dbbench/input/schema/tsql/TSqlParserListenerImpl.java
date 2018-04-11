@@ -2503,24 +2503,30 @@ public class TSqlParserListenerImpl implements TSqlParserListener {
             switch (stripBracketId(typeContext.id().SQUARE_BRACKET_ID().toString())) {
                 case "int":
                     return new IntegerField();
+                case "bigint":
+                    return new BigIntegerField();
                 case "nvarchar":
+                    return new VarCharField();
+                case "varchar":
                     return new VarCharField();
                 case "decimal":
                     return new DecimalField();
                 case "datetimeoffset":
                     return new DateTimeOffsetField();
                 case "date":
-                    return new DateTimeField();
+                    return new DateField();
                 case "bit":
                     return new BooleanField();
+                case "datetime":
+                    return new DateTimeField();
+                case "datetime2":
+                    return new DateTimeField();
+                case "char":
+                    return new CharField();
                 default:
-                    throw new RuntimeException(String.format("Mising case for fieldType %s",
+                    throw new RuntimeException(String.format("Missing case for fieldType %s",
                             typeContext.id().SQUARE_BRACKET_ID().toString()));
             }
-
-
-
-
         }
     }
 

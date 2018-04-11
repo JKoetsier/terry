@@ -72,4 +72,16 @@ public class TSqlSchemaReaderTest {
         assertTrue(fields2.get(2) instanceof DateTimeField);
         assertTrue(fields2.get(3) instanceof BooleanField);
     }
+
+    /* Test succeeds with exported SQL Server schema, but is not committed. Be aware that words like
+     * MAX, GETDATE() and GETSYSDATETIMEOFFSET() should be uppercase (in the file they are
+     * lowercase). Also, at some places DEFAULT ((0)) and DEFAULT ((1)) occur. These should be
+     * replaced with DEFAULT (0) and (1) resp.
+     */
+//    @Test
+//    public void testWholeFile() {
+//        TSqlSchemaReader schemaReader = new TSqlSchemaReader();
+//        DataModel dataModel = schemaReader.fromFile(getFilepath("IntBIQH_Schema.sql"));
+//        assertEquals(dataModel.getEntities().size(), 40);
+//    }
 }
