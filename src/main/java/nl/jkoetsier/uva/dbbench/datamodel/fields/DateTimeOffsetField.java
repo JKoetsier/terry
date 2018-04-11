@@ -7,5 +7,4 @@ public class DateTimeOffsetField extends Field {
     public DateTimeOffsetField(String name) {
         super(name);
     }
-
 }

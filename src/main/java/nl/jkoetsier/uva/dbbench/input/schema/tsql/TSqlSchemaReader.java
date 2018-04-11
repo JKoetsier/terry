@@ -4,11 +4,9 @@ import nl.jkoetsier.uva.dbbench.datamodel.DataModel;
 import nl.jkoetsier.uva.dbbench.input.SchemaReader;
 import nl.jkoetsier.uva.dbbench.input.schema.tsql.grammar.TSqlLexer;
 import nl.jkoetsier.uva.dbbench.input.schema.tsql.grammar.TSqlParser;
-import nl.jkoetsier.uva.dbbench.input.schema.tsql.grammar.TSqlParserListener;
-import nl.jkoetsier.uva.dbbench.input.schema.tsql.grammar.TSqlParserVisitor;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
 
@@ -31,9 +29,9 @@ public class TSqlSchemaReader implements SchemaReader {
     public DataModel fromFile(String fileName) {
         TSqlParser parser = getParser(fileName);
         TSqlParserListenerImpl listener = new TSqlParserListenerImpl();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(listener, parser.tsql_file());
 
-        listener.enterTsql_file(parser.tsql_file());
         return listener.getDataModel();
-
     }
 }

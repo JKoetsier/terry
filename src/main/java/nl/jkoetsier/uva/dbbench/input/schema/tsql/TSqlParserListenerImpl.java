@@ -15,7 +15,6 @@ public class TSqlParserListenerImpl implements TSqlParserListener {
 
     @Override
     public void enterTsql_file(TSqlParser.Tsql_fileContext ctx) {
-
     }
 
     @Override
@@ -35,7 +34,6 @@ public class TSqlParserListenerImpl implements TSqlParserListener {
 
     @Override
     public void enterSql_clauses(TSqlParser.Sql_clausesContext ctx) {
-
     }
 
     @Override
@@ -65,7 +63,6 @@ public class TSqlParserListenerImpl implements TSqlParserListener {
 
     @Override
     public void enterDdl_clause(TSqlParser.Ddl_clauseContext ctx) {
-
     }
 
     @Override
@@ -2475,7 +2472,6 @@ public class TSqlParserListenerImpl implements TSqlParserListener {
 
     @Override
     public void enterCreate_table(TSqlParser.Create_tableContext ctx) {
-        System.out.println("enterCreate_table START");
         Entity entity = new Entity(stripBracketId(ctx.table_name().table.getText()));
 
         for (TSqlParser.Column_def_table_constraintContext c : ctx.column_def_table_constraints()
