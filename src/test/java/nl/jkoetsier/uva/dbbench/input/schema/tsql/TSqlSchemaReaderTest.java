@@ -10,18 +10,10 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class TSqlSchemaReaderTest {
-    String testSourcesDir = "src/test/java/";
-
-    private String getTestDataDir() {
-        return testSourcesDir + getPackageName().replace(".", "/") + "/grammar/data/";
-    }
-
-    private String getPackageName() {
-        return this.getClass().getPackage().getName();
-    }
+    String dataDirectory = "/data/tsql/";
 
     private String getFilepath(String filename) {
-        return getTestDataDir() + filename;
+        return getClass().getResource(dataDirectory + filename).getFile();
     }
 
     @Test
@@ -42,7 +34,7 @@ public class TSqlSchemaReaderTest {
 
         assertTrue(fields.get(0) instanceof IntegerField);
         assertTrue(fields.get(2) instanceof VarCharField);
-        assertTrue(fields.get(6) instanceof DateTimeField);
+        assertTrue(fields.get(6) instanceof DateField);
         assertTrue(fields.get(7) instanceof BooleanField);
     }
 
@@ -69,7 +61,7 @@ public class TSqlSchemaReaderTest {
 
         assertTrue(fields1.get(0) instanceof IntegerField);
         assertTrue(fields1.get(2) instanceof VarCharField);
-        assertTrue(fields2.get(2) instanceof DateTimeField);
+        assertTrue(fields2.get(2) instanceof DateField);
         assertTrue(fields2.get(3) instanceof BooleanField);
     }
 

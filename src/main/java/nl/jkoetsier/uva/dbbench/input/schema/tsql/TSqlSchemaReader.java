@@ -2,8 +2,8 @@ package nl.jkoetsier.uva.dbbench.input.schema.tsql;
 
 import nl.jkoetsier.uva.dbbench.datamodel.DataModel;
 import nl.jkoetsier.uva.dbbench.input.SchemaReader;
-import nl.jkoetsier.uva.dbbench.input.schema.tsql.grammar.TSqlLexer;
-import nl.jkoetsier.uva.dbbench.input.schema.tsql.grammar.TSqlParser;
+import nl.jkoetsier.uva.dbbench.parser.tsql.grammar.TSqlLexer;
+import nl.jkoetsier.uva.dbbench.parser.tsql.grammar.TSqlParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
