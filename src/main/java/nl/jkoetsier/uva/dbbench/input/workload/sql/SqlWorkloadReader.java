@@ -1,18 +1,17 @@
-package nl.jkoetsier.uva.dbbench.input.schema.sql;
+package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statements;
-import nl.jkoetsier.uva.dbbench.schema.DataModel;
-import nl.jkoetsier.uva.dbbench.input.SchemaReader;
+import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
+import nl.jkoetsier.uva.dbbench.workload.Workload;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class SqlSchemaReader implements SchemaReader {
-
+public class SqlWorkloadReader implements WorkloadReader {
 
     private String readFile(String fileName) {
         return readFile(fileName, Charset.defaultCharset());
@@ -29,7 +28,7 @@ public class SqlSchemaReader implements SchemaReader {
     }
 
     @Override
-    public DataModel fromFile(String fileName) {
+    public Workload fromFile(String fileName) {
         String sql = readFile(fileName);
 
         try {
@@ -41,10 +40,10 @@ public class SqlSchemaReader implements SchemaReader {
         }
     }
 
-    public DataModel visitTree(Statements statements) {
-        SqlSchemaStatementVisitor visitor = new SqlSchemaStatementVisitor();
+    public Workload visitTree(Statements statements) {
+        SqlWorkloadStatementVisitor visitor = new SqlWorkloadStatementVisitor();
         statements.accept(visitor);
 
-        return visitor.getDataModel();
+        return visitor.getWorkload();
     }
 }

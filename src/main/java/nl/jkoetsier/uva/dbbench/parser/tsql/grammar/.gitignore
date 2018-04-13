@@ -1,4 +1,0 @@
-# Ignore all generated files put here by prepare_dev.sh
-
-*
-!.gitignore
