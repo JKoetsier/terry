@@ -1,6 +1,8 @@
 package nl.jkoetsier.uva.dbbench.input;
 
+import nl.jkoetsier.uva.dbbench.workload.Workload;
+
 public interface WorkloadReader {
 
-//    public Workload fromFile(String fileName);
+    Workload fromFile(String fileName);
 }

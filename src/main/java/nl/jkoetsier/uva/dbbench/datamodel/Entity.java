@@ -3,23 +3,25 @@ package nl.jkoetsier.uva.dbbench.datamodel;
 import nl.jkoetsier.uva.dbbench.datamodel.fields.Field;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Entity {
 
-    private List<Field> fields;
+    private LinkedHashMap<String, Field> fields;
     private String name;
 
     public Entity(String name) {
         this.name = name;
-        fields = new ArrayList<>();
+        fields = new LinkedHashMap<>();
     }
 
-    public List<Field> getFields() {
+    public LinkedHashMap<String, Field> getFields() {
         return fields;
     }
 
-    public void setFields(List<Field> fields) {
+    public void setFields(LinkedHashMap<String, Field> fields) {
         this.fields = fields;
     }
 

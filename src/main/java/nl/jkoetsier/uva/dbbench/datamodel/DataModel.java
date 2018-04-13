@@ -1,21 +1,20 @@
 package nl.jkoetsier.uva.dbbench.datamodel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class DataModel {
 
-    private List<Entity> entities;
+    private HashMap<String, Entity> entities;
 
     public DataModel() {
-        entities = new ArrayList<>();
+        entities = new HashMap<>();
     }
 
-    public List<Entity> getEntities() {
+    public HashMap<String, Entity> getEntities() {
         return entities;
     }
 
-    public void setEntities(List<Entity> entities) {
+    public void setEntities(HashMap<String, Entity> entities) {
         this.entities = entities;
     }
 }
