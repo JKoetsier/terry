@@ -17,4 +17,8 @@ public class DataModel {
     public void setEntities(HashMap<String, Entity> entities) {
         this.entities = entities;
     }
+
+    public void addEntity(Entity entity) {
+        this.entities.put(entity.getName(), entity);
+    }
 }

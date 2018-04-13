@@ -32,4 +32,8 @@ public class Entity {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void addField(Field field) {
+        fields.put(field.getName(), field);
+    }
 }

@@ -26,6 +26,17 @@
         <antlr4.visitor>true</antlr4.visitor>
 	</properties>
 
+	<!-- TODO enable when jsqlparser is removed locally -->
+	<!--<repositories>-->
+		<!--<repository>-->
+			<!--<id>jsqlparser-snapshots</id>-->
+			<!--<snapshots>-->
+				<!--<enabled>true</enabled>-->
+			<!--</snapshots>-->
+			<!--<url>https://oss.sonatype.org/content/groups/public/</url>-->
+		<!--</repository>-->
+	<!--</repositories>-->
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -51,8 +62,14 @@
 			<type>maven-plugin</type>
 		</dependency>
 
-
-
+		<!-- TODO remove system part and remove from lib directory -->
+		<dependency>
+			<groupId>com.github.jsqlparser</groupId>
+			<artifactId>jsqlparser</artifactId>
+			<version>1.1</version>
+        	<scope>system</scope>
+			<systemPath>${project.basedir}/lib/jsqlparser/target/jsqlparser-1.2-SNAPSHOT.jar</systemPath>
+		</dependency>
 
 
 	</dependencies>

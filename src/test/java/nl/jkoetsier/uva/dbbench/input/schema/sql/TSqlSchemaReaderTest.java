@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.input.schema.tsql;
+package nl.jkoetsier.uva.dbbench.input.schema.sql;
 
 import nl.jkoetsier.uva.dbbench.datamodel.DataModel;
 import nl.jkoetsier.uva.dbbench.datamodel.Entity;
@@ -10,14 +10,14 @@ import java.util.LinkedHashMap;
 import static org.junit.Assert.*;
 
 public class TSqlSchemaReaderTest {
-    String dataDirectory = "/data/tsql/";
+    String dataDirectory = "/data/sql/";
 
     private String getFilepath(String filename) {
         return getClass().getResource(dataDirectory + filename).getFile();
     }
 
     private DataModel getDataModel(String filename) {
-        TSqlSchemaReader schemaReader = new TSqlSchemaReader();
+        SqlSchemaReader schemaReader = new SqlSchemaReader();
         return schemaReader.fromFile(getFilepath(filename));
     }
 
