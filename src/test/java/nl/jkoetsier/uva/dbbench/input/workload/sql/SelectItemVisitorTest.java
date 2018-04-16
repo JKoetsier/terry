@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
+import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class SelectItemVisitorTest {
         inputs.put("a.#", false);
         inputs.put("#", false);
 
-        SelectItemVisitor selectItemVisitor = new SelectItemVisitor();
+        SelectItemVisitor selectItemVisitor = new SelectItemVisitor(new Selection());
 
         for (Map.Entry<String, Boolean> entry : inputs.entrySet()) {
             assertEquals(String.format("Test %s for validity", entry.getKey()),

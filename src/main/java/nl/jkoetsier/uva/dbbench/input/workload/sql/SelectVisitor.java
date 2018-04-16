@@ -2,6 +2,7 @@ package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.statement.select.*;
 import nl.jkoetsier.uva.dbbench.workload.Query;
+import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 
 public class SelectVisitor extends SelectVisitorAdapter {
 
@@ -21,11 +22,28 @@ public class SelectVisitor extends SelectVisitorAdapter {
 
         System.out.println(plainSelect.getSelectItems());
 
-        SelectItemVisitor selectItemVisitor = new SelectItemVisitor();
+        Selection selection = new Selection();
+
+        FromVisitor fromVisitor = new FromVisitor(selection);
+        plainSelect.getFromItem().accept(fromVisitor);
+
+        SelectItemVisitor selectItemVisitor = new SelectItemVisitor(selection);
 
         for (SelectItem selectItem : plainSelect.getSelectItems()) {
             selectItem.accept(selectItemVisitor);
         }
+
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(selection);
+
+        if (plainSelect.getWhere() != null) {
+            plainSelect.getWhere().accept(expressionVisitor);
+            selection.setExpression(expressionVisitor.getExpression());
+        }
+
+        // TODO do joins
+
+        // TODO where
+
 
         query.setRelation(selectItemVisitor.getRelation());
         super.visit(plainSelect);
@@ -42,4 +60,6 @@ public class SelectVisitor extends SelectVisitorAdapter {
         System.out.println("Have withitem");
         super.visit(withItem);
     }
+
+
 }

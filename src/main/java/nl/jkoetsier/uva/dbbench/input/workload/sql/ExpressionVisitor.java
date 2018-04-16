@@ -2,27 +2,41 @@ package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.arithmetic.*;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.*;
-import net.sf.jsqlparser.statement.select.SelectVisitor;
+import nl.jkoetsier.uva.dbbench.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
+import nl.jkoetsier.uva.dbbench.workload.expression.FieldExpression;
+import nl.jkoetsier.uva.dbbench.workload.expression.constant.DateConstant;
+import nl.jkoetsier.uva.dbbench.workload.expression.constant.DoubleConstant;
+import nl.jkoetsier.uva.dbbench.workload.expression.constant.LongConstant;
+import nl.jkoetsier.uva.dbbench.workload.expression.constant.StringConstant;
+import nl.jkoetsier.uva.dbbench.workload.expression.operator.Operator;
+import nl.jkoetsier.uva.dbbench.workload.expression.operator.OperatorFactory;
+import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 
 public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
-    @Override
-    public SelectVisitor getSelectVisitor() {
-        return super.getSelectVisitor();
+    private Expression expression;
+    private Selection selection;
+
+    public ExpressionVisitor(Selection selection) {
+        expression = null;
+        this.selection = selection;
     }
 
-    @Override
-    public void setSelectVisitor(SelectVisitor selectVisitor) {
-        super.setSelectVisitor(selectVisitor);
+    public Expression getExpression() {
+        return expression;
+    }
+
+    public void reset() {
+        expression = null;
     }
 
     @Override
     public void visit(NullValue value) {
+
         super.visit(value);
     }
 
@@ -48,17 +62,17 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     @Override
     public void visit(DoubleValue value) {
-        super.visit(value);
+        expression = new DoubleConstant(value.getValue());
     }
 
     @Override
     public void visit(LongValue value) {
-        super.visit(value);
+        expression = new LongConstant(value.getValue());
     }
 
     @Override
     public void visit(DateValue value) {
-        super.visit(value);
+        expression = new DateConstant(value.getValue());
     }
 
     @Override
@@ -78,56 +92,11 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     @Override
     public void visit(StringValue value) {
-        super.visit(value);
-    }
-
-    @Override
-    public void visit(Addition expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(Division expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(Multiplication expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(Subtraction expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(AndExpression expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(OrExpression expr) {
-        super.visit(expr);
+        expression = new StringConstant(value.getValue());
     }
 
     @Override
     public void visit(Between expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(EqualsTo expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(GreaterThan expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(GreaterThanEquals expr) {
         super.visit(expr);
     }
 
@@ -147,22 +116,14 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
     }
 
     @Override
-    public void visit(MinorThan expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(MinorThanEquals expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(NotEqualsTo expr) {
-        super.visit(expr);
-    }
-
-    @Override
     public void visit(Column column) {
+        System.out.println("Column: " + column.getColumnName());
+        System.out.println("Columntable: " + column.getTable());
+
+        // TODO add validation of column
+        expression = new FieldExpression();
+
+
         super.visit(column);
     }
 
@@ -183,16 +144,6 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     @Override
     public void visit(ExistsExpression expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(AllComparisonExpression expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(AnyComparisonExpression expr) {
         super.visit(expr);
     }
 
@@ -223,11 +174,6 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     @Override
     public void visit(CastExpression expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(Modulo expr) {
         super.visit(expr);
     }
 
@@ -283,57 +229,32 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     @Override
     protected void visitBinaryExpression(BinaryExpression expr) {
-        super.visitBinaryExpression(expr);
-    }
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(selection);
+        expr.getLeftExpression().accept(expressionVisitor);
+        Expression leftExpr = expressionVisitor.getExpression();
 
-    @Override
-    public void visit(JsonExpression jsonExpr) {
-        super.visit(jsonExpr);
-    }
+        expressionVisitor.reset();
 
-    @Override
-    public void visit(JsonOperator expr) {
-        super.visit(expr);
-    }
+        expr.getRightExpression().accept(expressionVisitor);
+        Expression rightExpr = expressionVisitor.getExpression();
 
-    @Override
-    public void visit(RegExpMySQLOperator expr) {
-        super.visit(expr);
-    }
+        Operator operator = OperatorFactory.create(expr.getStringExpression());
 
+        expression = new BinExpression(
+                leftExpr,
+                rightExpr,
+                operator,
+                expr.isNot()
+        );
+
+    }
     @Override
     public void visit(UserVariable var) {
         super.visit(var);
     }
-
-    @Override
-    public void visit(NumericBind bind) {
-        super.visit(bind);
-    }
-
-    @Override
-    public void visit(KeepExpression expr) {
-        super.visit(expr);
-    }
-
-    @Override
-    public void visit(MySQLGroupConcat groupConcat) {
-        super.visit(groupConcat);
-    }
-
     @Override
     public void visit(ValueListExpression valueListExpression) {
         super.visit(valueListExpression);
-    }
-
-    @Override
-    public void visit(Pivot pivot) {
-        super.visit(pivot);
-    }
-
-    @Override
-    public void visit(PivotXml pivot) {
-        super.visit(pivot);
     }
 
     @Override
@@ -351,28 +272,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
         super.visit(selectExpressionItem);
     }
 
-    @Override
-    public void visit(RowConstructor rowConstructor) {
-        super.visit(rowConstructor);
-    }
 
-    @Override
-    public void visit(HexValue hexValue) {
-        super.visit(hexValue);
-    }
 
-    @Override
-    public void visit(OracleHint hint) {
-        super.visit(hint);
-    }
 
-    @Override
-    public void visit(TimeKeyExpression timeKeyExpression) {
-        super.visit(timeKeyExpression);
-    }
-
-    @Override
-    public void visit(DateTimeLiteralExpression literal) {
-        super.visit(literal);
-    }
 }

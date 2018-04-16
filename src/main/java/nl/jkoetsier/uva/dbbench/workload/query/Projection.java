@@ -24,4 +24,15 @@ public class Projection extends UnaryRelation {
     public void setFields(List<Field> fields) {
         this.fields = fields;
     }
+
+    @Override
+    public Field getField(String s) {
+        for (Field field : fields) {
+            if (field.getName().equals(s)) {
+                return field;
+            }
+        }
+
+        return null;
+    }
 }

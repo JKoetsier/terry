@@ -31,6 +31,11 @@ public class SqlWorkloadReader implements WorkloadReader {
     public Workload fromFile(String fileName) {
         String sql = readFile(fileName);
 
+        return fromString(sql);
+    }
+
+    @Override
+    public Workload fromString(String sql) {
         try {
             Statements statements = CCJSqlParserUtil.parseStatements(sql);
             return visitTree(statements);

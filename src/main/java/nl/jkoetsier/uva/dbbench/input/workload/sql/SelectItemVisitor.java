@@ -19,8 +19,8 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
     private DataModel dataModel = DataModel.getInstance();
 
-    public SelectItemVisitor() {
-        selection = new Selection();
+    public SelectItemVisitor(Selection selection) {
+        this.selection = selection;
         fields = new ArrayList<>();
     }
 
@@ -77,10 +77,23 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
                 }
 
                 Field field = entity.getField(splitted[1]);
+
+                if (field == null) {
+                    throw new InvalidQueryException(
+                            String.format("Field '%s' not found in entity '%s'", splitted[1],
+                                    splitted[0])
+                    );
+                }
                 fields.add(field);
 
             } else {
-                // TODO what to do when just a or b, without table prefix
+                if (!selection.producesField(splitted[0])) {
+                    throw new InvalidQueryException(
+                            String.format("Field '%s' not present", splitted[0])
+                    );
+                }
+
+                fields.add(selection.getField(splitted[0]));
             }
 
             return fields;
@@ -88,4 +101,6 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
         return null;
     }
+
+
 }
