@@ -2,6 +2,9 @@ package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.statement.select.*;
 import nl.jkoetsier.uva.dbbench.workload.Query;
+import nl.jkoetsier.uva.dbbench.workload.query.InputRelation;
+import nl.jkoetsier.uva.dbbench.workload.query.RAJoin;
+import nl.jkoetsier.uva.dbbench.workload.query.Relation;
 import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 
 public class SelectVisitor extends SelectVisitorAdapter {
@@ -18,8 +21,27 @@ public class SelectVisitor extends SelectVisitorAdapter {
 
         Selection selection = new Selection();
 
-        FromVisitor fromVisitor = new FromVisitor(selection);
+        FromVisitor fromVisitor = new FromVisitor();
         plainSelect.getFromItem().accept(fromVisitor);
+
+        selection.setInput(fromVisitor.getInputRelation());
+
+        if (plainSelect.getJoins() != null) {
+            for (Join join : plainSelect.getJoins()) {
+
+                join.getRightItem().accept(fromVisitor);
+
+                RAJoin raJoin = new RAJoin(
+                        selection.getInput(),
+                        fromVisitor.getInputRelation()
+                );
+
+                ExpressionVisitor expressionVisitor = new ExpressionVisitor(raJoin);
+                join.getOnExpression().accept(expressionVisitor);
+                raJoin.setOnExpression(expressionVisitor.getExpression());
+                selection.setInput(raJoin);
+            }
+        }
 
         SelectItemVisitor selectItemVisitor = new SelectItemVisitor(selection);
 
@@ -33,11 +55,6 @@ public class SelectVisitor extends SelectVisitorAdapter {
             plainSelect.getWhere().accept(expressionVisitor);
             selection.setExpression(expressionVisitor.getExpression());
         }
-
-        // TODO do joins
-
-        // TODO where
-
 
         query.setRelation(selectItemVisitor.getRelation());
         super.visit(plainSelect);

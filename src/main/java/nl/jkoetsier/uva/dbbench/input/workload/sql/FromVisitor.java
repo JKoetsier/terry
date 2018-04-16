@@ -6,15 +6,17 @@ import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
 import nl.jkoetsier.uva.dbbench.schema.DataModel;
 import nl.jkoetsier.uva.dbbench.schema.Entity;
 import nl.jkoetsier.uva.dbbench.workload.query.InputRelation;
-import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 
 public class FromVisitor extends FromItemVisitorAdapter {
 
-    private Selection selection;
     private DataModel dataModel = DataModel.getInstance();
+    private InputRelation inputRelation;
 
-    public FromVisitor(Selection selection) {
-        this.selection = selection;
+    public FromVisitor() {
+    }
+
+    public InputRelation getInputRelation() {
+        return inputRelation;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class FromVisitor extends FromItemVisitorAdapter {
             inputRelation = new InputRelation(entity, table.getAlias().getName());
         }
 
-        selection.setInput(inputRelation);
+        this.inputRelation = inputRelation;
     }
 
     @Override

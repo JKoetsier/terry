@@ -13,7 +13,9 @@ import nl.jkoetsier.uva.dbbench.workload.expression.constant.LongConstant;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.AndOp;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.EqualsOp;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.NeqOp;
+import nl.jkoetsier.uva.dbbench.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.workload.query.Projection;
+import nl.jkoetsier.uva.dbbench.workload.query.RAJoin;
 import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 import org.junit.Test;
 
@@ -46,6 +48,23 @@ public class SqlWorkloadReaderTest {
         entity.addField(fieldA);
         entity.addField(fieldB);
         dataModel.addEntity(entity);
+    }
+
+    private void loadJoinDataModel() {
+        Entity entity = new Entity("basetable");
+        IntegerField fieldA = new IntegerField("a");
+        IntegerField fieldB = new IntegerField("b");
+        entity.addField(fieldA);
+        entity.addField(fieldB);
+
+        Entity joinTable = new Entity("jointable");
+        IntegerField fieldC = new IntegerField("c");
+        IntegerField fieldD = new IntegerField("d");
+        joinTable.addField(fieldC);
+        joinTable.addField(fieldD);
+
+        dataModel.addEntity(entity);
+        dataModel.addEntity(joinTable);
     }
 
     private void cleanup() {
@@ -164,6 +183,40 @@ public class SqlWorkloadReaderTest {
     public void testSelectWithInvalidExpression() {
         loadDataModel();
         getWorkloadFromString("SELECT table2name.b FROM table2name WHERE table2name.c = 4");
+        cleanup();
+    }
+
+    @Test
+    public void testJoinSelect() {
+        loadJoinDataModel();
+        Workload workload = getWorkload("select_join.sql");
+        assertEquals(workload.getQueries().size(), 1);
+
+        Query query = workload.getQueries().get(0);
+        assertTrue(query.getRelation() instanceof Projection);
+
+        Projection projection = (Projection)query.getRelation();
+        assertEquals(projection.getFieldRefs().size(), 3);
+
+        assertTrue(projection.getInput() instanceof Selection);
+        Selection selection = (Selection)projection.getInput();
+
+        assertTrue(selection.getInput() instanceof RAJoin);
+        RAJoin raJoin = (RAJoin)selection.getInput();
+        assertNotNull(raJoin.getOnExpression());
+
+        assertTrue(raJoin.getLeftInput() instanceof InputRelation);
+        assertTrue(raJoin.getRightInput() instanceof InputRelation);
+
+        assertTrue(raJoin.getOnExpression() instanceof BinExpression);
+
+        BinExpression binExpression = (BinExpression)raJoin.getOnExpression();
+        assertTrue(binExpression.getOperator() instanceof EqualsOp);
+        assertTrue(binExpression.getLeftExpr() instanceof FieldExpression);
+
+        FieldExpression fieldExpression = (FieldExpression)binExpression.getLeftExpr();
+        assertNotNull(fieldExpression.getFieldRef());
+
         cleanup();
     }
 }

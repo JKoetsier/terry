@@ -16,16 +16,18 @@ import nl.jkoetsier.uva.dbbench.workload.expression.constant.StringConstant;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.Operator;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.OperatorFactory;
 import nl.jkoetsier.uva.dbbench.workload.query.FieldRef;
+import nl.jkoetsier.uva.dbbench.workload.query.Relation;
 import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 
 public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     private Expression expression;
-    private Selection selection;
+    private Relation relation;
 
-    public ExpressionVisitor(Selection selection) {
+    // Relation to check for variables etc
+    public ExpressionVisitor(Relation relation) {
         expression = null;
-        this.selection = selection;
+        this.relation = relation;
     }
 
     public Expression getExpression() {
@@ -38,7 +40,6 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     @Override
     public void visit(NullValue value) {
-
         super.visit(value);
     }
 
@@ -119,7 +120,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     @Override
     public void visit(Column column) {
-        FieldRef fieldRef = selection.getFieldRef(column.getFullyQualifiedName());
+        FieldRef fieldRef = relation.getFieldRef(column.getFullyQualifiedName());
 
         if (fieldRef == null) {
             throw new InvalidQueryException(String.format(
@@ -234,7 +235,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     @Override
     protected void visitBinaryExpression(BinaryExpression expr) {
-        ExpressionVisitor expressionVisitor = new ExpressionVisitor(selection);
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(relation);
         expr.getLeftExpression().accept(expressionVisitor);
         Expression leftExpr = expressionVisitor.getExpression();
 
@@ -251,8 +252,8 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
                 operator,
                 expr.isNot()
         );
-
     }
+
     @Override
     public void visit(UserVariable var) {
         super.visit(var);

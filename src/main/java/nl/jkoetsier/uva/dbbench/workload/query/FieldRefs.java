@@ -26,6 +26,10 @@ public class FieldRefs {
         fieldRefs.addAll(fieldRefList);
     }
 
+    public int size() {
+        return fieldRefs.size();
+    }
+
     public FieldRef get(String name) {
         String[] splitOnDot = name.split("\\.");
 

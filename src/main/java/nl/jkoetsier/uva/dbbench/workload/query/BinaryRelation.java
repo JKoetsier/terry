@@ -5,6 +5,11 @@ public abstract class BinaryRelation extends Relation {
     private Relation leftInput;
     private Relation rightInput;
 
+    public BinaryRelation(Relation leftInput, Relation rightInput) {
+        this.leftInput = leftInput;
+        this.rightInput = rightInput;
+    }
+
     public Relation getLeftInput() {
         return leftInput;
     }
