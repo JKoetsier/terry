@@ -2,10 +2,7 @@ package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.statement.select.*;
 import nl.jkoetsier.uva.dbbench.workload.Query;
-import nl.jkoetsier.uva.dbbench.workload.query.InputRelation;
-import nl.jkoetsier.uva.dbbench.workload.query.RAJoin;
-import nl.jkoetsier.uva.dbbench.workload.query.Relation;
-import nl.jkoetsier.uva.dbbench.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.workload.query.*;
 
 public class SelectVisitor extends SelectVisitorAdapter {
 
@@ -28,17 +25,8 @@ public class SelectVisitor extends SelectVisitorAdapter {
 
         if (plainSelect.getJoins() != null) {
             for (Join join : plainSelect.getJoins()) {
+                RAJoin raJoin = createJoin(join, selection.getInput());
 
-                join.getRightItem().accept(fromVisitor);
-
-                RAJoin raJoin = new RAJoin(
-                        selection.getInput(),
-                        fromVisitor.getInputRelation()
-                );
-
-                ExpressionVisitor expressionVisitor = new ExpressionVisitor(raJoin);
-                join.getOnExpression().accept(expressionVisitor);
-                raJoin.setOnExpression(expressionVisitor.getExpression());
                 selection.setInput(raJoin);
             }
         }
@@ -57,7 +45,35 @@ public class SelectVisitor extends SelectVisitorAdapter {
         }
 
         query.setRelation(selectItemVisitor.getRelation());
+
         super.visit(plainSelect);
+    }
+
+    private RAJoin createJoin(Join join, Relation leftInput) {
+        FromVisitor fromVisitor = new FromVisitor();
+        join.getRightItem().accept(fromVisitor);
+
+        RAJoin raJoin;
+
+        if (join.isLeft()) {
+            raJoin = new OuterJoin(leftInput, fromVisitor.getInputRelation(), OuterJoin.Direction
+                    .LEFT);
+        } else if (join.isRight()) {
+            raJoin = new OuterJoin(leftInput, fromVisitor.getInputRelation(), OuterJoin.Direction
+                    .RIGHT);
+        } else if (join.isInner()) {
+            raJoin = new InnerJoin(leftInput, fromVisitor.getInputRelation());
+        } else if (join.isFull()) {
+            raJoin = new FullJoin(leftInput, fromVisitor.getInputRelation());
+        } else {
+            throw new RuntimeException("Could not determine join type. Not implemented");
+        }
+
+        ExpressionVisitor expressionVisitor = new ExpressionVisitor(raJoin);
+        join.getOnExpression().accept(expressionVisitor);
+        raJoin.setOnExpression(expressionVisitor.getExpression());
+
+        return raJoin;
     }
 
     @Override

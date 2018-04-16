@@ -4,7 +4,7 @@ import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
 
 import java.util.List;
 
-public class RAJoin extends BinaryRelation {
+public abstract class RAJoin extends BinaryRelation {
 
     private Expression onExpression;
 

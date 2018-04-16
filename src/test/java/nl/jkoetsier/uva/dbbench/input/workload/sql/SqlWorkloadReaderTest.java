@@ -13,10 +13,7 @@ import nl.jkoetsier.uva.dbbench.workload.expression.constant.LongConstant;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.AndOp;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.EqualsOp;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.NeqOp;
-import nl.jkoetsier.uva.dbbench.workload.query.InputRelation;
-import nl.jkoetsier.uva.dbbench.workload.query.Projection;
-import nl.jkoetsier.uva.dbbench.workload.query.RAJoin;
-import nl.jkoetsier.uva.dbbench.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.workload.query.*;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -63,8 +60,22 @@ public class SqlWorkloadReaderTest {
         joinTable.addField(fieldC);
         joinTable.addField(fieldD);
 
+        Entity joinTable2 = new Entity("jointable2");
+        Entity joinTable3 = new Entity("jointable3");
+        Entity joinTable4 = new Entity("jointable4");
+        IntegerField fieldE = new IntegerField("e");
+        IntegerField fieldF = new IntegerField("f");
+        IntegerField fieldG = new IntegerField("g");
+        IntegerField fieldH = new IntegerField("h");
+        joinTable2.addField(fieldE);
+        joinTable3.addField(fieldF);
+        joinTable3.addField(fieldG);
+        joinTable4.addField(fieldH);
         dataModel.addEntity(entity);
         dataModel.addEntity(joinTable);
+        dataModel.addEntity(joinTable2);
+        dataModel.addEntity(joinTable3);
+        dataModel.addEntity(joinTable4);
     }
 
     private void cleanup() {
@@ -77,7 +88,7 @@ public class SqlWorkloadReaderTest {
 
     @Test(expected = InvalidQueryException.class)
     public void testSimpleSelectWithoutMatchingDataModel() {
-        Workload workload = getWorkload("select_simple.sql");
+        getWorkload("select_simple.sql");
     }
 
     @Test
@@ -100,14 +111,14 @@ public class SqlWorkloadReaderTest {
     @Test(expected = InvalidQueryException.class)
     public void testNonExistingTableSelect() {
         loadDataModel();
-        Workload workload = getWorkloadFromString("SELECT notexisting.a FROM table2name");
+        getWorkloadFromString("SELECT notexisting.a FROM table2name");
         cleanup();
     }
 
     @Test(expected = InvalidQueryException.class)
     public void testNonExistingTableFieldSelect() {
         loadDataModel();
-        Workload workload = getWorkloadFromString("SELECT table2name.c FROM table2name");
+        getWorkloadFromString("SELECT table2name.c FROM table2name");
         cleanup();
     }
 
@@ -128,14 +139,14 @@ public class SqlWorkloadReaderTest {
     @Test(expected = InvalidQueryException.class)
     public void testNonExistingTableInFromSelect() {
         loadDataModel();
-        Workload workload = getWorkloadFromString("SELECT a FROM notexistingtable");
+        getWorkloadFromString("SELECT a FROM notexistingtable");
         cleanup();
     }
 
     @Test(expected = InvalidQueryException.class)
     public void testNonExistingSingleFieldInExistingTableSelect() {
         loadDataModel();
-        Workload workload = getWorkloadFromString("SELECT c FROM table2name");
+        getWorkloadFromString("SELECT c FROM table2name");
         cleanup();
     }
 
@@ -189,7 +200,7 @@ public class SqlWorkloadReaderTest {
     @Test
     public void testJoinSelect() {
         loadJoinDataModel();
-        Workload workload = getWorkload("select_join.sql");
+        Workload workload = getWorkload("select_join_simple.sql");
         assertEquals(1, workload.getQueries().size());
 
         Query query = workload.getQueries().get(0);
@@ -231,6 +242,41 @@ public class SqlWorkloadReaderTest {
     public void testJoinInvalidColumnSelect() {
         loadJoinDataModel();
         getWorkload("select_join_invalid_column.sql");
+        cleanup();
+    }
+
+    @Test
+    public void testMultipleJoins() {
+        loadJoinDataModel();
+        Workload workload = getWorkload("select_join_multiple.sql");
+        assertEquals(1, workload.getQueries().size());
+
+        Query query = workload.getQueries().get(0);
+        assertTrue(query.getRelation() instanceof Projection);
+
+        Projection projection = (Projection)query.getRelation();
+        assertEquals(5, projection.getFieldRefs().size());
+
+        assertTrue(projection.getInput() instanceof Selection);
+
+        Selection selection = (Selection)projection.getInput();
+
+        assertTrue(selection.getInput() instanceof FullJoin);
+        FullJoin fullJoin = (FullJoin)selection.getInput();
+        assertTrue(fullJoin.getLeftInput() instanceof InnerJoin);
+
+        InnerJoin innerJoin = (InnerJoin)fullJoin.getLeftInput();
+        assertTrue(innerJoin.getLeftInput() instanceof OuterJoin);
+
+        OuterJoin outerJoin = (OuterJoin)innerJoin.getLeftInput();
+        assertEquals(OuterJoin.Direction.RIGHT, outerJoin.getDirection());
+        assertTrue(outerJoin.getLeftInput() instanceof OuterJoin);
+
+        OuterJoin rightOuterJoin = (OuterJoin)outerJoin.getLeftInput();
+        assertTrue(rightOuterJoin.getLeftInput() instanceof InputRelation);
+        assertTrue(rightOuterJoin.getRightInput() instanceof InputRelation);
+        assertEquals(OuterJoin.Direction.LEFT, rightOuterJoin.getDirection());
+
         cleanup();
     }
 }
