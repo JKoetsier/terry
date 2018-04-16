@@ -117,7 +117,7 @@ public class SqlWorkloadReaderTest {
         loadDataModel();
         Workload workload = getWorkloadFromString("SELECT a FROM table2name");
 
-        assertEquals(workload.getQueries().size(), 1);
+        assertEquals(1, workload.getQueries().size());
         Query query = workload.getQueries().get(0);
         assertTrue(query.getRelation() instanceof Projection);
         assertTrue(((Projection) query.getRelation()).getInput() instanceof Selection);
@@ -144,7 +144,7 @@ public class SqlWorkloadReaderTest {
         loadDataModel();
         Workload workload = getWorkload("select_where.sql");
 
-        assertEquals(workload.getQueries().size(), 1);
+        assertEquals(1, workload.getQueries().size());
 
         Query query = workload.getQueries().get(0);
         assertTrue(query.getRelation() instanceof Projection);
@@ -190,13 +190,13 @@ public class SqlWorkloadReaderTest {
     public void testJoinSelect() {
         loadJoinDataModel();
         Workload workload = getWorkload("select_join.sql");
-        assertEquals(workload.getQueries().size(), 1);
+        assertEquals(1, workload.getQueries().size());
 
         Query query = workload.getQueries().get(0);
         assertTrue(query.getRelation() instanceof Projection);
 
         Projection projection = (Projection)query.getRelation();
-        assertEquals(projection.getFieldRefs().size(), 3);
+        assertEquals(3, projection.getFieldRefs().size());
 
         assertTrue(projection.getInput() instanceof Selection);
         Selection selection = (Selection)projection.getInput();
@@ -217,6 +217,20 @@ public class SqlWorkloadReaderTest {
         FieldExpression fieldExpression = (FieldExpression)binExpression.getLeftExpr();
         assertNotNull(fieldExpression.getFieldRef());
 
+        cleanup();
+    }
+
+    @Test(expected = InvalidQueryException.class)
+    public void testJoinInvalidTableSelect() {
+        loadJoinDataModel();
+        getWorkload("select_join_invalid_table.sql");
+        cleanup();
+    }
+
+    @Test(expected = InvalidQueryException.class)
+    public void testJoinInvalidColumnSelect() {
+        loadJoinDataModel();
+        getWorkload("select_join_invalid_column.sql");
         cleanup();
     }
 }
