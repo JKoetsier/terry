@@ -45,7 +45,7 @@ Also I would like to know about needed examples or documentation stuff.
 ## Extensions in the latest SNAPSHOT version 1.2
 
 * support for **isnull**
-* support for single quoted aliases ___select col1 as 'alias'___
+* support for single quoted aliases ___select col1 as 'columnAlias'___
 * support for Unicode string literal like **N'test'** or **U'test'**
 * support for bitwise not **~**
 * support for **drop view**
@@ -62,7 +62,7 @@ Also I would like to know about needed examples or documentation stuff.
 * first support for *use* statements
 * first support for *call* statements
 * create table allows now quoted identifiers within primary key definition
-* introduced alias for subquery in combination with a pivot definition (this **changes** alias handling within the library for pivot sqls)
+* introduced columnAlias for subquery in combination with a pivot definition (this **changes** columnAlias handling within the library for pivot sqls)
 * force the parser to fully parse a String using parseCondExpression or parseExpression
 
 ## Extensions of JSqlParser releases

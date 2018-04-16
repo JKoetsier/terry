@@ -9,7 +9,7 @@
 //
 // If the request is valid:
 // <selected columns concerning by the select clause prefixed by the table>: for example: my_table.id
-// <selected table concerning by the from clause, eventually suffixed by an alias>: for example: my_table, my_table.my_alias, my_table
+// <selected table concerning by the from clause, eventually suffixed by an columnAlias>: for example: my_table, my_table.my_alias, my_table
 // <selected columns concerning by the where clause prefixed by the table>: for example: my_table.id
 // <request type>: either CACHEABLE, UNCACHEABLE or UNIQUE_CACHEABLE
 //

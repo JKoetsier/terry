@@ -1,38 +1,40 @@
 package nl.jkoetsier.uva.dbbench.workload.query;
 
-import nl.jkoetsier.uva.dbbench.schema.fields.Field;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Projection extends UnaryRelation {
 
-    private List<Field> fields;
+    private FieldRefs fieldRefs;
 
-    public Projection(List<Field> fields) {
-        this.fields = fields;
+    public Projection(FieldRefs fieldRefs) {
+        this.fieldRefs = fieldRefs;
     }
 
     public Projection() {
-        this(new ArrayList<>());
+
     }
 
-    public List<Field> getFields() {
-        return fields;
+    public FieldRefs getFieldRefs() {
+        return fieldRefs;
     }
 
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
+    public void setFieldRefs(FieldRefs fieldRefs) {
+        this.fieldRefs = fieldRefs;
     }
 
     @Override
-    public Field getField(String s) {
-        for (Field field : fields) {
-            if (field.getName().equals(s)) {
-                return field;
-            }
-        }
+    public FieldRef getFieldRef(String fieldName) {
+        return fieldRefs.get(fieldName);
+    }
 
-        return null;
+    @Override
+    public FieldRef getFieldRef(String tableName, String fieldName) {
+        return fieldRefs.get(tableName, fieldName);
+    }
+
+    @Override
+    public List<FieldRef> getFieldRefsForTable(String tableName) {
+        return fieldRefs.getAllForTable(tableName);
     }
 }

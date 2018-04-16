@@ -27,7 +27,7 @@ SELECT  -- REFS.*
 	REFS.table_name
 	, REFS.r_table_name
 	, CONNECT_BY_ISCYCLE CYCLE
-	, LEVEL -- level this is strange case, this is not a comment but a column alias
+	, LEVEL -- level this is strange case, this is not a comment but a column columnAlias
 	-- , SYS_CONNECT_BY_PATH(table_name, '/') "Path"
 FROM REFS
 CONNECT BY NOCYCLE PRIOR r_owner = owner AND PRIOR r_table_name = table_name

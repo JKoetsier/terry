@@ -10,7 +10,7 @@ select 25
 , 1.
 , .5
 , (sysdate -1d)   -- here we substract "one" in decimal format
-, sysdate -1m   -- here we substract "one" and "m" is column's alias
+, sysdate -1m   -- here we substract "one" and "m" is column's columnAlias
 , sysdate -1dm
 , 1.-+.5
 , 1.+.5

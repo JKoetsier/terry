@@ -16,12 +16,6 @@ public class SelectVisitor extends SelectVisitorAdapter {
     public void visit(PlainSelect plainSelect) {
         query = new Query();
 
-        System.out.println("Have plainselect");
-
-        System.out.println("Top: " + plainSelect.getTop());
-
-        System.out.println(plainSelect.getSelectItems());
-
         Selection selection = new Selection();
 
         FromVisitor fromVisitor = new FromVisitor(selection);

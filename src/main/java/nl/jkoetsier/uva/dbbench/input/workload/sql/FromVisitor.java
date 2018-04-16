@@ -19,8 +19,6 @@ public class FromVisitor extends FromItemVisitorAdapter {
 
     @Override
     public void visit(Table table) {
-        // TODO table aliases
-
         Entity entity = dataModel.getEntity(table.getName());
 
         if (entity == null) {
@@ -29,7 +27,15 @@ public class FromVisitor extends FromItemVisitorAdapter {
             ));
         }
 
-        selection.setInput(new InputRelation(entity));
+        InputRelation inputRelation;
+
+        if (table.getAlias() == null) {
+            inputRelation = new InputRelation(entity);
+        } else {
+            inputRelation = new InputRelation(entity, table.getAlias().getName());
+        }
+
+        selection.setInput(inputRelation);
     }
 
     @Override

@@ -7,7 +7,6 @@ import nl.jkoetsier.uva.dbbench.schema.fields.IntegerField;
 import nl.jkoetsier.uva.dbbench.workload.Query;
 import nl.jkoetsier.uva.dbbench.workload.Workload;
 import nl.jkoetsier.uva.dbbench.workload.expression.BinExpression;
-import nl.jkoetsier.uva.dbbench.workload.expression.constant.Constant;
 import nl.jkoetsier.uva.dbbench.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.dbbench.workload.expression.constant.LongConstant;
@@ -161,10 +160,10 @@ public class SqlWorkloadReaderTest {
         cleanup();
     }
 
-    //@Test(expected = InvalidQueryException.class)
+    @Test(expected = InvalidQueryException.class)
     public void testSelectWithInvalidExpression() {
         loadDataModel();
-        getWorkloadFromString("SELECT table2name.b FROM table2name WHERE c = 4");
+        getWorkloadFromString("SELECT table2name.b FROM table2name WHERE table2name.c = 4");
         cleanup();
     }
 }

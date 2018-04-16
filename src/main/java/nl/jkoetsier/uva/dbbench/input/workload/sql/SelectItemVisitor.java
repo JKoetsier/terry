@@ -5,9 +5,7 @@ import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
 import nl.jkoetsier.uva.dbbench.schema.DataModel;
 import nl.jkoetsier.uva.dbbench.schema.Entity;
 import nl.jkoetsier.uva.dbbench.schema.fields.Field;
-import nl.jkoetsier.uva.dbbench.workload.query.Projection;
-import nl.jkoetsier.uva.dbbench.workload.query.Relation;
-import nl.jkoetsier.uva.dbbench.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.workload.query.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,18 +13,18 @@ import java.util.List;
 public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
     private Selection selection;
-    private List<Field> fields;
+    private List<FieldRef> fieldRefs;
 
     private DataModel dataModel = DataModel.getInstance();
 
     public SelectItemVisitor(Selection selection) {
         this.selection = selection;
-        fields = new ArrayList<>();
+        this.fieldRefs = new ArrayList<>();
     }
 
     public Relation getRelation() {
-        if (fields.size() > 0) {
-            Projection projection = new Projection(fields);
+        if (fieldRefs.size() > 0) {
+            Projection projection = new Projection(new FieldRefs(fieldRefs));
             projection.setInput(selection);
 
             return projection;
@@ -43,16 +41,17 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
     @Override
     public void visit(AllTableColumns columns) {
-        Entity entity = dataModel.getEntity(columns.getTable().getName());
-        fields.addAll(entity.getFields().values());
+        List<FieldRef> fieldRefList = selection.getFieldRefsForTable(columns.getTable().getName());
+        fieldRefs.addAll(fieldRefList);
     }
 
     @Override
     public void visit(SelectExpressionItem item) {
-        List<Field> expressionFields = matchExpressionItem(item.toString());
+        FieldRef fieldRef = matchExpressionItem(item.toString());
 
-        if (expressionFields != null) {
-            fields.addAll(expressionFields);
+
+        if (fieldRef != null) {
+            fieldRefs.add(fieldRef);
         } else {
             // TODO handle different kind of expressions
         }
@@ -63,40 +62,17 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
         return string.matches("^[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)?$");
     }
 
-    private List<Field> matchExpressionItem(String item) {
+    private FieldRef matchExpressionItem(String item) {
         if (isValidTableIdentifier(item)) {
-            List<Field> fields = new ArrayList<>();
-            String[] splitted = item.split("\\.");
+            FieldRef fieldRef = selection.getFieldRef(item);
 
-            if (splitted.length > 1) {
-                Entity entity = dataModel.getEntity(splitted[0]);
-
-                if (entity == null) {
-                    throw new InvalidQueryException(
-                            String.format("Entity '%s' not found in DataModel", splitted[0]));
-                }
-
-                Field field = entity.getField(splitted[1]);
-
-                if (field == null) {
-                    throw new InvalidQueryException(
-                            String.format("Field '%s' not found in entity '%s'", splitted[1],
-                                    splitted[0])
-                    );
-                }
-                fields.add(field);
-
-            } else {
-                if (!selection.producesField(splitted[0])) {
-                    throw new InvalidQueryException(
-                            String.format("Field '%s' not present", splitted[0])
-                    );
-                }
-
-                fields.add(selection.getField(splitted[0]));
+            if (fieldRef == null) {
+                throw new InvalidQueryException(
+                        String.format("Field '%s' does not exist", item)
+                );
             }
 
-            return fields;
+            return fieldRef;
         }
 
         return null;

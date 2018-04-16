@@ -5,6 +5,7 @@ import net.sf.jsqlparser.expression.operators.arithmetic.*;
 import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.*;
+import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
 import nl.jkoetsier.uva.dbbench.workload.expression.BinExpression;
 import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
 import nl.jkoetsier.uva.dbbench.workload.expression.FieldExpression;
@@ -14,6 +15,7 @@ import nl.jkoetsier.uva.dbbench.workload.expression.constant.LongConstant;
 import nl.jkoetsier.uva.dbbench.workload.expression.constant.StringConstant;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.Operator;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.OperatorFactory;
+import nl.jkoetsier.uva.dbbench.workload.query.FieldRef;
 import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 
 public class ExpressionVisitor extends ExpressionVisitorAdapter {
@@ -117,12 +119,15 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     @Override
     public void visit(Column column) {
-        System.out.println("Column: " + column.getColumnName());
-        System.out.println("Columntable: " + column.getTable());
+        FieldRef fieldRef = selection.getFieldRef(column.getFullyQualifiedName());
 
-        // TODO add validation of column
-        expression = new FieldExpression();
+        if (fieldRef == null) {
+            throw new InvalidQueryException(String.format(
+                    "Column '%s' does not exist", column.getFullyQualifiedName()
+            ));
+        }
 
+        expression = new FieldExpression(fieldRef);
 
         super.visit(column);
     }

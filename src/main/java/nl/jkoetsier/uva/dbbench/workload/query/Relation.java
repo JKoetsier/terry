@@ -1,12 +1,18 @@
 package nl.jkoetsier.uva.dbbench.workload.query;
 
-import nl.jkoetsier.uva.dbbench.schema.fields.Field;
+import java.util.List;
 
 public abstract class Relation {
 
-    public abstract Field getField(String s);
+    public abstract FieldRef getFieldRef(String fieldName);
+    public abstract FieldRef getFieldRef(String tableName, String fieldName);
+    public abstract List<FieldRef> getFieldRefsForTable(String tableName);
 
-    public boolean producesField(String s) {
-        return getField(s) != null;
+    public boolean hasFieldRef(String fieldName) {
+        return getFieldRef(fieldName) != null;
+    }
+
+    public boolean hasFieldRef(String tableName, String fieldName) {
+        return getFieldRef(tableName, fieldName) != null;
     }
 }

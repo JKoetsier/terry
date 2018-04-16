@@ -3,12 +3,23 @@ package nl.jkoetsier.uva.dbbench.workload.query;
 import nl.jkoetsier.uva.dbbench.schema.Entity;
 import nl.jkoetsier.uva.dbbench.schema.fields.Field;
 
+import java.util.List;
+
 public class InputRelation extends Relation {
 
     private Entity entity;
+    private FieldRefs fieldRefs;
+    private String tableAlias;
+
+    public InputRelation(Entity entity, String tableAlias) {
+        this.entity = entity;
+        this.tableAlias = tableAlias;
+        this.fieldRefs = FieldRefs.create(entity, tableAlias);
+    }
 
     public InputRelation(Entity entity) {
         this.entity = entity;
+        this.fieldRefs = FieldRefs.create(entity);
     }
 
     public Entity getEntity() {
@@ -19,8 +30,22 @@ public class InputRelation extends Relation {
         this.entity = entity;
     }
 
+    public String getTableAlias() {
+        return tableAlias;
+    }
+
     @Override
-    public Field getField(String s) {
-        return entity.getField(s);
+    public FieldRef getFieldRef(String fieldName) {
+        return fieldRefs.get(fieldName);
+    }
+
+    @Override
+    public FieldRef getFieldRef(String tableName, String fieldName) {
+        return fieldRefs.get(tableName, fieldName);
+    }
+
+    @Override
+    public List<FieldRef> getFieldRefsForTable(String tableName) {
+        return fieldRefs.getAllForTable(tableName);
     }
 }

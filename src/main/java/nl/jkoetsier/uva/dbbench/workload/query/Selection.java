@@ -1,7 +1,8 @@
 package nl.jkoetsier.uva.dbbench.workload.query;
 
-import nl.jkoetsier.uva.dbbench.schema.fields.Field;
 import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
+
+import java.util.List;
 
 public class Selection extends UnaryRelation {
 
@@ -16,7 +17,17 @@ public class Selection extends UnaryRelation {
     }
 
     @Override
-    public Field getField(String s) {
-        return this.getInput().getField(s);
+    public FieldRef getFieldRef(String fieldName) {
+        return getInput().getFieldRef(fieldName);
+    }
+
+    @Override
+    public FieldRef getFieldRef(String tableName, String fieldName) {
+        return getInput().getFieldRef(tableName, fieldName);
+    }
+
+    @Override
+    public List<FieldRef> getFieldRefsForTable(String tableName) {
+        return getInput().getFieldRefsForTable(tableName);
     }
 }

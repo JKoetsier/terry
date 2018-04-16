@@ -842,7 +842,7 @@ Statement Merge() : {
     Merge merge = new Merge();
     Table table;
     SubSelect select;
-    Alias alias;
+    Alias columnAlias;
     Expression condition;
     MergeUpdate update;
     MergeInsert insert;
@@ -852,7 +852,7 @@ Statement Merge() : {
     <K_USING> 
         ( table=Table() { merge.setUsingTable(table); } 
             | "(" select=SubSelect() { merge.setUsingSelect(select); } ")" )
-     [ alias = Alias() { merge.setUsingAlias(alias); } ] <K_ON> 
+     [ columnAlias = Alias() { merge.setUsingAlias(columnAlias); } ] <K_ON>
        "(" condition = Expression() { merge.setOnCondition(condition); } ")"
 
     [
@@ -1034,10 +1034,10 @@ Table Table() #Table :
 Table TableWithAlias():
 {
     Table table = null;
-    Alias alias = null;
+    Alias columnAlias = null;
 }
 {
-    table=Table() [alias=Alias() { table.setAlias(alias); }]
+    table=Table() [columnAlias=Alias() { table.setAlias(columnAlias); }]
     { return table; }
 }
 
@@ -1234,11 +1234,11 @@ SelectExpressionItem SelectExpressionItem():
 {
     SelectExpressionItem selectExpressionItem = null;
     Expression expression = null;
-    Alias alias = null;
+    Alias columnAlias = null;
 }
 {
      expression=SimpleExpression() { selectExpressionItem = new SelectExpressionItem(); selectExpressionItem.setExpression(expression); }
-             [alias=Alias() { selectExpressionItem.setAlias(alias); }] { return selectExpressionItem; }
+             [columnAlias=Alias() { selectExpressionItem.setAlias(columnAlias); }] { return selectExpressionItem; }
 }
 
 SelectItem SelectItem() #SelectItem:
@@ -1313,13 +1313,13 @@ String Identifier():
 
 FunctionItem FunctionItem():
 {
-    Alias alias = null;
+    Alias columnAlias = null;
     Function function;
     FunctionItem functionItem;
 }
 {
     function=Function() { functionItem = new FunctionItem(); functionItem.setFunction(function); }
-             [alias=Alias() { functionItem.setAlias(alias); }]
+             [columnAlias=Alias() { functionItem.setAlias(columnAlias); }]
     { return functionItem; }
 }
 
@@ -1364,13 +1364,13 @@ ExpressionListItem ExpressionListItem():
 {
     ExpressionListItem expressionListItem = null;
     ExpressionList expressionList = null;
-    Alias alias = null;
+    Alias columnAlias = null;
 }
 {
     "("
     expressionList=SimpleExpressionList() { expressionListItem = new ExpressionListItem(); expressionListItem.setExpressionList(expressionList); }
     ")"
-    [alias=Alias() { expressionListItem.setAlias(alias); }]
+    [columnAlias=Alias() { expressionListItem.setAlias(columnAlias); }]
     { return expressionListItem; }
 }
 
@@ -1392,7 +1392,7 @@ Pivot Pivot():
     List<Column> forColumns;
     List<SelectExpressionItem> singleInItems = null;
     List<ExpressionListItem> multiInItems = null;
-    Alias alias = null;
+    Alias columnAlias = null;
 }
 {
     <K_PIVOT> "(" functionItems = PivotFunctionItems() <K_FOR>
@@ -1402,13 +1402,13 @@ Pivot Pivot():
     | multiInItems = PivotMultiInItems() )
     ")"
     ")"
-    [ alias = Alias() ]
+    [ columnAlias = Alias() ]
     {
         retval.setFunctionItems(functionItems);
         retval.setForColumns(forColumns);
         retval.setSingleInItems(singleInItems);
         retval.setMultiInItems(multiInItems);
-        retval.setAlias(alias);
+        retval.setAlias(columnAlias);
         return retval;
     }
 }
@@ -1460,7 +1460,7 @@ FromItem FromItem():
 {
     FromItem fromItem = null;
     Pivot pivot = null;
-    Alias alias = null;
+    Alias columnAlias = null;
     MySQLIndexHint indexHint = null;
 }
 {
@@ -1491,7 +1491,7 @@ FromItem FromItem():
                 |
                 fromItem=LateralSubSelect()
             )
-            [ alias=Alias() { fromItem.setAlias(alias); } ]
+            [ columnAlias=Alias() { fromItem.setAlias(columnAlias); } ]
 			[(LOOKAHEAD(2) pivot=PivotXml()|pivot=Pivot()) { fromItem.setPivot(pivot); } ]
             [
                 LOOKAHEAD(2)
@@ -1515,7 +1515,7 @@ FromItem ValuesList():
     Expression exp = null;
     List<String> colNames = null;
     String colName;
-    Alias alias;
+    Alias columnAlias;
 }
 {
     "("
@@ -1533,7 +1533,7 @@ FromItem ValuesList():
     ))
     ")"
 
-    [ alias=Alias() { valuesList.setAlias(alias); }
+    [ columnAlias=Alias() { valuesList.setAlias(columnAlias); }
 
         [ "("
             colName = RelObjectName() { colNames = new ArrayList<String>(); colNames.add(colName); }
@@ -2889,13 +2889,13 @@ ValueListExpression ValueListExpression():
 
 TableFunction TableFunction():
 {
-    Alias alias = null;
+    Alias columnAlias = null;
     Function function;
     TableFunction functionItem;
 }
 {
     function=Function() { functionItem = new TableFunction(); functionItem.setFunction(function); }
-             [LOOKAHEAD(2) alias=Alias() { functionItem.setAlias(alias); }]
+             [LOOKAHEAD(2) columnAlias=Alias() { functionItem.setAlias(columnAlias); }]
     { return functionItem; }
 }
 
