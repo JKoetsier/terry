@@ -6,28 +6,28 @@ import java.util.List;
 
 public class Selection extends UnaryRelation {
 
-    private Expression expression;
+  private Expression expression;
 
-    public Expression getExpression() {
-        return expression;
-    }
+  public Expression getExpression() {
+    return expression;
+  }
 
-    public void setExpression(Expression expression) {
-        this.expression = expression;
-    }
+  public void setExpression(Expression expression) {
+    this.expression = expression;
+  }
 
-    @Override
-    public FieldRef getFieldRef(String fieldName) {
-        return getInput().getFieldRef(fieldName);
-    }
+  @Override
+  public FieldRef getFieldRef(String fieldName) {
+    return getInput().getFieldRef(fieldName);
+  }
 
-    @Override
-    public FieldRef getFieldRef(String tableName, String fieldName) {
-        return getInput().getFieldRef(tableName, fieldName);
-    }
+  @Override
+  public FieldRef getFieldRef(String tableName, String fieldName) {
+    return getInput().getFieldRef(tableName, fieldName);
+  }
 
-    @Override
-    public List<FieldRef> getFieldRefsForTable(String tableName) {
-        return getInput().getFieldRefsForTable(tableName);
-    }
+  @Override
+  public List<FieldRef> getFieldRefsForTable(String tableName) {
+    return getInput().getFieldRefsForTable(tableName);
+  }
 }

@@ -12,24 +12,24 @@ import nl.jkoetsier.uva.dbbench.workload.Workload;
 
 public class SqlSchemaStatementVisitor extends StatementVisitorAdapter {
 
-    private DataModel dataModel = DataModel.getInstance();
+  private DataModel dataModel = DataModel.getInstance();
 
-    public DataModel getDataModel() {
-        return dataModel;
+  public DataModel getDataModel() {
+    return dataModel;
+  }
+
+  @Override
+  public void visit(CreateTable createTable) {
+    Entity entity = new Entity(createTable.getTable().getName());
+
+    for (ColumnDefinition colDef : createTable.getColumnDefinitions()) {
+      Field field = FieldFactory.create(colDef.getColDataType().getDataType());
+      field.setName(colDef.getColumnName());
+      entity.addField(field);
     }
 
-    @Override
-    public void visit(CreateTable createTable) {
-        Entity entity = new Entity(createTable.getTable().getName());
+    dataModel.addEntity(entity);
 
-        for (ColumnDefinition colDef : createTable.getColumnDefinitions()) {
-            Field field = FieldFactory.create(colDef.getColDataType().getDataType());
-            field.setName(colDef.getColumnName());
-            entity.addField(field);
-        }
-
-        dataModel.addEntity(entity);
-
-        super.visit(createTable);
-    }
+    super.visit(createTable);
+  }
 }

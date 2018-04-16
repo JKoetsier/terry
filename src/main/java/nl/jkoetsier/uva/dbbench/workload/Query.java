@@ -4,13 +4,13 @@ import nl.jkoetsier.uva.dbbench.workload.query.Relation;
 
 public class Query {
 
-    private Relation relation;
+  private Relation relation;
 
-    public Relation getRelation() {
-        return relation;
-    }
+  public Relation getRelation() {
+    return relation;
+  }
 
-    public void setRelation(Relation relation) {
-        this.relation = relation;
-    }
+  public void setRelation(Relation relation) {
+    this.relation = relation;
+  }
 }

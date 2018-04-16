@@ -20,108 +20,108 @@ import nl.jkoetsier.uva.dbbench.workload.Workload;
 
 public class SqlWorkloadStatementVisitor extends StatementVisitorAdapter {
 
-    private Workload workload = new Workload();
+  private Workload workload = new Workload();
 
-    public Workload getWorkload() {
-        return workload;
-    }
+  public Workload getWorkload() {
+    return workload;
+  }
 
-    @Override
-    public void visit(Commit commit) {
-        super.visit(commit);
-    }
+  @Override
+  public void visit(Commit commit) {
+    super.visit(commit);
+  }
 
-    @Override
-    public void visit(Select select) {
-        SelectVisitor selectVisitor = new SelectVisitor();
-        select.getSelectBody().accept(selectVisitor);
+  @Override
+  public void visit(Select select) {
+    SelectVisitor selectVisitor = new SelectVisitor();
+    select.getSelectBody().accept(selectVisitor);
 
-        workload.addQuery(selectVisitor.getQuery());
-    }
+    workload.addQuery(selectVisitor.getQuery());
+  }
 
-    @Override
-    public void visit(Delete delete) {
-        super.visit(delete);
-    }
+  @Override
+  public void visit(Delete delete) {
+    super.visit(delete);
+  }
 
-    @Override
-    public void visit(Update update) {
-        super.visit(update);
-    }
+  @Override
+  public void visit(Update update) {
+    super.visit(update);
+  }
 
-    @Override
-    public void visit(Insert insert) {
-        super.visit(insert);
-    }
+  @Override
+  public void visit(Insert insert) {
+    super.visit(insert);
+  }
 
-    @Override
-    public void visit(Replace replace) {
-        super.visit(replace);
-    }
+  @Override
+  public void visit(Replace replace) {
+    super.visit(replace);
+  }
 
-    @Override
-    public void visit(Drop drop) {
-        super.visit(drop);
-    }
+  @Override
+  public void visit(Drop drop) {
+    super.visit(drop);
+  }
 
-    @Override
-    public void visit(Truncate truncate) {
-        super.visit(truncate);
-    }
+  @Override
+  public void visit(Truncate truncate) {
+    super.visit(truncate);
+  }
 
-    @Override
-    public void visit(CreateIndex createIndex) {
-        super.visit(createIndex);
-    }
+  @Override
+  public void visit(CreateIndex createIndex) {
+    super.visit(createIndex);
+  }
 
-    @Override
-    public void visit(CreateTable createTable) {
-        super.visit(createTable);
-    }
+  @Override
+  public void visit(CreateTable createTable) {
+    super.visit(createTable);
+  }
 
-    @Override
-    public void visit(CreateView createView) {
-        super.visit(createView);
-    }
+  @Override
+  public void visit(CreateView createView) {
+    super.visit(createView);
+  }
 
-    @Override
-    public void visit(Alter alter) {
-        super.visit(alter);
-    }
+  @Override
+  public void visit(Alter alter) {
+    super.visit(alter);
+  }
 
-    @Override
-    public void visit(Statements stmts) {
-        super.visit(stmts);
-    }
+  @Override
+  public void visit(Statements stmts) {
+    super.visit(stmts);
+  }
 
-    @Override
-    public void visit(Execute execute) {
-        super.visit(execute);
-    }
+  @Override
+  public void visit(Execute execute) {
+    super.visit(execute);
+  }
 
-    @Override
-    public void visit(SetStatement set) {
-        super.visit(set);
-    }
+  @Override
+  public void visit(SetStatement set) {
+    super.visit(set);
+  }
 
-    @Override
-    public void visit(Merge merge) {
-        super.visit(merge);
-    }
+  @Override
+  public void visit(Merge merge) {
+    super.visit(merge);
+  }
 
-    @Override
-    public void visit(AlterView alterView) {
-        super.visit(alterView);
-    }
+  @Override
+  public void visit(AlterView alterView) {
+    super.visit(alterView);
+  }
 
-    @Override
-    public void visit(Upsert upsert) {
-        super.visit(upsert);
-    }
+  @Override
+  public void visit(Upsert upsert) {
+    super.visit(upsert);
+  }
 
-    @Override
-    public void visit(UseStatement use) {
-        super.visit(use);
-    }
+  @Override
+  public void visit(UseStatement use) {
+    super.visit(use);
+  }
 
 }

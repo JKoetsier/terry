@@ -8,89 +8,88 @@ import java.util.List;
 
 public class FieldRefs {
 
-    private List<FieldRef> fieldRefs;
+  private List<FieldRef> fieldRefs;
 
-    public FieldRefs() {
-        fieldRefs = new ArrayList<>();
+  public FieldRefs() {
+    fieldRefs = new ArrayList<>();
+  }
+
+  public FieldRefs(List<FieldRef> fieldRefs) {
+    this.fieldRefs = fieldRefs;
+  }
+
+  public static FieldRefs create(Entity entity) {
+    FieldRefs fieldRefs = new FieldRefs();
+
+    for (Field field : entity.getFields().values()) {
+      FieldRef fieldRef = new FieldRef(field, entity.getName(), field.getName());
+      fieldRefs.add(fieldRef);
     }
 
-    public FieldRefs(List<FieldRef> fieldRefs) {
-        this.fieldRefs = fieldRefs;
+    return fieldRefs;
+  }
+
+  public static FieldRefs create(Entity entity, String tableAlias) {
+    FieldRefs fieldRefs = new FieldRefs();
+
+    for (Field field : entity.getFields().values()) {
+      FieldRef fieldRef = new FieldRef(field, entity.getName(), field.getName(), tableAlias);
+      fieldRefs.add(fieldRef);
     }
 
-    public void add(FieldRef fieldRef) {
-        fieldRefs.add(fieldRef);
+    return fieldRefs;
+  }
+
+  public void add(FieldRef fieldRef) {
+    fieldRefs.add(fieldRef);
+  }
+
+  public void addAll(List<FieldRef> fieldRefList) {
+    fieldRefs.addAll(fieldRefList);
+  }
+
+  public int size() {
+    return fieldRefs.size();
+  }
+
+  public FieldRef get(String name) {
+    String[] splitOnDot = name.split("\\.");
+
+    if (splitOnDot.length > 1) {
+      return get(splitOnDot[0], splitOnDot[1]);
     }
 
-    public void addAll(List<FieldRef> fieldRefList) {
-        fieldRefs.addAll(fieldRefList);
+    for (FieldRef fieldRef : fieldRefs) {
+      if (fieldRef.getColumnName().equals(name)) {
+        return fieldRef;
+      }
     }
 
-    public int size() {
-        return fieldRefs.size();
+    return null;
+  }
+
+  public FieldRef get(String tableName, String fieldName) {
+    for (FieldRef fieldRef : fieldRefs) {
+      if (fieldRef.getColumnName().equals(fieldName) &&
+          (fieldRef.getTableName().equals(tableName) ||
+              (fieldRef.getTableAlias() != null &&
+                  fieldRef.getTableAlias().equals(tableName)))) {
+        return fieldRef;
+      }
     }
 
-    public FieldRef get(String name) {
-        String[] splitOnDot = name.split("\\.");
+    return null;
+  }
 
-        if (splitOnDot.length > 1) {
-            return get(splitOnDot[0], splitOnDot[1]);
-        }
+  public List<FieldRef> getAllForTable(String tableName) {
+    List<FieldRef> resultRefs = new ArrayList<>();
 
-        for (FieldRef fieldRef : fieldRefs) {
-            if (fieldRef.getColumnName().equals(name)) {
-                return fieldRef;
-            }
-        }
-
-        return null;
+    for (FieldRef fieldRef : fieldRefs) {
+      if (fieldRef.getTableName().equals(tableName)) {
+        resultRefs.add(fieldRef);
+      }
     }
 
-
-    public FieldRef get(String tableName, String fieldName) {
-        for (FieldRef fieldRef : fieldRefs) {
-            if (fieldRef.getColumnName().equals(fieldName) &&
-                    (fieldRef.getTableName().equals(tableName) ||
-                            (fieldRef.getTableAlias() != null &&
-                    fieldRef.getTableAlias().equals(tableName)))) {
-                return fieldRef;
-            }
-        }
-
-        return null;
-    }
-
-    public List<FieldRef> getAllForTable(String tableName) {
-        List<FieldRef> resultRefs = new ArrayList<>();
-
-        for (FieldRef fieldRef : fieldRefs) {
-            if (fieldRef.getTableName().equals(tableName)) {
-                resultRefs.add(fieldRef);
-            }
-        }
-
-        return resultRefs;
-    }
-
-    public static FieldRefs create(Entity entity) {
-        FieldRefs fieldRefs = new FieldRefs();
-
-        for (Field field : entity.getFields().values()) {
-            FieldRef fieldRef = new FieldRef(field, entity.getName(), field.getName());
-            fieldRefs.add(fieldRef);
-        }
-
-        return fieldRefs;
-    }
-
-    public static FieldRefs create(Entity entity, String tableAlias) {
-        FieldRefs fieldRefs = new FieldRefs();
-
-        for (Field field : entity.getFields().values()) {
-            FieldRef fieldRef = new FieldRef(field, entity.getName(), field.getName(), tableAlias);
-            fieldRefs.add(fieldRef);
-        }
-
-        return fieldRefs;
-    }
+    return resultRefs;
+  }
 }

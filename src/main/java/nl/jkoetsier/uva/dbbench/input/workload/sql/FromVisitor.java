@@ -9,64 +9,64 @@ import nl.jkoetsier.uva.dbbench.workload.query.InputRelation;
 
 public class FromVisitor extends FromItemVisitorAdapter {
 
-    private DataModel dataModel = DataModel.getInstance();
-    private InputRelation inputRelation;
+  private DataModel dataModel = DataModel.getInstance();
+  private InputRelation inputRelation;
 
-    public FromVisitor() {
+  public FromVisitor() {
+  }
+
+  public InputRelation getInputRelation() {
+    return inputRelation;
+  }
+
+  @Override
+  public void visit(Table table) {
+    Entity entity = dataModel.getEntity(table.getName());
+
+    if (entity == null) {
+      throw new InvalidQueryException(String.format(
+          "Entity '%s' does not exist", table.getName()
+      ));
     }
 
-    public InputRelation getInputRelation() {
-        return inputRelation;
+    InputRelation inputRelation;
+
+    if (table.getAlias() == null) {
+      inputRelation = new InputRelation(entity);
+    } else {
+      inputRelation = new InputRelation(entity, table.getAlias().getName());
     }
 
-    @Override
-    public void visit(Table table) {
-        Entity entity = dataModel.getEntity(table.getName());
+    this.inputRelation = inputRelation;
+  }
 
-        if (entity == null) {
-            throw new InvalidQueryException(String.format(
-                    "Entity '%s' does not exist", table.getName()
-            ));
-        }
+  @Override
+  public void visit(SubSelect subSelect) {
+    super.visit(subSelect);
+  }
 
-        InputRelation inputRelation;
+  @Override
+  public void visit(SubJoin subjoin) {
+    super.visit(subjoin);
+  }
 
-        if (table.getAlias() == null) {
-            inputRelation = new InputRelation(entity);
-        } else {
-            inputRelation = new InputRelation(entity, table.getAlias().getName());
-        }
+  @Override
+  public void visit(LateralSubSelect lateralSubSelect) {
+    super.visit(lateralSubSelect);
+  }
 
-        this.inputRelation = inputRelation;
-    }
+  @Override
+  public void visit(ValuesList valuesList) {
+    super.visit(valuesList);
+  }
 
-    @Override
-    public void visit(SubSelect subSelect) {
-        super.visit(subSelect);
-    }
+  @Override
+  public void visit(TableFunction valuesList) {
+    super.visit(valuesList);
+  }
 
-    @Override
-    public void visit(SubJoin subjoin) {
-        super.visit(subjoin);
-    }
-
-    @Override
-    public void visit(LateralSubSelect lateralSubSelect) {
-        super.visit(lateralSubSelect);
-    }
-
-    @Override
-    public void visit(ValuesList valuesList) {
-        super.visit(valuesList);
-    }
-
-    @Override
-    public void visit(TableFunction valuesList) {
-        super.visit(valuesList);
-    }
-
-    @Override
-    public void visit(ParenthesisFromItem aThis) {
-        super.visit(aThis);
-    }
+  @Override
+  public void visit(ParenthesisFromItem aThis) {
+    super.visit(aThis);
+  }
 }

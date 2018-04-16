@@ -4,15 +4,17 @@ import java.util.List;
 
 public abstract class Relation {
 
-    public abstract FieldRef getFieldRef(String fieldName);
-    public abstract FieldRef getFieldRef(String tableName, String fieldName);
-    public abstract List<FieldRef> getFieldRefsForTable(String tableName);
+  public abstract FieldRef getFieldRef(String fieldName);
 
-    public boolean hasFieldRef(String fieldName) {
-        return getFieldRef(fieldName) != null;
-    }
+  public abstract FieldRef getFieldRef(String tableName, String fieldName);
 
-    public boolean hasFieldRef(String tableName, String fieldName) {
-        return getFieldRef(tableName, fieldName) != null;
-    }
+  public abstract List<FieldRef> getFieldRefsForTable(String tableName);
+
+  public boolean hasFieldRef(String fieldName) {
+    return getFieldRef(fieldName) != null;
+  }
+
+  public boolean hasFieldRef(String tableName, String fieldName) {
+    return getFieldRef(tableName, fieldName) != null;
+  }
 }

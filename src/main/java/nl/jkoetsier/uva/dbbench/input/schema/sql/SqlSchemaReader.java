@@ -14,37 +14,37 @@ import java.nio.file.Paths;
 public class SqlSchemaReader implements SchemaReader {
 
 
-    private String readFile(String fileName) {
-        return readFile(fileName, Charset.defaultCharset());
+  static String readFile(String path, Charset encoding) {
+    try {
+      byte[] encoded = Files.readAllBytes(Paths.get(path));
+
+      return new String(encoded, encoding);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    static String readFile(String path, Charset encoding) {
-        try {
-            byte[] encoded = Files.readAllBytes(Paths.get(path));
+  private String readFile(String fileName) {
+    return readFile(fileName, Charset.defaultCharset());
+  }
 
-            return new String(encoded, encoding);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+  @Override
+  public DataModel fromFile(String fileName) {
+    String sql = readFile(fileName);
+
+    try {
+      Statements statements = CCJSqlParserUtil.parseStatements(sql);
+      return visitTree(statements);
+
+    } catch (JSQLParserException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    @Override
-    public DataModel fromFile(String fileName) {
-        String sql = readFile(fileName);
+  public DataModel visitTree(Statements statements) {
+    SqlSchemaStatementVisitor visitor = new SqlSchemaStatementVisitor();
+    statements.accept(visitor);
 
-        try {
-            Statements statements = CCJSqlParserUtil.parseStatements(sql);
-            return visitTree(statements);
-
-        } catch (JSQLParserException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public DataModel visitTree(Statements statements) {
-        SqlSchemaStatementVisitor visitor = new SqlSchemaStatementVisitor();
-        statements.accept(visitor);
-
-        return visitor.getDataModel();
-    }
+    return visitor.getDataModel();
+  }
 }

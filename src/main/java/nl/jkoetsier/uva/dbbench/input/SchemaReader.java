@@ -4,5 +4,5 @@ import nl.jkoetsier.uva.dbbench.schema.DataModel;
 
 public interface SchemaReader {
 
-    DataModel fromFile(String fileName);
+  DataModel fromFile(String fileName);
 }
