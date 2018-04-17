@@ -224,16 +224,6 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
   }
 
   @Override
-  public void visit(BitwiseRightShift expr) {
-    super.visit(expr);
-  }
-
-  @Override
-  public void visit(BitwiseLeftShift expr) {
-    super.visit(expr);
-  }
-
-  @Override
   protected void visitBinaryExpression(BinaryExpression expr) {
     ExpressionVisitor expressionVisitor = new ExpressionVisitor(relation);
     expr.getLeftExpression().accept(expressionVisitor);
@@ -257,11 +247,6 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
   @Override
   public void visit(UserVariable var) {
     super.visit(var);
-  }
-
-  @Override
-  public void visit(ValueListExpression valueListExpression) {
-    super.visit(valueListExpression);
   }
 
   @Override
