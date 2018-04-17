@@ -29,15 +29,11 @@ public class FromVisitor extends FromItemVisitorAdapter {
       ));
     }
 
-    InputRelation inputRelation;
-
     if (table.getAlias() == null) {
-      inputRelation = new InputRelation(entity);
+      this.inputRelation = new InputRelation(entity);
     } else {
-      inputRelation = new InputRelation(entity, table.getAlias().getName());
+      this.inputRelation = new InputRelation(entity, table.getAlias().getName());
     }
-
-    this.inputRelation = inputRelation;
   }
 
   @Override
@@ -63,10 +59,5 @@ public class FromVisitor extends FromItemVisitorAdapter {
   @Override
   public void visit(TableFunction valuesList) {
     super.visit(valuesList);
-  }
-
-  @Override
-  public void visit(ParenthesisFromItem aThis) {
-    super.visit(aThis);
   }
 }

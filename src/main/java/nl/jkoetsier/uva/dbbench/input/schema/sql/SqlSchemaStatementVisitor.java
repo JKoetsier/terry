@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.dbbench.input.schema.sql;
 
-
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
@@ -8,7 +7,6 @@ import nl.jkoetsier.uva.dbbench.schema.DataModel;
 import nl.jkoetsier.uva.dbbench.schema.Entity;
 import nl.jkoetsier.uva.dbbench.schema.fields.Field;
 import nl.jkoetsier.uva.dbbench.schema.fields.FieldFactory;
-import nl.jkoetsier.uva.dbbench.workload.Workload;
 
 public class SqlSchemaStatementVisitor extends StatementVisitorAdapter {
 
