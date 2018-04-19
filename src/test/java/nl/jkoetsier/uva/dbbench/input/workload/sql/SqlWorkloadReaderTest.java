@@ -1,6 +1,8 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
+import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
+import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.schema.DataModel;
 import nl.jkoetsier.uva.dbbench.schema.Entity;
 import nl.jkoetsier.uva.dbbench.schema.fields.IntegerField;
@@ -14,6 +16,7 @@ import nl.jkoetsier.uva.dbbench.workload.expression.operator.AndOp;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.EqualsOp;
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.NeqOp;
 import nl.jkoetsier.uva.dbbench.workload.query.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -278,5 +281,14 @@ public class SqlWorkloadReaderTest {
     assertEquals(OuterJoin.Direction.LEFT, rightOuterJoin.getDirection());
 
     cleanup();
+  }
+
+  @Test
+  @Ignore
+  public void testTestFile() {
+    SqlSchemaReader schemaReader = new SqlSchemaReader();
+    schemaReader.fromFile("../clean.sql");
+    SqlWorkloadReader workloadReader = new SqlWorkloadReader();
+    workloadReader.fromFile("../testworkload.sql");
   }
 }

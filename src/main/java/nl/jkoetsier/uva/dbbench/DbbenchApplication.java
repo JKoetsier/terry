@@ -1,7 +1,9 @@
 package nl.jkoetsier.uva.dbbench;
 
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
+import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.schema.DataModel;
+import nl.jkoetsier.uva.dbbench.workload.Workload;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -46,5 +48,8 @@ public class DbbenchApplication implements CommandLineRunner {
 
     SqlSchemaReader sqlSchemaReader = new SqlSchemaReader();
     sqlSchemaReader.fromFile(dataModelFile);
+
+    SqlWorkloadReader workloadReader = new SqlWorkloadReader();
+    Workload workload = workloadReader.fromFile(workloadFile);
   }
 }

@@ -16,10 +16,12 @@ public class FieldFactory {
 
     /* Character fields */
     mapping.put("nvarchar", VarCharField.class);
+    mapping.put("varchar", VarCharField.class);
     mapping.put("char", CharField.class);
 
     /* Datetime fields */
     mapping.put("datetime", DateTimeField.class);
+    mapping.put("datetime2", DateTimeField.class);
     mapping.put("datetimeoffset", DateTimeOffsetField.class);
     mapping.put("date", DateField.class);
 
