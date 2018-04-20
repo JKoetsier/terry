@@ -2,8 +2,8 @@ package nl.jkoetsier.uva.dbbench.workload.query;
 
 public abstract class BinaryRelation extends Relation {
 
-  private Relation leftInput;
-  private Relation rightInput;
+  protected Relation leftInput;
+  protected Relation rightInput;
 
   public BinaryRelation(Relation leftInput, Relation rightInput) {
     this.leftInput = leftInput;

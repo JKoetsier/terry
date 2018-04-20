@@ -18,21 +18,24 @@ public class Selection extends UnaryRelation {
 
   @Override
   public FieldRef getFieldRef(String fieldName) {
-    return getInput().getFieldRef(fieldName);
+    return input.getFieldRef(fieldName);
   }
 
   @Override
   public FieldRef getFieldRef(String tableName, String fieldName) {
-    return getInput().getFieldRef(tableName, fieldName);
+    return input.getFieldRef(tableName, fieldName);
   }
 
   @Override
   public List<FieldRef> getFieldRefsForTable(String tableName) {
-    return getInput().getFieldRefsForTable(tableName);
+    return input.getFieldRefsForTable(tableName);
   }
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    input.acceptVisitor(workloadVisitor);
+    expression.acceptVisitor(workloadVisitor);
+
     workloadVisitor.visit(this);
   }
 }

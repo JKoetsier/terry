@@ -12,10 +12,9 @@ import org.slf4j.LoggerFactory;
 
 public class MsSqlRunner {
 
+  private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
   private Schema schema = Schema.getInstance();
   private Connection connection;
-
-  private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
   private HashMap<String, String> getCreateQueries() {
     MsSqlSchemaVisitor schemaVisitor = new MsSqlSchemaVisitor();

@@ -15,6 +15,12 @@ public class FullJoin extends RAJoin {
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    rightInput.acceptVisitor(workloadVisitor);
+
+    if (onExpression != null) {
+      onExpression.acceptVisitor(workloadVisitor);
+    }
+
     workloadVisitor.visit(this);
   }
 }

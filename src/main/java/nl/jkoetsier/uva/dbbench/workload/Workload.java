@@ -27,6 +27,10 @@ public class Workload implements WorkloadTreeElement {
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    for (Query query : queries) {
+      query.acceptVisitor(workloadVisitor);
+    }
+
     workloadVisitor.visit(this);
   }
 }

@@ -7,6 +7,11 @@ public class OuterJoin extends RAJoin {
 
   private Direction direction;
 
+  public enum Direction {
+    LEFT,
+    RIGHT
+  }
+
   public OuterJoin(Relation leftInput, Relation rightInput, Direction direction, Expression
       onExpression) {
     super(leftInput, rightInput, onExpression);
@@ -28,11 +33,14 @@ public class OuterJoin extends RAJoin {
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    leftInput.acceptVisitor(workloadVisitor);
+    rightInput.acceptVisitor(workloadVisitor);
+
+    if (onExpression != null) {
+      onExpression.acceptVisitor(workloadVisitor);
+    }
+
     workloadVisitor.visit(this);
   }
 
-  public enum Direction {
-    LEFT,
-    RIGHT
-  }
 }

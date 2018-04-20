@@ -5,7 +5,7 @@ import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
 
 public abstract class RAJoin extends BinaryRelation {
 
-  private Expression onExpression;
+  protected Expression onExpression;
 
   public RAJoin(Relation leftInput, Relation rightInput, Expression onExpression) {
     super(leftInput, rightInput);

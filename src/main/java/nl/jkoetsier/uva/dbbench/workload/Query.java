@@ -19,6 +19,8 @@ public class Query implements WorkloadTreeElement {
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    relation.acceptVisitor(workloadVisitor);
+
     workloadVisitor.visit(this);
   }
 }

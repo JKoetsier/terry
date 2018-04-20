@@ -1,7 +1,6 @@
 package nl.jkoetsier.uva.dbbench.output.mssql.schema;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.schema.Entity;

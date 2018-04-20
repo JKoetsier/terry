@@ -52,6 +52,10 @@ public class BinExpression extends Expression {
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    leftExpr.acceptVisitor(workloadVisitor);
+    rightExpr.acceptVisitor(workloadVisitor);
+    operator.acceptVisitor(workloadVisitor);
+
     workloadVisitor.visit(this);
   }
 }
