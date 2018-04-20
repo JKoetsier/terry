@@ -26,13 +26,13 @@ public class OuterJoin extends RAJoin {
     this.direction = direction;
   }
 
-  public enum Direction {
-    LEFT,
-    RIGHT
-  }
-
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);
+  }
+
+  public enum Direction {
+    LEFT,
+    RIGHT
   }
 }

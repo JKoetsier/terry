@@ -2,8 +2,8 @@ package nl.jkoetsier.uva.dbbench.schema;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
-import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaVisitor;
 import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaTreeElement;
+import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaVisitor;
 
 public class Schema implements SchemaTreeElement {
 

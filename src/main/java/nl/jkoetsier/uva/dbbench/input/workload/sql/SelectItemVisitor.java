@@ -1,11 +1,17 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
-import net.sf.jsqlparser.statement.select.*;
-import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
-import nl.jkoetsier.uva.dbbench.workload.query.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.sf.jsqlparser.statement.select.AllColumns;
+import net.sf.jsqlparser.statement.select.AllTableColumns;
+import net.sf.jsqlparser.statement.select.SelectExpressionItem;
+import net.sf.jsqlparser.statement.select.SelectItemVisitorAdapter;
+import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
+import nl.jkoetsier.uva.dbbench.workload.query.FieldRef;
+import nl.jkoetsier.uva.dbbench.workload.query.FieldRefs;
+import nl.jkoetsier.uva.dbbench.workload.query.Projection;
+import nl.jkoetsier.uva.dbbench.workload.query.Relation;
+import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 
 public class SelectItemVisitor extends SelectItemVisitorAdapter {
 

@@ -17,17 +17,28 @@ import nl.jkoetsier.uva.dbbench.schema.fields.VarCharField;
 public abstract class SchemaVisitor {
 
   public abstract void visit(BigIntegerField bigIntegerField);
+
   public abstract void visit(BooleanField booleanField);
+
   public abstract void visit(CharField charField);
+
   public abstract void visit(DateField dateField);
+
   public abstract void visit(DateTimeField dateTimeField);
+
   public abstract void visit(DateTimeTimezoneField dateTimeOffsetField);
+
   public abstract void visit(DecimalField decimalField);
+
   public abstract void visit(DoubleField doubleField);
+
   public abstract void visit(FloatField floatField);
+
   public abstract void visit(IntegerField integerField);
+
   public abstract void visit(VarCharField varCharField);
 
   public abstract void visit(Schema dataModel);
+
   public abstract void visit(Entity entity);
 }

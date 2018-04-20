@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.dbbench.workload.expression.operator;
 
-import nl.jkoetsier.uva.dbbench.workload.expression.operator.Operator;
 import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
 public class MultiplyOp extends Operator {

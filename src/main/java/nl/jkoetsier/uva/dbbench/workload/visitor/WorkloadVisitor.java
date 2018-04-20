@@ -1,7 +1,5 @@
 package nl.jkoetsier.uva.dbbench.workload.visitor;
 
-import com.sun.org.apache.xpath.internal.operations.Gt;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import nl.jkoetsier.uva.dbbench.workload.Query;
 import nl.jkoetsier.uva.dbbench.workload.Workload;
 import nl.jkoetsier.uva.dbbench.workload.expression.BinExpression;
@@ -34,35 +32,58 @@ import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 public abstract class WorkloadVisitor {
 
   public abstract void visit(DateConstant dateConstant);
+
   public abstract void visit(DoubleConstant doubleConstant);
+
   public abstract void visit(LongConstant longConstant);
+
   public abstract void visit(StringConstant stringConstant);
 
   public abstract void visit(AndOp andOp);
+
   public abstract void visit(DivideOp divideOp);
+
   public abstract void visit(EqualsOp equalsOp);
+
   public abstract void visit(GteOp gteOp);
+
   public abstract void visit(GtOp gtOp);
+
   public abstract void visit(LteOp lteOp);
+
   public abstract void visit(LtOp ltOp);
+
   public abstract void visit(MinusOp minusOp);
+
   public abstract void visit(ModuloOp moduloOp);
+
   public abstract void visit(MultiplyOp multiplyOp);
+
   public abstract void visit(NeqOp neqOp);
+
   public abstract void visit(OrOp orOp);
+
   public abstract void visit(PlusOp plusOp);
 
   public abstract void visit(BinExpression binExpression);
+
   public abstract void visit(FieldExpression fieldExpression);
 
   public abstract void visit(FullJoin fullJoin);
+
   public abstract void visit(InnerJoin innerJoin);
+
   public abstract void visit(InputRelation inputRelation);
+
   public abstract void visit(OuterJoin outerJoin);
+
   public abstract void visit(Projection projection);
+
   public abstract void visit(Rename rename);
+
   public abstract void visit(Selection selection);
 
   public abstract void visit(Query query);
+
   public abstract void visit(Workload workload);
 }

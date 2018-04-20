@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output.schema.sql;
+package nl.jkoetsier.uva.dbbench.output.mssql.schema;
 
 import java.util.List;
 

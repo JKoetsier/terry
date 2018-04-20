@@ -1,8 +1,18 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
-import net.sf.jsqlparser.statement.select.*;
+import net.sf.jsqlparser.statement.select.Join;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.select.SelectVisitorAdapter;
+import net.sf.jsqlparser.statement.select.SetOperationList;
+import net.sf.jsqlparser.statement.select.WithItem;
 import nl.jkoetsier.uva.dbbench.workload.Query;
-import nl.jkoetsier.uva.dbbench.workload.query.*;
+import nl.jkoetsier.uva.dbbench.workload.query.FullJoin;
+import nl.jkoetsier.uva.dbbench.workload.query.InnerJoin;
+import nl.jkoetsier.uva.dbbench.workload.query.OuterJoin;
+import nl.jkoetsier.uva.dbbench.workload.query.RAJoin;
+import nl.jkoetsier.uva.dbbench.workload.query.Relation;
+import nl.jkoetsier.uva.dbbench.workload.query.Selection;
 
 public class SelectVisitor extends SelectVisitorAdapter {
 

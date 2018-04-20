@@ -1,15 +1,14 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statements;
 import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
 import nl.jkoetsier.uva.dbbench.workload.Workload;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class SqlWorkloadReader implements WorkloadReader {
 

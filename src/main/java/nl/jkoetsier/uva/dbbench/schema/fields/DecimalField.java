@@ -33,16 +33,6 @@ public class DecimalField extends Field {
     this.scale = scale;
   }
 
-  public void setArguments(List<String> arguments) {
-    if (arguments.size() > 0) {
-      setPrecision(Integer.parseInt(arguments.get(0)));
-    }
-
-    if (arguments.size() > 1) {
-      setScale(Integer.parseInt(arguments.get(1)));
-    }
-  }
-
   @Override
   public List<String> getArguments() {
     if (getPrecision() != null) {
@@ -57,6 +47,16 @@ public class DecimalField extends Field {
     }
 
     return null;
+  }
+
+  public void setArguments(List<String> arguments) {
+    if (arguments.size() > 0) {
+      setPrecision(Integer.parseInt(arguments.get(0)));
+    }
+
+    if (arguments.size() > 1) {
+      setScale(Integer.parseInt(arguments.get(1)));
+    }
   }
 
   @Override

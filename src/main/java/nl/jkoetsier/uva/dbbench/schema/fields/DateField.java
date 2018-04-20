@@ -8,11 +8,11 @@ public class DateField extends Field {
     super(name);
   }
 
+  public DateField() {
+  }
+
   @Override
   public void acceptVisitor(SchemaVisitor v) {
     v.visit(this);
-  }
-
-  public DateField() {
   }
 }

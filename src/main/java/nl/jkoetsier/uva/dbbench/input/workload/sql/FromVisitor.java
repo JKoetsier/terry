@@ -1,10 +1,15 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.select.*;
+import net.sf.jsqlparser.statement.select.FromItemVisitorAdapter;
+import net.sf.jsqlparser.statement.select.LateralSubSelect;
+import net.sf.jsqlparser.statement.select.SubJoin;
+import net.sf.jsqlparser.statement.select.SubSelect;
+import net.sf.jsqlparser.statement.select.TableFunction;
+import net.sf.jsqlparser.statement.select.ValuesList;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
-import nl.jkoetsier.uva.dbbench.schema.Schema;
 import nl.jkoetsier.uva.dbbench.schema.Entity;
+import nl.jkoetsier.uva.dbbench.schema.Schema;
 import nl.jkoetsier.uva.dbbench.workload.query.InputRelation;
 
 public class FromVisitor extends FromItemVisitorAdapter {

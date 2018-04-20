@@ -1,8 +1,7 @@
 package nl.jkoetsier.uva.dbbench.workload.query;
 
-import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
-
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
 
 public abstract class RAJoin extends BinaryRelation {
 

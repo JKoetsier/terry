@@ -1,12 +1,11 @@
 package nl.jkoetsier.uva.dbbench.schema;
 
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 import nl.jkoetsier.uva.dbbench.schema.fields.Field;
-
-import java.util.LinkedHashMap;
-import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaVisitor;
 import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaTreeElement;
+import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaVisitor;
 
 public class Entity implements SchemaTreeElement {
 

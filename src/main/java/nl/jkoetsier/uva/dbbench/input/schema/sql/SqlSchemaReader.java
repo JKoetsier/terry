@@ -1,15 +1,14 @@
 package nl.jkoetsier.uva.dbbench.input.schema.sql;
 
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.Statements;
-import nl.jkoetsier.uva.dbbench.schema.Schema;
-import nl.jkoetsier.uva.dbbench.input.SchemaReader;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statements;
+import nl.jkoetsier.uva.dbbench.input.SchemaReader;
+import nl.jkoetsier.uva.dbbench.schema.Schema;
 
 public class SqlSchemaReader implements SchemaReader {
 

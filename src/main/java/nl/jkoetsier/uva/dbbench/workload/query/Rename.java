@@ -1,7 +1,5 @@
 package nl.jkoetsier.uva.dbbench.workload.query;
 
-import nl.jkoetsier.uva.dbbench.schema.fields.Field;
-
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 

@@ -29,6 +29,15 @@ public class VarCharField extends Field {
   }
 
   @Override
+  public List<String> getArguments() {
+    if (getLength() != null) {
+      return Arrays.asList(Integer.toString(getLength()));
+    }
+
+    return null;
+  }
+
+  @Override
   public void setArguments(List<String> arguments) {
     if (arguments.size() > 0) {
       try {
@@ -37,15 +46,6 @@ public class VarCharField extends Field {
         // Ignore keywords such as "max". Only accept integers
       }
     }
-  }
-
-  @Override
-  public List<String> getArguments() {
-    if (getLength() != null) {
-      return Arrays.asList(Integer.toString(getLength()));
-    }
-
-    return null;
   }
 
   @Override

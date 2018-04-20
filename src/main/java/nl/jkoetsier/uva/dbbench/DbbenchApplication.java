@@ -35,7 +35,8 @@ public class DbbenchApplication implements CommandLineRunner {
     }
 
     if (error) {
-      System.out.println("Run program with parameters --workload=workloadfile.sql and --datamodel=datamodel.sql");
+      System.out.println(
+          "Run program with parameters --workload=workloadfile.sql and --datamodel=datamodel.sql");
       System.exit(1);
     }
   }
@@ -44,11 +45,10 @@ public class DbbenchApplication implements CommandLineRunner {
   public void run(String... args) {
     checkParameters();
 
-
     SqlSchemaReader sqlSchemaReader = new SqlSchemaReader();
     sqlSchemaReader.fromFile(dataModelFile);
 
-    SqlWorkloadReader workloadReader = new SqlWorkloadReader();
-    Workload workload = workloadReader.fromFile(workloadFile);
+//    SqlWorkloadReader workloadReader = new SqlWorkloadReader();
+//    Workload workload = workloadReader.fromFile(workloadFile);
   }
 }
