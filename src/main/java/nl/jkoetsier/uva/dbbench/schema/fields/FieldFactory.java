@@ -2,7 +2,6 @@ package nl.jkoetsier.uva.dbbench.schema.fields;
 
 import java.util.HashMap;
 
-// TODO correct naming?
 public class FieldFactory {
 
   private static final HashMap<String, Class<? extends Field>> mapping;
@@ -22,7 +21,7 @@ public class FieldFactory {
     /* Datetime fields */
     mapping.put("datetime", DateTimeField.class);
     mapping.put("datetime2", DateTimeField.class);
-    mapping.put("datetimeoffset", DateTimeOffsetField.class);
+    mapping.put("datetimeoffset", DateTimeTimezoneField.class);
     mapping.put("date", DateField.class);
 
     /* Float fields */

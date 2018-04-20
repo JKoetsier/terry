@@ -12,5 +12,5 @@ CREATE TABLE db.Table2Name(
 	DateField date NULL,
 	BitField bit NULL,
 	DecimalField2 decimal(38, 15) NULL,
- CONSTRAINT PK_Instrument PRIMARY KEY (Id)
+ CONSTRAINT PK_Instrument PRIMARY KEY (BitField)
 );

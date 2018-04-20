@@ -3,7 +3,7 @@ package nl.jkoetsier.uva.dbbench.input.schema.sql;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statements;
-import nl.jkoetsier.uva.dbbench.schema.DataModel;
+import nl.jkoetsier.uva.dbbench.schema.Schema;
 import nl.jkoetsier.uva.dbbench.input.SchemaReader;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class SqlSchemaReader implements SchemaReader {
   }
 
   @Override
-  public DataModel fromFile(String fileName) {
+  public Schema fromFile(String fileName) {
     String sql = readFile(fileName);
 
     try {
@@ -41,7 +41,7 @@ public class SqlSchemaReader implements SchemaReader {
     }
   }
 
-  public DataModel visitTree(Statements statements) {
+  public Schema visitTree(Statements statements) {
     SqlSchemaStatementVisitor visitor = new SqlSchemaStatementVisitor();
     statements.accept(visitor);
 

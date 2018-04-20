@@ -3,13 +3,13 @@ package nl.jkoetsier.uva.dbbench.input.workload.sql;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.*;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
-import nl.jkoetsier.uva.dbbench.schema.DataModel;
+import nl.jkoetsier.uva.dbbench.schema.Schema;
 import nl.jkoetsier.uva.dbbench.schema.Entity;
 import nl.jkoetsier.uva.dbbench.workload.query.InputRelation;
 
 public class FromVisitor extends FromItemVisitorAdapter {
 
-  private DataModel dataModel = DataModel.getInstance();
+  private Schema dataModel = Schema.getInstance();
   private InputRelation inputRelation;
 
   public FromVisitor() {

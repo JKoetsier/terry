@@ -2,7 +2,6 @@ package nl.jkoetsier.uva.dbbench;
 
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
-import nl.jkoetsier.uva.dbbench.schema.DataModel;
 import nl.jkoetsier.uva.dbbench.workload.Workload;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

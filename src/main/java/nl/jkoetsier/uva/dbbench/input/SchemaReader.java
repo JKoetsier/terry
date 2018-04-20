@@ -1,8 +1,8 @@
 package nl.jkoetsier.uva.dbbench.input;
 
-import nl.jkoetsier.uva.dbbench.schema.DataModel;
+import nl.jkoetsier.uva.dbbench.schema.Schema;
 
 public interface SchemaReader {
 
-  DataModel fromFile(String fileName);
+  Schema fromFile(String fileName);
 }

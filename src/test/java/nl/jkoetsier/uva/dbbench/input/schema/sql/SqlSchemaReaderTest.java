@@ -1,10 +1,9 @@
 package nl.jkoetsier.uva.dbbench.input.schema.sql;
 
-import nl.jkoetsier.uva.dbbench.schema.DataModel;
+import nl.jkoetsier.uva.dbbench.schema.Schema;
 import nl.jkoetsier.uva.dbbench.schema.Entity;
 import nl.jkoetsier.uva.dbbench.schema.fields.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -20,19 +19,19 @@ public class SqlSchemaReaderTest {
     return getClass().getResource(dataDirectory + filename).getFile();
   }
 
-  private DataModel getDataModel(String filename) {
+  private Schema getDataModel(String filename) {
     SqlSchemaReader schemaReader = new SqlSchemaReader();
     return schemaReader.fromFile(getFilepath(filename));
   }
 
   @Before
   public void resetDataModel() {
-    DataModel.getInstance().setEntities(new HashMap<>());
+    Schema.getInstance().setEntities(new HashMap<>());
   }
 
   @Test
   public void testCreateTable() {
-    DataModel dataModel = getDataModel("create_table.sql");
+    Schema dataModel = getDataModel("create_table.sql");
     assertEquals(dataModel.getEntities().size(), 1);
 
     Entity entity = dataModel.getEntities().get("TableName");
@@ -48,11 +47,14 @@ public class SqlSchemaReaderTest {
     assertTrue(fields.get("VarChar250Field") instanceof VarCharField);
     assertTrue(fields.get("DateField") instanceof DateField);
     assertTrue(fields.get("BitField") instanceof BooleanField);
+
+    assertNotNull(entity.getPrimaryKey());
+    assertTrue(entity.getPrimaryKey().contains(fields.get("Id")));
   }
 
   @Test
   public void testCreateTables() {
-    DataModel dataModel = getDataModel("create_tables.sql");
+    Schema dataModel = getDataModel("create_tables.sql");
     assertEquals(dataModel.getEntities().size(), 2);
 
     Entity entity1 = dataModel.getEntities().get("TableName");
@@ -73,5 +75,43 @@ public class SqlSchemaReaderTest {
     assertTrue(fields1.get("VarChar250Field") instanceof VarCharField);
     assertTrue(fields2.get("DateField") instanceof DateField);
     assertTrue(fields2.get("BitField") instanceof BooleanField);
+  }
+
+  @Test
+  public void testArguments() {
+    Schema dataModel = getDataModel("create_table_arguments.sql");
+    assertEquals(dataModel.getEntities().size(), 1);
+
+    Entity entity = dataModel.getEntity("TableName");
+    LinkedHashMap<String, Field> fields = entity.getFields();
+
+    assertTrue(5 == ((DecimalField)(fields.get("A"))).getPrecision());
+    assertTrue(2 == ((DecimalField)(fields.get("A"))).getScale());
+    assertTrue(200 == ((VarCharField)(fields.get("B"))).getLength());
+    assertTrue(50 == ((VarCharField)(fields.get("C"))).getLength());
+  }
+
+  @Test
+  public void testNullNotNull() {
+    Schema dataModel = getDataModel("create_table_null_not_null.sql");
+    assertEquals(dataModel.getEntities().size(), 1);
+
+    Entity entity = dataModel.getEntity("TableName");
+    LinkedHashMap<String, Field> fields = entity.getFields();
+
+    assertEquals(false, fields.get("A").isAllowedEmpty());
+    assertEquals(true, fields.get("B").isAllowedEmpty());
+    assertEquals(true, fields.get("C").isAllowedEmpty());
+    assertEquals(false, fields.get("D").isAllowedEmpty());
+  }
+
+  @Test
+  public void testCompositePrimaryKey() {
+    Schema dataModel = getDataModel("create_table_composite_primarykey.sql");
+    Entity entity = dataModel.getEntity("TableName");
+
+    assertTrue(entity.getPrimaryKey().contains(entity.getField("Id")));
+    assertTrue(entity.getPrimaryKey().contains(entity.getField("IntField")));
+    assertFalse(entity.getPrimaryKey().contains(entity.getField("DecimalField")));
   }
 }

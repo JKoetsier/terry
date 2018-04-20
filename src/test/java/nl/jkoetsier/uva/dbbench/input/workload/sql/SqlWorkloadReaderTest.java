@@ -1,9 +1,9 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
-import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
-import nl.jkoetsier.uva.dbbench.schema.DataModel;
+import nl.jkoetsier.uva.dbbench.output.schema.sql.SqlSchemaVisitor;
+import nl.jkoetsier.uva.dbbench.schema.Schema;
 import nl.jkoetsier.uva.dbbench.schema.Entity;
 import nl.jkoetsier.uva.dbbench.schema.fields.IntegerField;
 import nl.jkoetsier.uva.dbbench.workload.Query;
@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 public class SqlWorkloadReaderTest {
 
   String dataDirectory = "/data/sql/";
-  DataModel dataModel = DataModel.getInstance();
+  Schema dataModel = Schema.getInstance();
 
   private String getFilepath(String filename) {
     return getClass().getResource(dataDirectory + filename).getFile();
@@ -288,7 +288,15 @@ public class SqlWorkloadReaderTest {
   public void testTestFile() {
     SqlSchemaReader schemaReader = new SqlSchemaReader();
     schemaReader.fromFile("../clean.sql");
-    SqlWorkloadReader workloadReader = new SqlWorkloadReader();
-    workloadReader.fromFile("../testworkload.sql");
+//    SqlWorkloadReader workloadReader = new SqlWorkloadReader();
+//    workloadReader.fromFile("../testworkload.sql");
+
+
+    SqlSchemaVisitor sqlSchemaVisitor = new SqlSchemaVisitor();
+    dataModel.acceptVisitor(sqlSchemaVisitor);
+
+    String output = sqlSchemaVisitor.getOutput();
+
+    System.out.println(output);
   }
 }

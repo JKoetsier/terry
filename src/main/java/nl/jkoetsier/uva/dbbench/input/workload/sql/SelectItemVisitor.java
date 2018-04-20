@@ -2,7 +2,6 @@ package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.statement.select.*;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
-import nl.jkoetsier.uva.dbbench.schema.DataModel;
 import nl.jkoetsier.uva.dbbench.workload.query.*;
 
 import java.util.ArrayList;
