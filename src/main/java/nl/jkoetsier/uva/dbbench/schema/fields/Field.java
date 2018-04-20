@@ -1,10 +1,9 @@
 package nl.jkoetsier.uva.dbbench.schema.fields;
 
-import java.util.ArrayList;
 import java.util.List;
-import nl.jkoetsier.uva.dbbench.schema.visitor.TreeElement;
+import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaTreeElement;
 
-public abstract class Field implements TreeElement {
+public abstract class Field implements SchemaTreeElement {
 
   private String name;
   private Boolean allowedEmpty = false;

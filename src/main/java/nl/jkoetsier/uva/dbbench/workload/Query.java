@@ -1,8 +1,10 @@
 package nl.jkoetsier.uva.dbbench.workload;
 
 import nl.jkoetsier.uva.dbbench.workload.query.Relation;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadTreeElement;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
-public class Query {
+public class Query implements WorkloadTreeElement {
 
   private Relation relation;
 
@@ -12,5 +14,11 @@ public class Query {
 
   public void setRelation(Relation relation) {
     this.relation = relation;
+  }
+
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }

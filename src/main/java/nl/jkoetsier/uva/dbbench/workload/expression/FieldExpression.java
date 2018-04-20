@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.workload.expression;
 
 import nl.jkoetsier.uva.dbbench.workload.query.FieldRef;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
 public class FieldExpression extends Expression {
 
@@ -16,5 +17,10 @@ public class FieldExpression extends Expression {
 
   public void setFieldRef(FieldRef fieldRef) {
     this.fieldRef = fieldRef;
+  }
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }

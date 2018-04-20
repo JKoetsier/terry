@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.workload.expression.constant;
 
 import java.util.Date;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
 public class DateConstant extends Constant {
 
@@ -16,5 +17,10 @@ public class DateConstant extends Constant {
 
   public void setValue(Date value) {
     this.value = value;
+  }
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }

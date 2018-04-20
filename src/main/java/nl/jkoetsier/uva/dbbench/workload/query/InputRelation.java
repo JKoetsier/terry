@@ -4,6 +4,7 @@ import nl.jkoetsier.uva.dbbench.schema.Entity;
 import nl.jkoetsier.uva.dbbench.schema.fields.Field;
 
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
 public class InputRelation extends Relation {
 
@@ -47,5 +48,10 @@ public class InputRelation extends Relation {
   @Override
   public List<FieldRef> getFieldRefsForTable(String tableName) {
     return fieldRefs.getAllForTable(tableName);
+  }
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }

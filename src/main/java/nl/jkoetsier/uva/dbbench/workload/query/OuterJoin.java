@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.workload.query;
 
 import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
 public class OuterJoin extends RAJoin {
 
@@ -28,5 +29,10 @@ public class OuterJoin extends RAJoin {
   public enum Direction {
     LEFT,
     RIGHT
+  }
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }

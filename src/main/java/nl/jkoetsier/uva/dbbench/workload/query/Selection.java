@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.workload.query;
 import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
 
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
 public class Selection extends UnaryRelation {
 
@@ -29,5 +30,10 @@ public class Selection extends UnaryRelation {
   @Override
   public List<FieldRef> getFieldRefsForTable(String tableName) {
     return getInput().getFieldRefsForTable(tableName);
+  }
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }

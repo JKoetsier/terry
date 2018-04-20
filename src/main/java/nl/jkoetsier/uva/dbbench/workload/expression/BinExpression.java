@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.workload.expression;
 
 import nl.jkoetsier.uva.dbbench.workload.expression.operator.Operator;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
 public class BinExpression extends Expression {
 
@@ -47,5 +48,10 @@ public class BinExpression extends Expression {
 
   public void setNot(boolean not) {
     this.not = not;
+  }
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }

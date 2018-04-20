@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.dbbench.schema.fields;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaVisitor;

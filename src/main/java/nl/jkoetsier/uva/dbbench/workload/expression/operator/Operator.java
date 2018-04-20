@@ -1,5 +1,7 @@
 package nl.jkoetsier.uva.dbbench.workload.expression.operator;
 
-public abstract class Operator {
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadTreeElement;
+
+public abstract class Operator implements WorkloadTreeElement {
 
 }

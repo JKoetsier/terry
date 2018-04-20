@@ -1,6 +1,6 @@
 package nl.jkoetsier.uva.dbbench.schema.visitor;
 
-public interface TreeElement {
+public interface SchemaTreeElement {
 
   void acceptVisitor(SchemaVisitor v);
 }

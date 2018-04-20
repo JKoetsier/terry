@@ -1,8 +1,9 @@
 package nl.jkoetsier.uva.dbbench.workload.query;
 
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadTreeElement;
 
-public abstract class Relation {
+public abstract class Relation implements WorkloadTreeElement {
 
   public abstract FieldRef getFieldRef(String fieldName);
 

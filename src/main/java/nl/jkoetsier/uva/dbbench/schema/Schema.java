@@ -3,9 +3,9 @@ package nl.jkoetsier.uva.dbbench.schema;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaVisitor;
-import nl.jkoetsier.uva.dbbench.schema.visitor.TreeElement;
+import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaTreeElement;
 
-public class Schema implements TreeElement {
+public class Schema implements SchemaTreeElement {
 
   private static Schema instance;
   private HashMap<String, Entity> entities;

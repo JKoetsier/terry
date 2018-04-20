@@ -1,7 +1,5 @@
 package nl.jkoetsier.uva.dbbench.workload.expression.operator;
 
-import nl.jkoetsier.uva.dbbench.workload.expression.MultiplyOp;
-
 import java.util.HashMap;
 
 public class OperatorFactory {

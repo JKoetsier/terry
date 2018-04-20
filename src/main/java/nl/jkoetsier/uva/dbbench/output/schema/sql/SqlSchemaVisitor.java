@@ -129,7 +129,21 @@ public class SqlSchemaVisitor extends SchemaVisitor {
        ));
      }
 
-     if (createTable.charAt(createTable.length() - 1) == ',') {
+     if (entity.getPrimaryKey() != null) {
+       List<String> keyFields = new ArrayList<>();
+
+       for (Field field : entity.getPrimaryKey()) {
+         keyFields.add(field.getName());
+       }
+
+       createTable = createTable.concat(String.format(
+           "\n\tCONSTRAINT PK_%s PRIMARY KEY (\n\t\t%s\n\t)",
+           entity.getName(),
+           String.join(",\n\t\t", keyFields)
+       ));
+
+
+     } else if (createTable.charAt(createTable.length() - 1) == ',') {
        createTable = createTable.substring(0, createTable.length() - 1);
      }
 

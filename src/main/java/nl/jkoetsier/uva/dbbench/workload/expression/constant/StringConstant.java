@@ -1,5 +1,7 @@
 package nl.jkoetsier.uva.dbbench.workload.expression.constant;
 
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
+
 public class StringConstant extends Constant {
 
   private String value;
@@ -14,5 +16,10 @@ public class StringConstant extends Constant {
 
   public void setValue(String value) {
     this.value = value;
+  }
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }

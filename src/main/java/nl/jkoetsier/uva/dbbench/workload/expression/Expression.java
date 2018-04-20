@@ -1,5 +1,7 @@
 package nl.jkoetsier.uva.dbbench.workload.expression;
 
-public abstract class Expression {
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadTreeElement;
+
+public abstract class Expression implements WorkloadTreeElement {
 
 }

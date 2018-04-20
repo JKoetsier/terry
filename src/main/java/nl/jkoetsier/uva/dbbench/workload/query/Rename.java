@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.workload.query;
 import nl.jkoetsier.uva.dbbench.schema.fields.Field;
 
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
 public class Rename extends UnaryRelation {
 
@@ -19,5 +20,10 @@ public class Rename extends UnaryRelation {
   @Override
   public List<FieldRef> getFieldRefsForTable(String tableName) {
     throw new RuntimeException("Not implemented");
+  }
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }

@@ -6,9 +6,9 @@ import nl.jkoetsier.uva.dbbench.schema.fields.Field;
 
 import java.util.LinkedHashMap;
 import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaVisitor;
-import nl.jkoetsier.uva.dbbench.schema.visitor.TreeElement;
+import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaTreeElement;
 
-public class Entity implements TreeElement {
+public class Entity implements SchemaTreeElement {
 
   private LinkedHashMap<String, Field> fields;
   private String name;

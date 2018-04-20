@@ -2,6 +2,7 @@ package nl.jkoetsier.uva.dbbench.workload.query;
 
 
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.workload.visitor.WorkloadVisitor;
 
 public class Projection extends UnaryRelation {
 
@@ -36,5 +37,10 @@ public class Projection extends UnaryRelation {
   @Override
   public List<FieldRef> getFieldRefsForTable(String tableName) {
     return fieldRefs.getAllForTable(tableName);
+  }
+
+  @Override
+  public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    workloadVisitor.visit(this);
   }
 }
