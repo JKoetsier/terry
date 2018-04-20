@@ -7,10 +7,10 @@ import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
-import nl.jkoetsier.uva.dbbench.schema.Entity;
-import nl.jkoetsier.uva.dbbench.schema.Schema;
-import nl.jkoetsier.uva.dbbench.schema.fields.Field;
-import nl.jkoetsier.uva.dbbench.schema.fields.FieldFactory;
+import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.FieldFactory;
 
 public class SqlSchemaStatementVisitor extends StatementVisitorAdapter {
 

@@ -1,6 +1,6 @@
 package nl.jkoetsier.uva.dbbench.input;
 
-import nl.jkoetsier.uva.dbbench.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 
 public interface SchemaReader {
 

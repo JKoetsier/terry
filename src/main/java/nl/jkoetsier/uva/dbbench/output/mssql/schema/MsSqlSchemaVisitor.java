@@ -3,21 +3,21 @@ package nl.jkoetsier.uva.dbbench.output.mssql.schema;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import nl.jkoetsier.uva.dbbench.schema.Entity;
-import nl.jkoetsier.uva.dbbench.schema.Schema;
-import nl.jkoetsier.uva.dbbench.schema.fields.BigIntegerField;
-import nl.jkoetsier.uva.dbbench.schema.fields.BooleanField;
-import nl.jkoetsier.uva.dbbench.schema.fields.CharField;
-import nl.jkoetsier.uva.dbbench.schema.fields.DateField;
-import nl.jkoetsier.uva.dbbench.schema.fields.DateTimeField;
-import nl.jkoetsier.uva.dbbench.schema.fields.DateTimeTimezoneField;
-import nl.jkoetsier.uva.dbbench.schema.fields.DecimalField;
-import nl.jkoetsier.uva.dbbench.schema.fields.DoubleField;
-import nl.jkoetsier.uva.dbbench.schema.fields.Field;
-import nl.jkoetsier.uva.dbbench.schema.fields.FloatField;
-import nl.jkoetsier.uva.dbbench.schema.fields.IntegerField;
-import nl.jkoetsier.uva.dbbench.schema.fields.VarCharField;
-import nl.jkoetsier.uva.dbbench.schema.visitor.SchemaVisitor;
+import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.BigIntegerField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.CharField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeTimezoneField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DoubleField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.FloatField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.VarCharField;
+import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
 public class MsSqlSchemaVisitor extends SchemaVisitor {
 
@@ -150,7 +150,6 @@ public class MsSqlSchemaVisitor extends SchemaVisitor {
     createTable = createTable.concat("\n)");
 
     createQueries.put(entity.getName(), createTable);
-
     columnDefStack.clear();
   }
 }

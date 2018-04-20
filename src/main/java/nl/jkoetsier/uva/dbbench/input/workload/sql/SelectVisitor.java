@@ -6,13 +6,13 @@ import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.statement.select.SelectVisitorAdapter;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
-import nl.jkoetsier.uva.dbbench.workload.Query;
-import nl.jkoetsier.uva.dbbench.workload.query.FullJoin;
-import nl.jkoetsier.uva.dbbench.workload.query.InnerJoin;
-import nl.jkoetsier.uva.dbbench.workload.query.OuterJoin;
-import nl.jkoetsier.uva.dbbench.workload.query.RAJoin;
-import nl.jkoetsier.uva.dbbench.workload.query.Relation;
-import nl.jkoetsier.uva.dbbench.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.internal.workload.Query;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.InnerJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.RAJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 
 public class SelectVisitor extends SelectVisitorAdapter {
 

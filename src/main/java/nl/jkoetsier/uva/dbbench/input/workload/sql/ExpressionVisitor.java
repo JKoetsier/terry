@@ -42,17 +42,17 @@ import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
-import nl.jkoetsier.uva.dbbench.workload.expression.BinExpression;
-import nl.jkoetsier.uva.dbbench.workload.expression.Expression;
-import nl.jkoetsier.uva.dbbench.workload.expression.FieldExpression;
-import nl.jkoetsier.uva.dbbench.workload.expression.constant.DateConstant;
-import nl.jkoetsier.uva.dbbench.workload.expression.constant.DoubleConstant;
-import nl.jkoetsier.uva.dbbench.workload.expression.constant.LongConstant;
-import nl.jkoetsier.uva.dbbench.workload.expression.constant.StringConstant;
-import nl.jkoetsier.uva.dbbench.workload.expression.operator.Operator;
-import nl.jkoetsier.uva.dbbench.workload.expression.operator.OperatorFactory;
-import nl.jkoetsier.uva.dbbench.workload.query.FieldRef;
-import nl.jkoetsier.uva.dbbench.workload.query.Relation;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.StringConstant;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.Operator;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.OperatorFactory;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.FieldRef;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
 
 public class ExpressionVisitor extends ExpressionVisitorAdapter {
 

@@ -8,7 +8,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statements;
 import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
-import nl.jkoetsier.uva.dbbench.workload.Workload;
+import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 
 public class SqlWorkloadReader implements WorkloadReader {
 

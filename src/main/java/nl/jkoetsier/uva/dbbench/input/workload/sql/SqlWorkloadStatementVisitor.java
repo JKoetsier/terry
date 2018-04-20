@@ -2,7 +2,7 @@ package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.select.Select;
-import nl.jkoetsier.uva.dbbench.workload.Workload;
+import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 
 public class SqlWorkloadStatementVisitor extends StatementVisitorAdapter {
 

@@ -1,6 +1,6 @@
 package nl.jkoetsier.uva.dbbench.input;
 
-import nl.jkoetsier.uva.dbbench.workload.Workload;
+import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 
 public interface WorkloadReader {
 

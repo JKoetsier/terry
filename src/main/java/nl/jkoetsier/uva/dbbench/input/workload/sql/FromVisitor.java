@@ -8,9 +8,9 @@ import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.select.TableFunction;
 import net.sf.jsqlparser.statement.select.ValuesList;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
-import nl.jkoetsier.uva.dbbench.schema.Entity;
-import nl.jkoetsier.uva.dbbench.schema.Schema;
-import nl.jkoetsier.uva.dbbench.workload.query.InputRelation;
+import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 
 public class FromVisitor extends FromItemVisitorAdapter {
 

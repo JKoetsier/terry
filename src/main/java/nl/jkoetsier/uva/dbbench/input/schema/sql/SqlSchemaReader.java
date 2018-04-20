@@ -8,7 +8,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statements;
 import nl.jkoetsier.uva.dbbench.input.SchemaReader;
-import nl.jkoetsier.uva.dbbench.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 
 public class SqlSchemaReader implements SchemaReader {
 
