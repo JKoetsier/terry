@@ -1,6 +1,9 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
+import nl.jkoetsier.uva.dbbench.input.exception.NotValidatedWorkloadException;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
@@ -37,5 +40,16 @@ public class Selection extends UnaryRelation {
     expression.acceptVisitor(workloadVisitor);
 
     workloadVisitor.visit(this);
+  }
+
+  @Override
+  public void validate(Schema schema) throws NotMatchingWorkloadException {
+    input.validate(schema);
+
+    if (expression != null) {
+      expression.validate(schema, this);
+    }
+
+    isValidated = true;
   }
 }

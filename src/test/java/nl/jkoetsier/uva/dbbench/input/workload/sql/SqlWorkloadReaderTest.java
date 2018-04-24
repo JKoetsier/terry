@@ -1,25 +1,28 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
+import java.util.logging.Logger;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
+import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
-import nl.jkoetsier.uva.dbbench.output.schema.sql.SqlSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.schema.Schema;
-import nl.jkoetsier.uva.dbbench.schema.Entity;
-import nl.jkoetsier.uva.dbbench.schema.fields.IntegerField;
-import nl.jkoetsier.uva.dbbench.workload.Query;
-import nl.jkoetsier.uva.dbbench.workload.Workload;
-import nl.jkoetsier.uva.dbbench.workload.expression.BinExpression;
-import nl.jkoetsier.uva.dbbench.workload.expression.FieldExpression;
-import nl.jkoetsier.uva.dbbench.workload.expression.constant.DoubleConstant;
-import nl.jkoetsier.uva.dbbench.workload.expression.constant.LongConstant;
-import nl.jkoetsier.uva.dbbench.workload.expression.operator.AndOp;
-import nl.jkoetsier.uva.dbbench.workload.expression.operator.EqualsOp;
-import nl.jkoetsier.uva.dbbench.workload.expression.operator.NeqOp;
-import nl.jkoetsier.uva.dbbench.workload.query.*;
+import nl.jkoetsier.uva.dbbench.output.mssql.MsSqlDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerField;
+import nl.jkoetsier.uva.dbbench.internal.workload.Query;
+import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.AndOp;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.EqualsOp;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.NeqOp;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 
@@ -90,9 +93,17 @@ public class SqlWorkloadReaderTest {
     dataModel.setEntities(new HashMap<>());
   }
 
-  @Test(expected = InvalidQueryException.class)
+  @Test
   public void testSimpleSelectWithoutMatchingDataModel() {
-    getWorkload("select_simple.sql");
+    Workload workload = getWorkload("select_simple.sql");
+
+    try {
+      workload.validate(dataModel);
+      fail("Exception not thrown");
+    } catch (NotMatchingWorkloadException e) {
+
+    }
+
   }
 
   @Test
@@ -112,17 +123,32 @@ public class SqlWorkloadReaderTest {
     cleanup();
   }
 
-  @Test(expected = InvalidQueryException.class)
+  @Test
   public void testNonExistingTableSelect() {
     loadDataModel();
-    getWorkloadFromString("SELECT notexisting.a FROM table2name");
+    Workload workload = getWorkloadFromString("SELECT notexisting.a FROM table2name");
+
+    try {
+      workload.validate(dataModel);
+      fail("Exception not thrown");
+    } catch (NotMatchingWorkloadException e) {
+
+    }
     cleanup();
   }
 
-  @Test(expected = InvalidQueryException.class)
+  @Test
   public void testNonExistingTableFieldSelect() {
     loadDataModel();
-    getWorkloadFromString("SELECT table2name.c FROM table2name");
+    Workload workload = getWorkloadFromString("SELECT table2name.c FROM table2name");
+
+    try {
+      workload.validate(dataModel);
+      fail("Exception not thrown");
+    } catch (NotMatchingWorkloadException e) {
+
+    }
+
     cleanup();
   }
 
@@ -140,17 +166,32 @@ public class SqlWorkloadReaderTest {
     cleanup();
   }
 
-  @Test(expected = InvalidQueryException.class)
+  @Test
   public void testNonExistingTableInFromSelect() {
     loadDataModel();
-    getWorkloadFromString("SELECT a FROM notexistingtable");
+    Workload workload = getWorkloadFromString("SELECT a FROM notexistingtable");
+
+    try {
+      workload.validate(dataModel);
+      fail("Exception not thrown");
+    } catch (NotMatchingWorkloadException e) {
+
+    }
     cleanup();
   }
 
-  @Test(expected = InvalidQueryException.class)
+  @Test
   public void testNonExistingSingleFieldInExistingTableSelect() {
     loadDataModel();
-    getWorkloadFromString("SELECT c FROM table2name");
+    Workload workload = getWorkloadFromString("SELECT c FROM table2name");
+
+    try {
+      workload.validate(dataModel);
+      fail("Exception not thrown");
+    } catch (NotMatchingWorkloadException e) {
+
+    }
+
     cleanup();
   }
 
@@ -193,10 +234,18 @@ public class SqlWorkloadReaderTest {
     cleanup();
   }
 
-  @Test(expected = InvalidQueryException.class)
+  @Test
   public void testSelectWithInvalidExpression() {
     loadDataModel();
-    getWorkloadFromString("SELECT table2name.b FROM table2name WHERE table2name.c = 4");
+    Workload workload = getWorkloadFromString("SELECT table2name.b FROM table2name WHERE table2name.c = 4");
+
+    try {
+      workload.validate(dataModel);
+      fail("Exception not thrown");
+    } catch (NotMatchingWorkloadException e) {
+
+    }
+
     cleanup();
   }
 
@@ -204,6 +253,13 @@ public class SqlWorkloadReaderTest {
   public void testJoinSelect() {
     loadJoinDataModel();
     Workload workload = getWorkload("select_join_simple.sql");
+
+    try {
+      workload.validate(dataModel);
+    } catch (NotMatchingWorkloadException e) {
+      fail("Exception should not be thrown");
+    }
+
     assertEquals(1, workload.getQueries().size());
 
     Query query = workload.getQueries().get(0);
@@ -234,17 +290,32 @@ public class SqlWorkloadReaderTest {
     cleanup();
   }
 
-  @Test(expected = InvalidQueryException.class)
+  @Test
   public void testJoinInvalidTableSelect() {
     loadJoinDataModel();
-    getWorkload("select_join_invalid_table.sql");
+    Workload workload = getWorkload("select_join_invalid_table.sql");
+
+    try {
+      workload.validate(dataModel);
+      fail("Exception not thrown");
+    } catch (NotMatchingWorkloadException e) {
+
+    }
     cleanup();
   }
 
-  @Test(expected = InvalidQueryException.class)
+  @Test
   public void testJoinInvalidColumnSelect() {
     loadJoinDataModel();
-    getWorkload("select_join_invalid_column.sql");
+    Workload workload = getWorkload("select_join_invalid_column.sql");
+
+    try {
+      workload.validate(dataModel);
+      fail("Exception not thrown");
+    } catch (NotMatchingWorkloadException e) {
+
+    }
+
     cleanup();
   }
 
@@ -252,6 +323,13 @@ public class SqlWorkloadReaderTest {
   public void testMultipleJoins() {
     loadJoinDataModel();
     Workload workload = getWorkload("select_join_multiple.sql");
+
+    try {
+      workload.validate(dataModel);
+    } catch (NotMatchingWorkloadException e) {
+      fail("Exception should not be thrown");
+    }
+
     assertEquals(1, workload.getQueries().size());
 
     Query query = workload.getQueries().get(0);
@@ -283,20 +361,16 @@ public class SqlWorkloadReaderTest {
     cleanup();
   }
 
+
   @Test
   @Ignore
   public void testTestFile() {
+    Mockito.mock(Logger.class);
+
     SqlSchemaReader schemaReader = new SqlSchemaReader();
     schemaReader.fromFile("../clean.sql");
-//    SqlWorkloadReader workloadReader = new SqlWorkloadReader();
-//    workloadReader.fromFile("../testworkload.sql");
 
-
-    SqlSchemaVisitor sqlSchemaVisitor = new SqlSchemaVisitor();
-    dataModel.acceptVisitor(sqlSchemaVisitor);
-
-    String output = sqlSchemaVisitor.getOutput();
-
-    System.out.println(output);
+    MsSqlDatabaseInterface msSqlRunner = new MsSqlDatabaseInterface();
+    //msSqlRunner.setupDatabase();
   }
 }

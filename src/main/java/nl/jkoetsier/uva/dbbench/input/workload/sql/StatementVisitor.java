@@ -4,7 +4,7 @@ import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.select.Select;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 
-public class SqlWorkloadStatementVisitor extends StatementVisitorAdapter {
+public class StatementVisitor extends StatementVisitorAdapter {
 
   private Workload workload = new Workload();
 

@@ -2,12 +2,15 @@ package nl.jkoetsier.uva.dbbench.internal.workload;
 
 import java.util.ArrayList;
 import java.util.List;
-import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadTreeElement;
+import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadElement;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
-public class Workload implements WorkloadTreeElement {
+public class Workload implements WorkloadElement {
 
   private List<Query> queries;
+  private boolean isValidated = false;
 
   public Workload() {
     queries = new ArrayList<>();
@@ -32,5 +35,17 @@ public class Workload implements WorkloadTreeElement {
     }
 
     workloadVisitor.visit(this);
+  }
+
+  public void validate(Schema schema) throws NotMatchingWorkloadException {
+    for (Query query : queries) {
+      query.validate(schema);
+    }
+
+    isValidated = true;
+  }
+
+  public boolean isValidated() {
+    return isValidated;
   }
 }

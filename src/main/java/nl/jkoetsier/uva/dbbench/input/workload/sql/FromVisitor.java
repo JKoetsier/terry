@@ -7,14 +7,10 @@ import net.sf.jsqlparser.statement.select.SubJoin;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.select.TableFunction;
 import net.sf.jsqlparser.statement.select.ValuesList;
-import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 
 public class FromVisitor extends FromItemVisitorAdapter {
 
-  private Schema dataModel = Schema.getInstance();
   private InputRelation inputRelation;
 
   public FromVisitor() {
@@ -26,18 +22,10 @@ public class FromVisitor extends FromItemVisitorAdapter {
 
   @Override
   public void visit(Table table) {
-    Entity entity = dataModel.getEntity(table.getName());
-
-    if (entity == null) {
-      throw new InvalidQueryException(String.format(
-          "Entity '%s' does not exist", table.getName()
-      ));
-    }
-
     if (table.getAlias() == null) {
-      this.inputRelation = new InputRelation(entity);
+      this.inputRelation = new InputRelation(table.getName());
     } else {
-      this.inputRelation = new InputRelation(entity, table.getAlias().getName());
+      this.inputRelation = new InputRelation(table.getName(), table.getAlias().getName());
     }
   }
 

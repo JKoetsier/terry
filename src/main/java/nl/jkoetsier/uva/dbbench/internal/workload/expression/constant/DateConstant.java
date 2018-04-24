@@ -23,4 +23,10 @@ public class DateConstant extends Constant {
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);
   }
+
+
+  @Override
+  public boolean isValidated() {
+    return isValidated;
+  }
 }

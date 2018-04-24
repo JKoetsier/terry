@@ -88,13 +88,11 @@ public class SelectVisitor extends SelectVisitorAdapter {
 
   @Override
   public void visit(SetOperationList setOpList) {
-    System.out.println("Have setopselect");
     super.visit(setOpList);
   }
 
   @Override
   public void visit(WithItem withItem) {
-    System.out.println("Have withitem");
     super.visit(withItem);
   }
 

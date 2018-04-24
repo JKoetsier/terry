@@ -16,22 +16,23 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
   private Selection selection;
-  private List<FieldRef> fieldRefs;
+  private List<String> selectColumns = new ArrayList<>();
+  private Relation returnRelation;
 
   public SelectItemVisitor(Selection selection) {
     this.selection = selection;
-    this.fieldRefs = new ArrayList<>();
+    this.returnRelation = selection;
   }
 
   public Relation getRelation() {
-    if (fieldRefs.size() > 0) {
-      Projection projection = new Projection(new FieldRefs(fieldRefs));
+    if (selectColumns.size() > 0) {
+      Projection projection = new Projection(selectColumns);
       projection.setInput(selection);
 
       return projection;
     }
 
-    return selection;
+    return returnRelation;
   }
 
   @Override
@@ -42,41 +43,13 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
   @Override
   public void visit(AllTableColumns columns) {
-    List<FieldRef> fieldRefList = selection.getFieldRefsForTable(columns.getTable().getName());
-    fieldRefs.addAll(fieldRefList);
+    Projection projection = new Projection(columns.getTable().getName());
+    projection.setInput(selection);
+    returnRelation = projection;
   }
 
   @Override
   public void visit(SelectExpressionItem item) {
-    FieldRef fieldRef = matchExpressionItem(item.toString());
-
-    if (fieldRef != null) {
-      fieldRefs.add(fieldRef);
-    } else {
-      // TODO handle different kind of expressions
-    }
-
+    selectColumns.add(item.toString());
   }
-
-  protected boolean isValidTableIdentifier(String string) {
-    return string.matches("^[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)?$");
-  }
-
-  private FieldRef matchExpressionItem(String item) {
-    if (isValidTableIdentifier(item)) {
-      FieldRef fieldRef = selection.getFieldRef(item);
-
-      if (fieldRef == null) {
-        throw new InvalidQueryException(
-            String.format("Field '%s' does not exist", item)
-        );
-      }
-
-      return fieldRef;
-    }
-
-    return null;
-  }
-
-
 }

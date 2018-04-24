@@ -1,8 +1,8 @@
 package nl.jkoetsier.uva.dbbench.input.schema.sql;
 
-import nl.jkoetsier.uva.dbbench.schema.Schema;
-import nl.jkoetsier.uva.dbbench.schema.Entity;
-import nl.jkoetsier.uva.dbbench.schema.fields.*;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.*;
 import org.junit.Before;
 import org.junit.Test;
 

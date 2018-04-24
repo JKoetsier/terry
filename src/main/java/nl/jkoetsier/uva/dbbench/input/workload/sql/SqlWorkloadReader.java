@@ -45,7 +45,7 @@ public class SqlWorkloadReader implements WorkloadReader {
   }
 
   public Workload visitTree(Statements statements) {
-    SqlWorkloadStatementVisitor visitor = new SqlWorkloadStatementVisitor();
+    StatementVisitor visitor = new StatementVisitor();
     statements.accept(visitor);
 
     return visitor.getWorkload();
