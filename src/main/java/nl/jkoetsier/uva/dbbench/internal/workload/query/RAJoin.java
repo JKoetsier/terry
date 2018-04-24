@@ -45,4 +45,9 @@ public abstract class RAJoin extends BinaryRelation {
 
     return leftRefs;
   }
+
+  @Override
+  public FieldRefs getFieldRefs() {
+    return null;
+  }
 }

@@ -19,6 +19,10 @@ public class Query implements WorkloadElement {
     this.relation = relation;
   }
 
+  public Query(Relation relation) {
+    this.relation = relation;
+  }
+
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     relation.acceptVisitor(workloadVisitor);

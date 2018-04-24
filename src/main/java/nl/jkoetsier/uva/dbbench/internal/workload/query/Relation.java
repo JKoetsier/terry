@@ -15,6 +15,8 @@ public abstract class Relation implements WorkloadElement {
 
   public abstract List<FieldRef> getFieldRefsForTable(String tableName);
 
+  public abstract FieldRefs getFieldRefs();
+
   public abstract void validate(Schema schema) throws NotMatchingWorkloadException;
 
   public boolean hasFieldRef(String fieldName) {
@@ -28,5 +30,4 @@ public abstract class Relation implements WorkloadElement {
   public boolean isValidated() {
     return isValidated;
   }
-
 }

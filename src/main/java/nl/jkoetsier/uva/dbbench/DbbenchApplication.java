@@ -2,8 +2,11 @@ package nl.jkoetsier.uva.dbbench;
 
 import java.util.Arrays;
 import java.util.Set;
+import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +29,7 @@ public class DbbenchApplication implements ApplicationRunner {
   private Boolean verifyWorkload = true;
   private Boolean skipDataModel = false;
 
-  private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public static void main(String[] args) {
     SpringApplication.run(DbbenchApplication.class, args);
@@ -71,12 +74,27 @@ public class DbbenchApplication implements ApplicationRunner {
   public void run(ApplicationArguments args) {
     checkParameters(args);
 
+    Schema schema = null;
+
     if (!skipDataModel) {
       SqlSchemaReader sqlSchemaReader = new SqlSchemaReader();
-      sqlSchemaReader.fromFile(dataModelFile);
+      schema = sqlSchemaReader.fromFile(dataModelFile);
     }
 
     SqlWorkloadReader workloadReader = new SqlWorkloadReader();
     Workload workload = workloadReader.fromFile(workloadFile);
+
+    if (verifyWorkload && schema != null) {
+      try {
+        workload.validate(schema);
+      } catch (NotMatchingWorkloadException e) {
+        System.out.println(String.format(
+            "Error in validating workload: %s", e.getMessage()
+        ));
+
+        System.exit(1);
+      }
+    }
+
   }
 }

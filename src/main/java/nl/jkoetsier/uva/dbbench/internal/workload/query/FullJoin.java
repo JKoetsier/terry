@@ -17,6 +17,7 @@ public class FullJoin extends RAJoin {
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    leftInput.acceptVisitor(workloadVisitor);
     rightInput.acceptVisitor(workloadVisitor);
 
     if (onExpression != null) {
@@ -37,4 +38,5 @@ public class FullJoin extends RAJoin {
 
     isValidated = true;
   }
+
 }

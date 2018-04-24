@@ -35,6 +35,10 @@ public class InputRelation extends Relation {
     return tableAlias;
   }
 
+  public String getTableName() {
+    return tableName;
+  }
+
   @Override
   public FieldRef getFieldRef(String fieldName) {
     if (!isValidated) {
@@ -51,6 +55,15 @@ public class InputRelation extends Relation {
     }
 
     return fieldRefs.get(tableName, fieldName);
+  }
+
+  @Override
+  public FieldRefs getFieldRefs() {
+    if (!isValidated) {
+      throw new NotValidatedWorkloadException();
+    }
+
+    return fieldRefs;
   }
 
   @Override

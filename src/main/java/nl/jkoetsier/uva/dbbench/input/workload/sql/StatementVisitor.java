@@ -2,6 +2,7 @@ package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.select.Select;
+import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 
 public class StatementVisitor extends StatementVisitorAdapter {
@@ -17,6 +18,6 @@ public class StatementVisitor extends StatementVisitorAdapter {
     SelectVisitor selectVisitor = new SelectVisitor();
     select.getSelectBody().accept(selectVisitor);
 
-    workload.addQuery(selectVisitor.getQuery());
+    workload.addQuery(new Query(selectVisitor.getRelation()));
   }
 }

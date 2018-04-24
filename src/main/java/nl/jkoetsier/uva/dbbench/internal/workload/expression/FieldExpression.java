@@ -24,6 +24,10 @@ public class FieldExpression extends Expression {
     isValidated = true;
   }
 
+  public String getFieldName() {
+    return fieldName;
+  }
+
   public FieldExpression(String fieldName) {
     this.fieldName = fieldName;
   }

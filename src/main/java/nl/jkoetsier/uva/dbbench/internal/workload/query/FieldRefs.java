@@ -2,12 +2,15 @@ package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
 import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
 
 public class FieldRefs {
 
   private List<FieldRef> fieldRefs;
+  private boolean isValidated = false;
 
   public FieldRefs() {
     fieldRefs = new ArrayList<>();
@@ -90,5 +93,27 @@ public class FieldRefs {
     }
 
     return resultRefs;
+  }
+
+  public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
+    for (FieldRef fieldRef : fieldRefs) {
+      fieldRef.validate(schema, relation);
+    }
+
+    isValidated = true;
+  }
+
+  public String toString() {
+    List<String> children = new ArrayList<>();
+
+    for (FieldRef fieldRef : fieldRefs) {
+      children.add(fieldRef.toString());
+    }
+
+    return String.join(", ", children);
+  }
+
+  public boolean isValidated() {
+    return isValidated;
   }
 }

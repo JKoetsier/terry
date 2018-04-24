@@ -9,14 +9,14 @@ import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
 public class Selection extends UnaryRelation {
 
-  private Expression expression;
+  private Expression whereExpression;
 
-  public Expression getExpression() {
-    return expression;
+  public Expression getWhereExpression() {
+    return whereExpression;
   }
 
-  public void setExpression(Expression expression) {
-    this.expression = expression;
+  public void setWhereExpression(Expression whereExpression) {
+    this.whereExpression = whereExpression;
   }
 
   @Override
@@ -30,6 +30,11 @@ public class Selection extends UnaryRelation {
   }
 
   @Override
+  public FieldRefs getFieldRefs() {
+    return input.getFieldRefs();
+  }
+
+  @Override
   public List<FieldRef> getFieldRefsForTable(String tableName) {
     return input.getFieldRefsForTable(tableName);
   }
@@ -37,7 +42,10 @@ public class Selection extends UnaryRelation {
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     input.acceptVisitor(workloadVisitor);
-    expression.acceptVisitor(workloadVisitor);
+
+    if (whereExpression != null) {
+      whereExpression.acceptVisitor(workloadVisitor);
+    }
 
     workloadVisitor.visit(this);
   }
@@ -46,8 +54,8 @@ public class Selection extends UnaryRelation {
   public void validate(Schema schema) throws NotMatchingWorkloadException {
     input.validate(schema);
 
-    if (expression != null) {
-      expression.validate(schema, this);
+    if (whereExpression != null) {
+      whereExpression.validate(schema, this);
     }
 
     isValidated = true;

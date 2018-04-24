@@ -8,30 +8,35 @@ import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.select.TableFunction;
 import net.sf.jsqlparser.statement.select.ValuesList;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
 
 public class FromVisitor extends FromItemVisitorAdapter {
 
-  private InputRelation inputRelation;
+  private Relation relation;
 
   public FromVisitor() {
   }
 
-  public InputRelation getInputRelation() {
-    return inputRelation;
+  public Relation getInputRelation() {
+    return relation;
   }
 
   @Override
   public void visit(Table table) {
     if (table.getAlias() == null) {
-      this.inputRelation = new InputRelation(table.getName());
+      this.relation = new InputRelation(table.getName());
     } else {
-      this.inputRelation = new InputRelation(table.getName(), table.getAlias().getName());
+      this.relation = new InputRelation(table.getName(), table.getAlias().getName());
     }
   }
 
   @Override
   public void visit(SubSelect subSelect) {
-    super.visit(subSelect);
+    SelectVisitor selectVisitor = new SelectVisitor();
+
+    subSelect.getSelectBody().accept(selectVisitor);
+
+    this.relation = selectVisitor.getRelation();
   }
 
   @Override

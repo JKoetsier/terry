@@ -16,7 +16,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
   private Selection selection;
-  private List<String> selectColumns = new ArrayList<>();
+  private List<FieldRef> fieldRefs = new ArrayList<>();
   private Relation returnRelation;
 
   public SelectItemVisitor(Selection selection) {
@@ -25,8 +25,8 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
   }
 
   public Relation getRelation() {
-    if (selectColumns.size() > 0) {
-      Projection projection = new Projection(selectColumns);
+    if (fieldRefs.size() > 0) {
+      Projection projection = new Projection(fieldRefs);
       projection.setInput(selection);
 
       return projection;
@@ -37,8 +37,10 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
   @Override
   public void visit(AllColumns columns) {
-    // Do nothing, no projection needed
-    super.visit(columns);
+    // Set nothing, project everything
+    Projection projection = new Projection();
+    projection.setInput(selection);
+    returnRelation = projection;
   }
 
   @Override
@@ -50,6 +52,13 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
   @Override
   public void visit(SelectExpressionItem item) {
-    selectColumns.add(item.toString());
+    FieldRef fieldRef = new FieldRef(item.getExpression().toString());
+
+
+    if (item.getAlias() != null) {
+      fieldRef.setColumnAlias(item.getAlias().getName());
+    }
+
+    fieldRefs.add(fieldRef);
   }
 }

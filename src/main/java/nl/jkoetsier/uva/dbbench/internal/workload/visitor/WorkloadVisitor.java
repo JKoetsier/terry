@@ -3,10 +3,14 @@ package nl.jkoetsier.uva.dbbench.internal.workload.visitor;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.StringConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.AndOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.DivideOp;
@@ -27,6 +31,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 
 public abstract class WorkloadVisitor {
 
@@ -35,6 +40,8 @@ public abstract class WorkloadVisitor {
   public abstract void visit(DoubleConstant doubleConstant);
 
   public abstract void visit(LongConstant longConstant);
+
+  public abstract void visit(NullValue nullConstant);
 
   public abstract void visit(StringConstant stringConstant);
 
@@ -80,7 +87,15 @@ public abstract class WorkloadVisitor {
 
   public abstract void visit(Selection selection);
 
+  public abstract void visit(Union union);
+
   public abstract void visit(Query query);
 
   public abstract void visit(Workload workload);
+
+  public abstract void visit(FunctionExpr functionExpr);
+
+  public abstract void visit(ExpressionList expressionList);
+
+  public abstract void visit(IsNullExpr isNullExpr);
 }

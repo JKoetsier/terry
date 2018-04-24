@@ -20,6 +20,7 @@ public class OperatorFactory {
 
     mapping.put("=", EqualsOp.class);
     mapping.put("<>", NeqOp.class);
+    mapping.put("!=", NeqOp.class);
     mapping.put("<=", LteOp.class);
     mapping.put("<", LtOp.class);
     mapping.put(">=", GteOp.class);

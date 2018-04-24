@@ -17,6 +17,7 @@ public class InnerJoin extends RAJoin {
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
+    leftInput.acceptVisitor(workloadVisitor);
     rightInput.acceptVisitor(workloadVisitor);
 
     if (onExpression != null) {

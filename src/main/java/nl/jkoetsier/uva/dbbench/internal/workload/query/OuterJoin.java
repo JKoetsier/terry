@@ -56,5 +56,4 @@ public class OuterJoin extends RAJoin {
 
     isValidated = true;
   }
-
 }
