@@ -164,11 +164,9 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
     }
 
     String rightInp = currentStack.pop();
-    currentStack.pop(); // pop left input
+    String leftInp = currentStack.pop();
 
-    currentStack.push(String.format("FULL JOIN %s%s", rightInp, onExpr));
-
-    throw new RuntimeException("Not implemented");
+    currentStack.push(String.format("%s FULL JOIN %s%s", leftInp, rightInp, onExpr));
   }
 
   @Override
@@ -182,9 +180,9 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
     }
 
     String rightInp = currentStack.pop();
-    currentStack.pop(); // pop left input
+    String leftInp = currentStack.pop();
 
-    currentStack.push(String.format("INNER JOIN %s%s", rightInp, onExpr));
+    currentStack.push(String.format("%s INNER JOIN %s%s", leftInp, rightInp, onExpr));
   }
 
   @Override

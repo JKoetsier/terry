@@ -24,37 +24,62 @@ public class MsSqlWorkloadQueryGeneratorTest {
     return msSqlWorkloadQueryGenerator.generateQueries(workload);
   }
 
-  @Test
-  public void generateSimpleQuery() {
-    List<String> result = getGeneratedWorkload("output_sql_simple.sql");
+
+  private void compareSingleQueryFromFile(String filename, String expected) {
+    List<String> result = getGeneratedWorkload(filename);
 
     assertEquals(1, result.size());
 
+    System.out.println(result.get(0));
+    assertEquals(expected, result.get(0));
+  }
+
+  @Test
+  public void generateSimpleQuery() {
     String expected = "SELECT t1.a AS a, tn2.b AS b FROM tableName AS t1 LEFT OUTER JOIN "
         + "tableName2 AS tn2 ON t1.c = tn2.c WHERE t1.a = 4";
 
-    assertEquals(expected, result.get(0));
+    compareSingleQueryFromFile("output_sql_simple.sql", expected);
   }
 
   @Test
   public void testUnionQuery() {
-    List<String> result = getGeneratedWorkload("select_union_simple.sql");
-    assertEquals(1, result.size());
-
     String expected = "SELECT a, b FROM basetable WHERE a = 4 UNION "
         + "SELECT c, d FROM jointable WHERE d = 5";
 
-    assertEquals(expected, result.get(0));
+    compareSingleQueryFromFile("select_union_simple.sql", expected);
   }
 
   @Test
   public void testUnionAllQuery() {
-    List<String> result = getGeneratedWorkload("select_union_all_simple.sql");
-    assertEquals(1, result.size());
-
     String expected = "SELECT a, b FROM basetable WHERE a = 4 UNION ALL "
         + "SELECT c, d FROM jointable WHERE d = 5";
 
-    assertEquals(expected, result.get(0));
+    compareSingleQueryFromFile("select_union_all_simple.sql", expected);
+  }
+
+  @Test
+  public void testJoinSimpleQuery() {
+    String expected = "SELECT basetable.a, basetable.b, jointable.d FROM basetable "
+        + "LEFT OUTER JOIN jointable ON basetable.b = jointable.c";
+
+    compareSingleQueryFromFile("select_join_simple.sql", expected);
+  }
+
+  @Test
+  public void testJoinMultipleQuery() {
+    String expected = "SELECT basetable.a, basetable.b, jointable.d, jointable2.e, jointable3.g "
+        + "FROM basetable "
+        + "LEFT OUTER JOIN jointable "
+        + "ON basetable.b = jointable.c "
+        + "RIGHT OUTER JOIN jointable2 "
+        + "ON basetable.b = jointable2.e "
+        + "INNER JOIN jointable3 "
+        + "ON basetable.b = jointable3.f "
+        + "FULL JOIN jointable4 "
+        + "ON basetable.b = jointable4.h "
+        + "WHERE basetable.b = 34";
+
+    compareSingleQueryFromFile("select_join_multiple.sql", expected);
   }
 }
