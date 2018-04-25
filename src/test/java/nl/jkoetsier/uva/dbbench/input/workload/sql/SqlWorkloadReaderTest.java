@@ -1,7 +1,5 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
-import java.util.logging.Logger;
-import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.output.mssql.MsSqlDatabaseInterface;
@@ -18,26 +16,26 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.AndOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.EqualsOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.NeqOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.*;
+import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
 public class SqlWorkloadReaderTest {
 
-  String dataDirectory = "/data/sql/";
+  private Logger logger = LoggerFactory.getLogger(getClass());
+  private TestDataHelper testDataHelper = new TestDataHelper();
   Schema dataModel = Schema.getInstance();
-
-  private String getFilepath(String filename) {
-    return getClass().getResource(dataDirectory + filename).getFile();
-  }
 
   private Workload getWorkload(String filename) {
     SqlWorkloadReader workloadReader = new SqlWorkloadReader();
-    return workloadReader.fromFile(getFilepath(filename));
+    return workloadReader.fromFile(testDataHelper.getFilePath("sql/" + filename));
   }
 
   private Workload getWorkloadFromString(String workload) {
@@ -114,7 +112,7 @@ public class SqlWorkloadReaderTest {
     assertEquals(workload.getQueries().size(), 2);
 
     Query queryOne = workload.getQueries().get(0);
-    assertTrue(queryOne.getRelation() instanceof Selection);
+    assertTrue(queryOne.getRelation() instanceof Projection);
 
     Query queryTwo = workload.getQueries().get(1);
     assertTrue(queryTwo.getRelation() instanceof Projection);
@@ -208,10 +206,10 @@ public class SqlWorkloadReaderTest {
 
     Selection selection = (Selection) ((Projection) query.getRelation()).getInput();
 
-    assertNotNull(selection.getExpression());
-    assertTrue(selection.getExpression() instanceof BinExpression);
+    assertNotNull(selection.getWhereExpression());
+    assertTrue(selection.getWhereExpression() instanceof BinExpression);
 
-    BinExpression binExpression = (BinExpression) selection.getExpression();
+    BinExpression binExpression = (BinExpression) selection.getWhereExpression();
 
     assertTrue(binExpression.getLeftExpr() instanceof BinExpression);
     assertTrue(binExpression.getRightExpr() instanceof BinExpression);
@@ -361,16 +359,65 @@ public class SqlWorkloadReaderTest {
     cleanup();
   }
 
+  @Test
+  public void testUnionSimple() {
+    loadJoinDataModel();
+    Workload workload = getWorkload("select_union_simple.sql");
+
+    try {
+      workload.validate(dataModel);
+    } catch (NotMatchingWorkloadException e) {
+      e.printStackTrace();
+      fail("Exception should not be thrown");
+    }
+
+    assertEquals(1, workload.getQueries().size());
+
+    Query query = workload.getQueries().get(0);
+    assertTrue(query.getRelation() instanceof Union);
+    Union union = (Union)query.getRelation();
+    assertFalse(union.isAll());
+
+    assertTrue(union.getLeftInput() instanceof Projection);
+    assertTrue(union.getRightInput() instanceof Projection);
+
+    Projection leftInput = (Projection)union.getLeftInput();
+    Projection rightInput = (Projection)union.getRightInput();
+
+    assertTrue(leftInput.getInput() instanceof Selection);
+    assertTrue(rightInput.getInput() instanceof Selection);
+
+    assertEquals(2, leftInput.getFieldRefs().size());
+    assertNotNull(leftInput.getFieldRef("a"));
+    assertNotNull(leftInput.getFieldRef("b"));
+
+    Selection leftSelection = (Selection)leftInput.getInput();
+
+    assertTrue(leftSelection.getWhereExpression() instanceof BinExpression);
+
+    BinExpression binExpression = (BinExpression)leftSelection.getWhereExpression();
+    assertTrue(binExpression.getLeftExpr() instanceof FieldExpression);
+    assertTrue(binExpression.getRightExpr() instanceof LongConstant);
+    assertTrue(binExpression.getOperator() instanceof EqualsOp);
+  }
 
   @Test
-  @Ignore
-  public void testTestFile() {
-    Mockito.mock(Logger.class);
+  public void testUnionAllSimple() {
+    loadJoinDataModel();
+    Workload workload = getWorkload("select_union_all_simple.sql");
 
-    SqlSchemaReader schemaReader = new SqlSchemaReader();
-    schemaReader.fromFile("../clean.sql");
+    try {
+      workload.validate(dataModel);
+    } catch (NotMatchingWorkloadException e) {
+      e.printStackTrace();
+      fail("Exception should not be thrown");
+    }
 
-    MsSqlDatabaseInterface msSqlRunner = new MsSqlDatabaseInterface();
-    //msSqlRunner.setupDatabase();
+    assertEquals(1, workload.getQueries().size());
+
+    Query query = workload.getQueries().get(0);
+    assertTrue(query.getRelation() instanceof Union);
+    Union union = (Union) query.getRelation();
+    assertTrue(union.isAll());
   }
 }

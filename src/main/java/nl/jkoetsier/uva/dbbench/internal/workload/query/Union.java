@@ -52,5 +52,7 @@ public class Union extends BinaryRelation {
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     leftInput.acceptVisitor(workloadVisitor);
     rightInput.acceptVisitor(workloadVisitor);
+
+    workloadVisitor.visit(this);
   }
 }

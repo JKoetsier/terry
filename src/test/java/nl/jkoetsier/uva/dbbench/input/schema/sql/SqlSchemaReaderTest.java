@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.input.schema.sql;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.*;
+import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,15 +14,11 @@ import static org.junit.Assert.*;
 
 public class SqlSchemaReaderTest {
 
-  String dataDirectory = "/data/sql/";
-
-  private String getFilepath(String filename) {
-    return getClass().getResource(dataDirectory + filename).getFile();
-  }
+  private TestDataHelper testDataHelper = new TestDataHelper();
 
   private Schema getDataModel(String filename) {
     SqlSchemaReader schemaReader = new SqlSchemaReader();
-    return schemaReader.fromFile(getFilepath(filename));
+    return schemaReader.fromFile(testDataHelper.getFilePath("sql/" + filename));
   }
 
   @Before
@@ -114,4 +111,5 @@ public class SqlSchemaReaderTest {
     assertTrue(entity.getPrimaryKey().contains(entity.getField("IntField")));
     assertFalse(entity.getPrimaryKey().contains(entity.getField("DecimalField")));
   }
+
 }

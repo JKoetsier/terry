@@ -210,9 +210,9 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
     }
 
     String rightInp = currentStack.pop();
-    currentStack.pop(); // pop left input
+    String leftInp = currentStack.pop();
 
-    currentStack.push(String.format("%s OUTER JOIN %s%s", outerJoin.getDirection(),
+    currentStack.push(String.format("%s %s OUTER JOIN %s%s", leftInp, outerJoin.getDirection(),
         rightInp, onExpr));
   }
 
@@ -220,7 +220,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
   public void visit(Projection projection) {
     logger.info("Visit Projection");
 
-    String str = String.format("( SELECT %s FROM %s )",
+    String str = String.format("SELECT %s FROM %s",
         projection.getFieldRefString(),
         currentStack.pop());
 
@@ -237,7 +237,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
       where = String.format(" WHERE %s", currentStack.pop());
     }
 
-    String str = String.format("%s %s", currentStack.pop(), where);
+    String str = String.format("%s%s", currentStack.pop(), where);
 
     currentStack.push(str);
   }
@@ -249,13 +249,15 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
     String right = currentStack.pop();
     String left = currentStack.pop();
 
-    currentStack.push(String.format("%s UNION %s %s", left, union.isAll() ? "ALL" : "", right));
+    currentStack.push(String.format("%s UNION%s %s", left, union.isAll() ? " ALL" : "", right));
   }
 
   @Override
   public void visit(Query query) {
     logger.info("Visit query");
 
+    logger.info("Stack size on end Query: {}", currentStack.size());
+    logger.info("Peek stack: {}", currentStack.peek());
     assert currentStack.size() == 1;
 
     result.add(currentStack.pop());

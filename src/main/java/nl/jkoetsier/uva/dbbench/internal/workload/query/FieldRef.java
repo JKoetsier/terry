@@ -83,7 +83,12 @@ public class FieldRef {
   }
 
   public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
-    FieldRef existing = relation.getFieldRef(tableName, columnName);
+    FieldRef existing;
+    if (tableName != null) {
+      existing = relation.getFieldRef(tableName, columnName);
+    } else {
+      existing = relation.getFieldRef(columnName);
+    }
     if (existing == null) {
       throw new NotMatchingWorkloadException(String.format(
           "Field %s.%s does not exist", tableName, columnName
