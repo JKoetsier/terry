@@ -1,11 +1,15 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.sf.jsqlparser.statement.select.Join;
+import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.statement.select.SelectVisitorAdapter;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
+import nl.jkoetsier.uva.dbbench.internal.workload.element.OrderBy;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InnerJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
@@ -57,6 +61,20 @@ public class SelectVisitor extends SelectVisitorAdapter {
     }
 
     Projection projection = selectItemVisitor.getRelation();
+
+    if (plainSelect.getOrderByElements() != null) {
+      OrderByVisitor orderByVisitor = new OrderByVisitor();
+      List<OrderBy> orderByList = new ArrayList<>();
+
+      for (OrderByElement orderByElement : plainSelect.getOrderByElements()) {
+
+        orderByElement.accept(orderByVisitor);
+        orderByList.add(orderByVisitor.getOrderBy());
+      }
+
+      projection.setOrderBy(orderByList);
+    }
+
 
     setLimitOffset(projection, plainSelect);
 

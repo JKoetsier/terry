@@ -2,6 +2,7 @@ package nl.jkoetsier.uva.dbbench.output.mssql.workload;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
@@ -30,6 +31,16 @@ public class MsSqlWorkloadQueryGeneratorTest {
 
     assertEquals(1, result.size());
     assertEquals(expected, result.get(0));
+  }
+
+  private void compareMultipleQueriesFromFile(String filename, List<String> expected) {
+    List<String> result = getGeneratedWorkload(filename);
+
+    assertEquals(expected.size(), result.size());
+
+    for (int i = 0; i < expected.size(); i++) {
+      assertEquals(expected.get(i), result.get(i));
+    }
   }
 
   @Test
@@ -79,5 +90,23 @@ public class MsSqlWorkloadQueryGeneratorTest {
         + "WHERE basetable.b = 34";
 
     compareSingleQueryFromFile("select_join_multiple.sql", expected);
+  }
+
+  @Test
+  public void testTopQuery() {
+    List<String> expected = new ArrayList<>();
+    expected.add("SELECT TOP(3) * FROM table2name");
+    expected.add("SELECT TOP(4) table2name.a, table2name.b FROM table2name");
+
+    compareMultipleQueriesFromFile("select_top.sql", expected);
+  }
+
+  @Test
+  public void testLimitQuery() {
+    List<String> expected = new ArrayList<>();
+    expected.add("SELECT TOP(1) * FROM table2name");
+    expected.add("SELECT TOP(2) table2name.a, table2name.b FROM table2name");
+
+    compareMultipleQueriesFromFile("select_limit.sql", expected);
   }
 }

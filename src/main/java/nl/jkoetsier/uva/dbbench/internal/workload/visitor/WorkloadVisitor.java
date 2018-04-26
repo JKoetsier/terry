@@ -30,6 +30,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.InnerJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 
@@ -98,4 +99,6 @@ public abstract class WorkloadVisitor {
   public abstract void visit(ExpressionList expressionList);
 
   public abstract void visit(IsNullExpr isNullExpr);
+
+  public abstract void visit(Rename rename);
 }

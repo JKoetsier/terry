@@ -1,11 +1,14 @@
 package nl.jkoetsier.uva.dbbench.output.mssql.workload;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
+import nl.jkoetsier.uva.dbbench.internal.workload.element.OrderBy;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
@@ -33,6 +36,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.InnerJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
@@ -45,8 +49,28 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
   private Stack<String> currentStack = new Stack<>();
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  private boolean format = false;
+
   public List<String> getResult() {
     return result;
+  }
+
+  public void setFormat(boolean format) {
+    this.format = format;
+  }
+
+  private String formatQuery(String query) {
+    List<String> keywords = Arrays.asList(
+        "ON", "WHERE", "SELECT", "LEFT", "INNER", "FULL", "ORDER"
+    );
+
+    query = query.replaceAll(",", ",\n");
+
+    for (String keyword : keywords) {
+      query = query.replaceAll(keyword, "\n" + keyword);
+    }
+
+    return query;
   }
 
   @Override
@@ -71,7 +95,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(StringConstant stringConstant) {
-    currentStack.push(stringConstant.getValue());
+    currentStack.push(String.format("'%s'", stringConstant.getValue()));
   }
 
   @Override
@@ -218,9 +242,39 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
   public void visit(Projection projection) {
     logger.info("Visit Projection");
 
-    String str = String.format("SELECT %s FROM %s",
+    String top = "";
+    String orderBy = "";
+
+    if (projection.getLimit() != null) {
+      top = String.format(" TOP(%s)", currentStack.pop());
+    }
+
+    if (projection.getOrderBy() != null) {
+      List<String> orderByList = new ArrayList<>();
+
+      for (OrderBy orderByElm : projection.getOrderBy()) {
+
+        orderByList.add(String.format("%s %s", orderByElm.getFieldExpression().getFieldName(),
+            orderByElm.getDirection()));
+      }
+
+      orderBy = String.format(" ORDER BY %s", String.join(", ", orderByList));
+    }
+
+    String from = currentStack.pop();
+    boolean parentheses = from.startsWith("SELECT");
+
+    from = String.format("%s%s%s", parentheses ? "(" : "",
+        from,
+        parentheses ? ")" : "");
+
+    String str = String.format(
+        "SELECT%s %s FROM %s%s",
+        top,
         projection.getFieldRefString(),
-        currentStack.pop());
+        from,
+        orderBy
+        );
 
     currentStack.push(str);
   }
@@ -256,7 +310,12 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
     assert currentStack.size() == 1;
 
-    result.add(currentStack.pop());
+    String queryString = currentStack.pop();
+
+    if (format) {
+      queryString = formatQuery(queryString);
+    }
+    result.add(queryString);
   }
 
   @Override
@@ -268,15 +327,37 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
   public void visit(FunctionExpr functionExpr) {
     logger.info("Visit FunctionExpr");
 
+    String arguments = currentStack.pop();
+
+    currentStack.push(String.format("%s(%s)", functionExpr.getName(), arguments));
   }
 
   @Override
   public void visit(ExpressionList expressionList) {
     logger.info("Visit ExpressionList");
+
+    List<String> fromStack = new ArrayList<>();
+
+    for (int i = 0; i < expressionList.getExpressions().size(); i++) {
+      fromStack.add(currentStack.pop());
+    }
+
+    currentStack.push(String.join(",", fromStack));
   }
 
   @Override
   public void visit(IsNullExpr isNullExpr) {
     logger.info("Visit IsNull");
+
+    String leftExpr = currentStack.pop();
+
+    currentStack.push(String.format("%s IS%s NULL", leftExpr, isNullExpr.isNot() ? " NOT" : ""));
+  }
+
+  @Override
+  public void visit(Rename rename) {
+    logger.info("Visit Rename");
+
+    currentStack.push(String.format("%s AS %s", currentStack.pop(), rename.getName()));
   }
 }

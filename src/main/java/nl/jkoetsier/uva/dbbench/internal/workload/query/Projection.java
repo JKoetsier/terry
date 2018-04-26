@@ -5,6 +5,7 @@ import java.util.List;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
 import nl.jkoetsier.uva.dbbench.input.exception.NotValidatedWorkloadException;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.workload.element.OrderBy;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
@@ -15,6 +16,7 @@ public class Projection extends UnaryRelation {
   private String fieldRefString;
   private Expression limit;
   private Expression offset;
+  private List<OrderBy> orderBy;
 
   public Projection(List<FieldRef> fieldRefList) {
     fieldRefs = new FieldRefs(fieldRefList);
@@ -35,6 +37,7 @@ public class Projection extends UnaryRelation {
 
   public void setFieldRefs(FieldRefs fieldRefs) {
     this.fieldRefs = fieldRefs;
+    this.fieldRefString = null;
   }
 
   public Expression getLimit() {
@@ -89,6 +92,10 @@ public class Projection extends UnaryRelation {
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     input.acceptVisitor(workloadVisitor);
 
+    if (limit != null) {
+      limit.acceptVisitor(workloadVisitor);
+    }
+
     workloadVisitor.visit(this);
   }
 
@@ -113,6 +120,15 @@ public class Projection extends UnaryRelation {
     if (fieldRefString == null) {
       return fieldRefs.toString();
     }
+
     return fieldRefString;
+  }
+
+  public void setOrderBy(List<OrderBy> orderBy) {
+    this.orderBy = orderBy;
+  }
+
+  public List<OrderBy> getOrderBy() {
+    return orderBy;
   }
 }

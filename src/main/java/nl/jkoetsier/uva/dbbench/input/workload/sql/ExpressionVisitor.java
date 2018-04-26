@@ -73,6 +73,7 @@ import net.sf.jsqlparser.statement.select.PivotXml;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
@@ -327,7 +328,10 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(CastExpression expr) {
-    throw new RuntimeException("Not Implemented");
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
+    expr.getLeftExpression().accept(expressionVisitor);
+
+    expression = new Cast(expressionVisitor.getExpression(), expr.getType().getDataType());
   }
 
   @Override
