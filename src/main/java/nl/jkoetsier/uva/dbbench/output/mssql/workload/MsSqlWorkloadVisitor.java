@@ -254,8 +254,6 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
   public void visit(Query query) {
     logger.info("Visit query");
 
-    logger.info("Stack size on end Query: {}", currentStack.size());
-    logger.info("Peek stack: {}", currentStack.peek());
     assert currentStack.size() == 1;
 
     result.add(currentStack.pop());

@@ -91,6 +91,15 @@ public class SqlWorkloadReaderTest {
     dataModel.setEntities(new HashMap<>());
   }
 
+  private void validateWorkload(Workload workload, Schema schema) {
+    try {
+      workload.validate(schema);
+    } catch (NotMatchingWorkloadException e) {
+      e.printStackTrace();
+      fail("Exception should not be thrown");
+    }
+  }
+
   @Test
   public void testSimpleSelectWithoutMatchingDataModel() {
     Workload workload = getWorkload("select_simple.sql");
@@ -252,11 +261,7 @@ public class SqlWorkloadReaderTest {
     loadJoinDataModel();
     Workload workload = getWorkload("select_join_simple.sql");
 
-    try {
-      workload.validate(dataModel);
-    } catch (NotMatchingWorkloadException e) {
-      fail("Exception should not be thrown");
-    }
+    validateWorkload(workload, dataModel);
 
     assertEquals(1, workload.getQueries().size());
 
@@ -322,11 +327,7 @@ public class SqlWorkloadReaderTest {
     loadJoinDataModel();
     Workload workload = getWorkload("select_join_multiple.sql");
 
-    try {
-      workload.validate(dataModel);
-    } catch (NotMatchingWorkloadException e) {
-      fail("Exception should not be thrown");
-    }
+    validateWorkload(workload, dataModel);
 
     assertEquals(1, workload.getQueries().size());
 
@@ -364,12 +365,7 @@ public class SqlWorkloadReaderTest {
     loadJoinDataModel();
     Workload workload = getWorkload("select_union_simple.sql");
 
-    try {
-      workload.validate(dataModel);
-    } catch (NotMatchingWorkloadException e) {
-      e.printStackTrace();
-      fail("Exception should not be thrown");
-    }
+    validateWorkload(workload, dataModel);
 
     assertEquals(1, workload.getQueries().size());
 
@@ -399,6 +395,8 @@ public class SqlWorkloadReaderTest {
     assertTrue(binExpression.getLeftExpr() instanceof FieldExpression);
     assertTrue(binExpression.getRightExpr() instanceof LongConstant);
     assertTrue(binExpression.getOperator() instanceof EqualsOp);
+
+    cleanup();
   }
 
   @Test
@@ -406,18 +404,72 @@ public class SqlWorkloadReaderTest {
     loadJoinDataModel();
     Workload workload = getWorkload("select_union_all_simple.sql");
 
-    try {
-      workload.validate(dataModel);
-    } catch (NotMatchingWorkloadException e) {
-      e.printStackTrace();
-      fail("Exception should not be thrown");
-    }
-
+    validateWorkload(workload, dataModel);
     assertEquals(1, workload.getQueries().size());
 
     Query query = workload.getQueries().get(0);
     assertTrue(query.getRelation() instanceof Union);
     Union union = (Union) query.getRelation();
     assertTrue(union.isAll());
+
+    cleanup();
+  }
+
+  @Test
+  public void testTop() {
+    loadDataModel();
+    Workload workload = getWorkload("select_limit.sql");
+    validateWorkload(workload, dataModel);
+
+    assertEquals(2, workload.getQueries().size());
+
+    Query query1 = workload.getQueries().get(0);
+    assertTrue(query1.getRelation() instanceof Projection);
+
+    Projection projection1 = (Projection)query1.getRelation();
+    assertTrue(projection1.getLimit() instanceof LongConstant);
+
+    LongConstant longConstant1 = (LongConstant)projection1.getLimit();
+    assertEquals(1, (long)longConstant1.getValue());
+
+    Query query2 = workload.getQueries().get(1);
+    assertTrue(query2.getRelation() instanceof Projection);
+
+    Projection projection2 = (Projection)query2.getRelation();
+    assertTrue(projection2.getLimit() instanceof LongConstant);
+
+    LongConstant longConstant2 = (LongConstant)projection2.getLimit();
+    assertEquals(2, (long)longConstant2.getValue());
+
+    cleanup();
+  }
+
+  @Test
+  public void testLimit() {
+    loadDataModel();
+    Workload workload = getWorkload("select_top.sql");
+    validateWorkload(workload, dataModel);
+
+    assertEquals(2, workload.getQueries().size());
+
+    Query query1 = workload.getQueries().get(0);
+    assertTrue(query1.getRelation() instanceof Projection);
+
+    Projection projection1 = (Projection)query1.getRelation();
+    assertTrue(projection1.getLimit() instanceof LongConstant);
+
+    LongConstant longConstant1 = (LongConstant)projection1.getLimit();
+    assertEquals(3, (long)longConstant1.getValue());
+
+    Query query2 = workload.getQueries().get(1);
+    assertTrue(query2.getRelation() instanceof Projection);
+
+    Projection projection2 = (Projection)query2.getRelation();
+    assertTrue(projection2.getLimit() instanceof LongConstant);
+
+    LongConstant longConstant2 = (LongConstant)projection2.getLimit();
+    assertEquals(4, (long)longConstant2.getValue());
+
+    cleanup();
   }
 }

@@ -29,8 +29,6 @@ public class MsSqlWorkloadQueryGeneratorTest {
     List<String> result = getGeneratedWorkload(filename);
 
     assertEquals(1, result.size());
-
-    System.out.println(result.get(0));
     assertEquals(expected, result.get(0));
   }
 

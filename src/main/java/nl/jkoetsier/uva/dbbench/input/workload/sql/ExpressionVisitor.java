@@ -83,17 +83,14 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConsta
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.StringConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.Operator;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.OperatorFactory;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
 
 public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   private Expression expression;
-  private Relation relation;
 
   // Relation to check for variables etc
-  public ExpressionVisitor(Relation relation) {
+  public ExpressionVisitor() {
     expression = null;
-    this.relation = relation;
   }
 
   public Expression getExpression() {
@@ -131,7 +128,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   protected void visitBinaryExpression(BinaryExpression expr) {
-    ExpressionVisitor expressionVisitor = new ExpressionVisitor(relation);
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
     expr.getLeftExpression().accept(expressionVisitor);
     Expression leftExpr = expressionVisitor.getExpression();
 
@@ -190,7 +187,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(Parenthesis parenthesis) {
-    ExpressionVisitor expressionVisitor = new ExpressionVisitor(relation);
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
     parenthesis.getExpression().accept(expressionVisitor);
     expression = expressionVisitor.getExpression();
   }
@@ -247,7 +244,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(IsNullExpression expr) {
-    ExpressionVisitor expressionVisitor = new ExpressionVisitor(relation);
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
     expr.getLeftExpression().accept(expressionVisitor);
 
     expression = new IsNullExpr(expressionVisitor.getExpression(), expr.isNot());
@@ -366,7 +363,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
   @Override
   public void visit(ExpressionList expressionList) {
 
-    ExpressionVisitor expressionVisitor = new ExpressionVisitor(relation);
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
 
     List<Expression> expressions = new ArrayList<>();
 
@@ -376,7 +373,8 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
       expressions.add(expressionVisitor.getExpression());
     }
 
-    expression = new nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList(expressions);
+    expression = new nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList(
+        expressions);
   }
 
   @Override
@@ -482,9 +480,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
   @Override
   public void visit(Function function) {
     List<Expression> expressions = new ArrayList<>();
-    ExpressionVisitor expressionVisitor = new ExpressionVisitor(relation);
-
-
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
 
     for (net.sf.jsqlparser.expression.Expression expr : function.getParameters().getExpressions()) {
       expressionVisitor.reset();

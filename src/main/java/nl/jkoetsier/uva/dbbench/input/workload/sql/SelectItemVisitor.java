@@ -17,43 +17,37 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
   private Selection selection;
   private List<FieldRef> fieldRefs = new ArrayList<>();
-  private Relation returnRelation;
+  private Projection returnProjection;
 
   public SelectItemVisitor(Selection selection) {
     this.selection = selection;
-    this.returnRelation = selection;
+    this.returnProjection = new Projection();
+    this.returnProjection.setInput(selection);
   }
 
-  public Relation getRelation() {
+  public Projection getRelation() {
     if (fieldRefs.size() > 0) {
-      Projection projection = new Projection(fieldRefs);
-      projection.setInput(selection);
-
-      return projection;
+      returnProjection.setFieldRefs(new FieldRefs(fieldRefs));
     }
 
-    return returnRelation;
+    return returnProjection;
   }
 
   @Override
   public void visit(AllColumns columns) {
     // Set nothing, project everything
-    Projection projection = new Projection();
-    projection.setInput(selection);
-    returnRelation = projection;
+    returnProjection.setInput(selection);
   }
 
   @Override
   public void visit(AllTableColumns columns) {
-    Projection projection = new Projection(columns.getTable().getName());
-    projection.setInput(selection);
-    returnRelation = projection;
+    returnProjection.setInput(selection);
+    returnProjection.setTableName(columns.getTable().getName());
   }
 
   @Override
   public void visit(SelectExpressionItem item) {
     FieldRef fieldRef = new FieldRef(item.getExpression().toString());
-
 
     if (item.getAlias() != null) {
       fieldRef.setColumnAlias(item.getAlias().getName());

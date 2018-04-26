@@ -2,16 +2,14 @@ package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.statement.select.SelectVisitorAdapter;
-import net.sf.jsqlparser.statement.select.SetOperation;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
-import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InnerJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.RAJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
@@ -51,14 +49,44 @@ public class SelectVisitor extends SelectVisitorAdapter {
       selectItem.accept(selectItemVisitor);
     }
 
-    ExpressionVisitor expressionVisitor = new ExpressionVisitor(selection);
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
 
     if (plainSelect.getWhere() != null) {
       plainSelect.getWhere().accept(expressionVisitor);
       selection.setWhereExpression(expressionVisitor.getExpression());
     }
 
-    relation = selectItemVisitor.getRelation();
+    Projection projection = selectItemVisitor.getRelation();
+
+    setLimitOffset(projection, plainSelect);
+
+    relation = projection;
+  }
+
+
+  private void setLimitOffset(Projection projection, PlainSelect plainSelect) {
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
+
+    if (plainSelect.getTop() != null) {
+      expressionVisitor.reset();
+      plainSelect.getTop().getExpression().accept(expressionVisitor);
+      projection.setLimit(expressionVisitor.getExpression());
+    }
+
+    if (plainSelect.getLimit() != null) {
+
+      if (plainSelect.getLimit().getOffset() != null) {
+        expressionVisitor.reset();
+        plainSelect.getLimit().getOffset().accept(expressionVisitor);
+        projection.setOffset(expressionVisitor.getExpression());
+      }
+
+      if (plainSelect.getLimit().getRowCount() != null) {
+        expressionVisitor.reset();
+        plainSelect.getLimit().getRowCount().accept(expressionVisitor);
+        projection.setLimit(expressionVisitor.getExpression());
+      }
+    }
   }
 
   private RAJoin createJoin(Join join, Relation leftInput) {
@@ -81,7 +109,7 @@ public class SelectVisitor extends SelectVisitorAdapter {
       throw new RuntimeException("Could not determine join type. Not implemented");
     }
 
-    ExpressionVisitor expressionVisitor = new ExpressionVisitor(raJoin);
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
     join.getOnExpression().accept(expressionVisitor);
     raJoin.setOnExpression(expressionVisitor.getExpression());
 
@@ -116,8 +144,6 @@ public class SelectVisitor extends SelectVisitorAdapter {
   public void visit(WithItem withItem) {
     super.visit(withItem);
   }
-
-
 
 
 }
