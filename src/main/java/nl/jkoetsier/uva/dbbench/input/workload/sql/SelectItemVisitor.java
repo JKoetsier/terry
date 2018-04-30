@@ -6,18 +6,14 @@ import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItemVisitorAdapter;
-import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
-import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.FieldRef;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.FieldRefs;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 
 public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
   private Selection selection;
-  private List<FieldRef> fieldRefs = new ArrayList<>();
+  private List<SelectExpression> selectExpressions = new ArrayList<>();
   private Projection returnProjection;
 
   public SelectItemVisitor(Selection selection) {
@@ -27,8 +23,8 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
   }
 
   public Projection getRelation() {
-    if (fieldRefs.size() > 0) {
-      returnProjection.setFieldRefs(new FieldRefs(fieldRefs));
+    if (selectExpressions.size() > 0) {
+      returnProjection.setSelectExpressions(selectExpressions);
     }
 
     return returnProjection;
@@ -49,16 +45,14 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
   @Override
   public void visit(SelectExpressionItem item) {
     ExpressionVisitor expressionVisitor = new ExpressionVisitor();
-
-    FieldRef fieldRef = new FieldRef(item.getExpression().toString());
-    System.out.println(item.getExpression().toString());
     item.getExpression().accept(expressionVisitor);
-    System.out.println(expressionVisitor.getExpression());
+
+    SelectExpression selectExpression = new SelectExpression(expressionVisitor.getExpression());
 
     if (item.getAlias() != null) {
-      fieldRef.setColumnAlias(item.getAlias().getName());
+      selectExpression.setAlias(item.getAlias().getName());
     }
 
-    fieldRefs.add(fieldRef);
+    selectExpressions.add(selectExpression);
   }
 }

@@ -1,9 +1,7 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.expression;
 
-import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.Operator;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.ExposedFields;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
 public class BinExpression extends Expression {
@@ -54,19 +52,17 @@ public class BinExpression extends Expression {
   }
 
   @Override
+  public void validate(ExposedFields exposedFields) {
+    leftExpr.validate(exposedFields);
+    rightExpr.validate(exposedFields);
+  }
+
+  @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     leftExpr.acceptVisitor(workloadVisitor);
     rightExpr.acceptVisitor(workloadVisitor);
     operator.acceptVisitor(workloadVisitor);
 
     workloadVisitor.visit(this);
-  }
-
-  @Override
-  public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
-    leftExpr.validate(schema, relation);
-    rightExpr.validate(schema, relation);
-
-    isValidated = true;
   }
 }

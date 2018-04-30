@@ -1,43 +1,57 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.expression;
 
-import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.FieldRef;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
+import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.ExposedField;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.ExposedFields;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FieldExpression extends Expression {
 
-  private FieldRef fieldRef;
+  private static Logger logger = LoggerFactory.getLogger(FieldExpression.class);
+  private ExposedField exposedField;
   private String fieldName;
 
-  @Override
-  public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
-    fieldRef = relation.getFieldRef(fieldName);
+//  @Override
+//  public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
+//    fieldRef = relation.getFieldRef(fieldName);
+//
+//    if (fieldRef == null) {
+//      throw new NotMatchingWorkloadException(String.format(
+//          "Column '%s' does not exist", fieldName
+//      ));
+//    }
+//
+//    isValidated = true;
+//]
 
-    if (fieldRef == null) {
-      throw new NotMatchingWorkloadException(String.format(
-          "Column '%s' does not exist", fieldName
-      ));
+
+  public FieldExpression(String fieldName) {
+    this.fieldName = fieldName;
+  }
+
+  @Override
+  public void validate(ExposedFields exposedFields) {
+    ExposedField existing = exposedFields.get(fieldName);
+
+    if (existing == null) {
+      throw new InvalidQueryException(String.format("Not existing field '%s'", fieldName));
     }
 
-    isValidated = true;
+    exposedField = existing;
   }
 
   public String getFieldName() {
     return fieldName;
   }
 
-  public FieldExpression(String fieldName) {
-    this.fieldName = fieldName;
+  public ExposedField getExposedField() {
+    return exposedField;
   }
 
-  public FieldRef getFieldRef() {
-    return fieldRef;
-  }
-
-  public void setFieldRef(FieldRef fieldRef) {
-    this.fieldRef = fieldRef;
+  public void setExposedField(ExposedField exposedField) {
+    this.exposedField = exposedField;
   }
 
   @Override

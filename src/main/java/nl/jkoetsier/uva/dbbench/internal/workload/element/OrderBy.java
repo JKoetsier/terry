@@ -4,14 +4,8 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 
 public class OrderBy {
 
-  public enum Direction {
-    ASC,
-    DESC
-  }
-
   private FieldExpression fieldExpression;
   private Direction direction;
-
   public OrderBy(
       FieldExpression fieldExpression,
       Direction direction) {
@@ -25,5 +19,10 @@ public class OrderBy {
 
   public Direction getDirection() {
     return direction;
+  }
+
+  public enum Direction {
+    ASC,
+    DESC
   }
 }

@@ -24,9 +24,4 @@ public class DateConstant extends Constant {
     workloadVisitor.visit(this);
   }
 
-
-  @Override
-  public boolean isValidated() {
-    return isValidated;
-  }
 }

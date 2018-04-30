@@ -2,18 +2,20 @@ package nl.jkoetsier.uva.dbbench.output.mssql.workload;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.element.OrderBy;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
-import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
@@ -47,7 +49,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   private List<String> result = new ArrayList<>();
   private Stack<String> currentStack = new Stack<>();
-  private Logger logger = LoggerFactory.getLogger(this.getClass());
+  private static Logger logger = LoggerFactory.getLogger(MsSqlWorkloadVisitor.class);
 
   private boolean format = false;
 
@@ -90,6 +92,8 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(NullValue nullConstant) {
+    logger.debug("Visit NullValue");
+
     currentStack.push("NULL");
   }
 
@@ -164,7 +168,28 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
   }
 
   @Override
+  public void visit(SelectExpression selectExpression) {
+    logger.debug("Visit SelectExpression");
+
+    String alias = "";
+
+    if (selectExpression.getAlias() != null) {
+      alias = String.format(" AS %s", selectExpression.getAlias());
+    }
+
+    currentStack.push(String.format("%s%s", currentStack.pop(), alias));
+  }
+
+  @Override
+  public void visit(Cast cast) {
+    logger.debug("Visit Cast");
+
+    currentStack.push(String.format("CAST(%s)", currentStack.pop()));
+  }
+
+  @Override
   public void visit(BinExpression binExpression) {
+    logger.debug("Visit BinExpression");
     String operator = currentStack.pop();
     String rightExpr = currentStack.pop();
     String leftExpr = currentStack.pop();
@@ -174,12 +199,14 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(FieldExpression fieldExpression) {
+    logger.debug("Visit FieldExpression");
+
     currentStack.push(fieldExpression.getFieldName());
   }
 
   @Override
   public void visit(FullJoin fullJoin) {
-    logger.info("Visit fullJoin");
+    logger.debug("Visit fullJoin");
 
     String onExpr = "";
 
@@ -195,7 +222,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InnerJoin innerJoin) {
-    logger.info("Visit innerJoin");
+    logger.debug("Visit innerJoin");
 
     String onExpr = "";
 
@@ -211,7 +238,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InputRelation inputRelation) {
-    logger.info("Visit inputRelation");
+    logger.debug("Visit inputRelation");
 
     if (inputRelation.getTableAlias() != null) {
       currentStack.push(String.format("%s AS %s", inputRelation.getTableName(),
@@ -223,7 +250,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(OuterJoin outerJoin) {
-    logger.info("Visit OUTER JOIN");
+    logger.debug("Visit OUTER JOIN");
 
     String onExpr = "";
 
@@ -240,7 +267,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Projection projection) {
-    logger.info("Visit Projection");
+    logger.debug("Visit Projection");
 
     String top = "";
     String orderBy = "";
@@ -261,6 +288,23 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
       orderBy = String.format(" ORDER BY %s", String.join(", ", orderByList));
     }
 
+    List<String> selectFields = new ArrayList<>();
+    String select;
+
+    if (projection.getSelectExpressions() != null) {
+      for (SelectExpression selectExpression : projection.getSelectExpressions()) {
+        selectFields.add(currentStack.pop());
+      }
+    }
+
+    Collections.reverse(selectFields);
+
+    if (selectFields.size() > 0) {
+      select = String.join(", ", selectFields);
+    } else {
+      select = "*";
+    }
+
     String from = currentStack.pop();
     boolean parentheses = from.startsWith("SELECT");
 
@@ -271,17 +315,17 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
     String str = String.format(
         "SELECT%s %s FROM %s%s",
         top,
-        projection.getFieldRefString(),
+        select,
         from,
         orderBy
-        );
+    );
 
     currentStack.push(str);
   }
 
   @Override
   public void visit(Selection selection) {
-    logger.info("Visit Selection");
+    logger.debug("Visit Selection");
 
     String where = "";
 
@@ -296,7 +340,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Union union) {
-    logger.info("Visit Union");
+    logger.debug("Visit Union");
 
     String right = currentStack.pop();
     String left = currentStack.pop();
@@ -306,7 +350,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Query query) {
-    logger.info("Visit query");
+    logger.debug("Visit query");
 
     assert currentStack.size() == 1;
 
@@ -320,12 +364,12 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Workload workload) {
-    logger.info("Visit workload");
+    logger.debug("Visit workload");
   }
 
   @Override
   public void visit(FunctionExpr functionExpr) {
-    logger.info("Visit FunctionExpr");
+    logger.debug("Visit FunctionExpr");
 
     String arguments = currentStack.pop();
 
@@ -334,7 +378,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(ExpressionList expressionList) {
-    logger.info("Visit ExpressionList");
+    logger.debug("Visit ExpressionList");
 
     List<String> fromStack = new ArrayList<>();
 
@@ -347,7 +391,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(IsNullExpr isNullExpr) {
-    logger.info("Visit IsNull");
+    logger.debug("Visit IsNull");
 
     String leftExpr = currentStack.pop();
 
@@ -356,7 +400,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Rename rename) {
-    logger.info("Visit Rename");
+    logger.debug("Visit Rename");
 
     currentStack.push(String.format("%s AS %s", currentStack.pop(), rename.getName()));
   }

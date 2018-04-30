@@ -1,19 +1,16 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
-import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
 
-public class FieldRef {
+public class ExposedField {
 
   private Field field;
   private String tableName;
   private String tableAlias;
   private String columnName;
   private String columnAlias;
-  private boolean isValidated = false;
 
-  public FieldRef(String fullColumnName) {
+  public ExposedField(String fullColumnName) {
     String[] splitOnDot = fullColumnName.split("\\.");
 
     if (splitOnDot.length > 1) {
@@ -25,16 +22,20 @@ public class FieldRef {
   }
 
 
-  public FieldRef(Field field, String tableName, String columnName) {
+  public ExposedField(Field field, String tableName, String columnName) {
     this.tableName = tableName;
     this.columnName = columnName;
     this.field = field;
   }
 
-  public FieldRef(Field field, String tableName, String columnName, String tableAlias) {
+  public ExposedField(Field field, String tableName, String columnName, String tableAlias) {
     this.tableName = tableName;
     this.columnName = columnName;
     this.field = field;
+    this.tableAlias = tableAlias;
+  }
+
+  public void setTableAlias(String tableAlias) {
     this.tableAlias = tableAlias;
   }
 
@@ -50,24 +51,8 @@ public class FieldRef {
     return columnName;
   }
 
-  public void setColumnName(String columnName) {
-    this.columnName = columnName;
-  }
-
-  public String getColumnAlias() {
-    return columnAlias;
-  }
-
-  public void setColumnAlias(String columnAlias) {
-    this.columnAlias = columnAlias;
-  }
-
   public String getTableAlias() {
     return tableAlias;
-  }
-
-  public void setTableAlias(String tableAlias) {
-    this.tableAlias = tableAlias;
   }
 
   public Field getField() {
@@ -78,27 +63,23 @@ public class FieldRef {
     this.field = field;
   }
 
-  public boolean isValidated() {
-    return isValidated;
-  }
-
-  public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
-    FieldRef existing;
-    if (tableName != null) {
-      existing = relation.getFieldRef(tableName, columnName);
-    } else {
-      existing = relation.getFieldRef(columnName);
-    }
-    if (existing == null) {
-      throw new NotMatchingWorkloadException(String.format(
-          "Field %s.%s does not exist", tableName, columnName
-      ));
-    }
-
-    field = existing.getField();
-
-    isValidated = true;
-  }
+//  public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
+//    ExposedField existing;
+//    if (tableName != null) {
+//      existing = relation.getFieldRef(tableName, columnName);
+//    } else {
+//      existing = relation.getFieldRef(columnName);
+//    }
+//    if (existing == null) {
+//      throw new NotMatchingWorkloadException(String.format(
+//          "Field %s.%s does not exist", tableName, columnName
+//      ));
+//    }
+//
+//    field = existing.getField();
+//
+//    isValidated = true;
+//  }
 
   public String toString() {
 
@@ -114,6 +95,19 @@ public class FieldRef {
       return String.format("%s AS %s", columnPart, columnAlias);
     } else {
       return String.format("%s", columnPart);
+    }
+  }
+
+  @Override
+  protected ExposedField clone() {
+    try {
+      ExposedField cloned = (ExposedField)super.clone();
+      cloned.setField(getField());
+      return cloned;
+
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+      return null;
     }
   }
 }

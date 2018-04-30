@@ -1,10 +1,16 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.HashMap;
+import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
-import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
-import nl.jkoetsier.uva.dbbench.output.mssql.MsSqlDatabaseInterface;
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerField;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
@@ -15,21 +21,22 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConsta
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.AndOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.EqualsOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.NeqOp;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.*;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.InnerJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.RAJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.util.HashMap;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 public class SqlWorkloadReaderTest {
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private static Logger logger = LoggerFactory.getLogger(SqlWorkloadReaderTest.class);
   private TestDataHelper testDataHelper = new TestDataHelper();
   Schema dataModel = Schema.getInstance();
 
@@ -138,7 +145,7 @@ public class SqlWorkloadReaderTest {
     try {
       workload.validate(dataModel);
       fail("Exception not thrown");
-    } catch (NotMatchingWorkloadException e) {
+    } catch (InvalidQueryException e) {
 
     }
     cleanup();
@@ -152,7 +159,7 @@ public class SqlWorkloadReaderTest {
     try {
       workload.validate(dataModel);
       fail("Exception not thrown");
-    } catch (NotMatchingWorkloadException e) {
+    } catch (InvalidQueryException e) {
 
     }
 
@@ -195,7 +202,7 @@ public class SqlWorkloadReaderTest {
     try {
       workload.validate(dataModel);
       fail("Exception not thrown");
-    } catch (NotMatchingWorkloadException e) {
+    } catch (InvalidQueryException e) {
 
     }
 
@@ -244,12 +251,13 @@ public class SqlWorkloadReaderTest {
   @Test
   public void testSelectWithInvalidExpression() {
     loadDataModel();
-    Workload workload = getWorkloadFromString("SELECT table2name.b FROM table2name WHERE table2name.c = 4");
+    Workload workload = getWorkloadFromString("SELECT table2name.b "
+        + "FROM table2name WHERE table2name.c = 4");
 
     try {
       workload.validate(dataModel);
       fail("Exception not thrown");
-    } catch (NotMatchingWorkloadException e) {
+    } catch (InvalidQueryException e) {
 
     }
 
@@ -269,7 +277,7 @@ public class SqlWorkloadReaderTest {
     assertTrue(query.getRelation() instanceof Projection);
 
     Projection projection = (Projection) query.getRelation();
-    assertEquals(3, projection.getFieldRefs().size());
+    assertEquals(3, projection.getSelectExpressions().size());
 
     assertTrue(projection.getInput() instanceof Selection);
     Selection selection = (Selection) projection.getInput();
@@ -288,7 +296,7 @@ public class SqlWorkloadReaderTest {
     assertTrue(binExpression.getLeftExpr() instanceof FieldExpression);
 
     FieldExpression fieldExpression = (FieldExpression) binExpression.getLeftExpr();
-    assertNotNull(fieldExpression.getFieldRef());
+    assertNotNull(fieldExpression.getExposedField());
 
     cleanup();
   }
@@ -315,7 +323,7 @@ public class SqlWorkloadReaderTest {
     try {
       workload.validate(dataModel);
       fail("Exception not thrown");
-    } catch (NotMatchingWorkloadException e) {
+    } catch (InvalidQueryException e) {
 
     }
 
@@ -335,7 +343,7 @@ public class SqlWorkloadReaderTest {
     assertTrue(query.getRelation() instanceof Projection);
 
     Projection projection = (Projection) query.getRelation();
-    assertEquals(5, projection.getFieldRefs().size());
+    assertEquals(5, projection.getSelectExpressions().size());
 
     assertTrue(projection.getInput() instanceof Selection);
 
@@ -371,27 +379,34 @@ public class SqlWorkloadReaderTest {
 
     Query query = workload.getQueries().get(0);
     assertTrue(query.getRelation() instanceof Union);
-    Union union = (Union)query.getRelation();
+    Union union = (Union) query.getRelation();
     assertFalse(union.isAll());
 
     assertTrue(union.getLeftInput() instanceof Projection);
     assertTrue(union.getRightInput() instanceof Projection);
 
-    Projection leftInput = (Projection)union.getLeftInput();
-    Projection rightInput = (Projection)union.getRightInput();
+    Projection leftInput = (Projection) union.getLeftInput();
+    Projection rightInput = (Projection) union.getRightInput();
 
     assertTrue(leftInput.getInput() instanceof Selection);
     assertTrue(rightInput.getInput() instanceof Selection);
 
-    assertEquals(2, leftInput.getFieldRefs().size());
-    assertNotNull(leftInput.getFieldRef("a"));
-    assertNotNull(leftInput.getFieldRef("b"));
+    assertEquals(2, leftInput.getSelectExpressions().size());
+    assertTrue(leftInput.getSelectExpressions().get(0).getExpression() instanceof FieldExpression);
+    assertTrue(leftInput.getSelectExpressions().get(1).getExpression() instanceof FieldExpression);
 
-    Selection leftSelection = (Selection)leftInput.getInput();
+    FieldExpression fieldExpressionA = (FieldExpression) (leftInput.getSelectExpressions().get(0)
+        .getExpression());
+    FieldExpression fieldExpressionB = (FieldExpression) (leftInput.getSelectExpressions().get(1)
+        .getExpression());
+    assertEquals("a", fieldExpressionA.getFieldName());
+    assertEquals("b", fieldExpressionB.getFieldName());
+
+    Selection leftSelection = (Selection) leftInput.getInput();
 
     assertTrue(leftSelection.getWhereExpression() instanceof BinExpression);
 
-    BinExpression binExpression = (BinExpression)leftSelection.getWhereExpression();
+    BinExpression binExpression = (BinExpression) leftSelection.getWhereExpression();
     assertTrue(binExpression.getLeftExpr() instanceof FieldExpression);
     assertTrue(binExpression.getRightExpr() instanceof LongConstant);
     assertTrue(binExpression.getOperator() instanceof EqualsOp);
@@ -426,20 +441,20 @@ public class SqlWorkloadReaderTest {
     Query query1 = workload.getQueries().get(0);
     assertTrue(query1.getRelation() instanceof Projection);
 
-    Projection projection1 = (Projection)query1.getRelation();
+    Projection projection1 = (Projection) query1.getRelation();
     assertTrue(projection1.getLimit() instanceof LongConstant);
 
-    LongConstant longConstant1 = (LongConstant)projection1.getLimit();
-    assertEquals(1, (long)longConstant1.getValue());
+    LongConstant longConstant1 = (LongConstant) projection1.getLimit();
+    assertEquals(1, (long) longConstant1.getValue());
 
     Query query2 = workload.getQueries().get(1);
     assertTrue(query2.getRelation() instanceof Projection);
 
-    Projection projection2 = (Projection)query2.getRelation();
+    Projection projection2 = (Projection) query2.getRelation();
     assertTrue(projection2.getLimit() instanceof LongConstant);
 
-    LongConstant longConstant2 = (LongConstant)projection2.getLimit();
-    assertEquals(2, (long)longConstant2.getValue());
+    LongConstant longConstant2 = (LongConstant) projection2.getLimit();
+    assertEquals(2, (long) longConstant2.getValue());
 
     cleanup();
   }
@@ -455,20 +470,20 @@ public class SqlWorkloadReaderTest {
     Query query1 = workload.getQueries().get(0);
     assertTrue(query1.getRelation() instanceof Projection);
 
-    Projection projection1 = (Projection)query1.getRelation();
+    Projection projection1 = (Projection) query1.getRelation();
     assertTrue(projection1.getLimit() instanceof LongConstant);
 
-    LongConstant longConstant1 = (LongConstant)projection1.getLimit();
-    assertEquals(3, (long)longConstant1.getValue());
+    LongConstant longConstant1 = (LongConstant) projection1.getLimit();
+    assertEquals(3, (long) longConstant1.getValue());
 
     Query query2 = workload.getQueries().get(1);
     assertTrue(query2.getRelation() instanceof Projection);
 
-    Projection projection2 = (Projection)query2.getRelation();
+    Projection projection2 = (Projection) query2.getRelation();
     assertTrue(projection2.getLimit() instanceof LongConstant);
 
-    LongConstant longConstant2 = (LongConstant)projection2.getLimit();
-    assertEquals(4, (long)longConstant2.getValue());
+    LongConstant longConstant2 = (LongConstant) projection2.getLimit();
+    assertEquals(4, (long) longConstant2.getValue());
 
     cleanup();
   }

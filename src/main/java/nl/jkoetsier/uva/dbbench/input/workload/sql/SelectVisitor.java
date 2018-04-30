@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class SelectVisitor extends SelectVisitorAdapter {
 
   private Relation relation;
-  private Logger logger = LoggerFactory.getLogger(this.getClass());
+  private static Logger logger = LoggerFactory.getLogger(SelectVisitor.class);
 
   public Relation getRelation() {
     return relation;
@@ -74,7 +74,6 @@ public class SelectVisitor extends SelectVisitorAdapter {
 
       projection.setOrderBy(orderByList);
     }
-
 
     setLimitOffset(projection, plainSelect);
 

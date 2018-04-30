@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 public class TestDataHelper {
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private static Logger logger = LoggerFactory.getLogger(TestDataHelper.class);
   private String dataDirectory = "/data/";
 
   public String getFilePath(String filename) {

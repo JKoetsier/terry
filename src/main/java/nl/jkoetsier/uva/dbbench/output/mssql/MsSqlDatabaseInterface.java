@@ -1,22 +1,21 @@
 package nl.jkoetsier.uva.dbbench.output.mssql;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.output.DatabaseInterface;
 import nl.jkoetsier.uva.dbbench.output.mssql.schema.MsSqlSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MsSqlDatabaseInterface implements DatabaseInterface {
 
-  private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  private static Logger logger = LoggerFactory.getLogger(MsSqlDatabaseInterface.class);
   private Connection connection;
 
   private HashMap<String, String> getCreateQueries(Schema schema) {

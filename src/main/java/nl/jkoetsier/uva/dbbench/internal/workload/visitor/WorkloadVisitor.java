@@ -3,14 +3,16 @@ package nl.jkoetsier.uva.dbbench.internal.workload.visitor;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
-import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.StringConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.AndOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.DivideOp;
@@ -101,4 +103,8 @@ public abstract class WorkloadVisitor {
   public abstract void visit(IsNullExpr isNullExpr);
 
   public abstract void visit(Rename rename);
+
+  public abstract void visit(SelectExpression selectExpression);
+
+  public abstract void visit(Cast cast);
 }

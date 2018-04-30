@@ -1,16 +1,12 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
-import java.util.List;
-import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
-import nl.jkoetsier.uva.dbbench.input.exception.NotValidatedWorkloadException;
 import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
 public class InputRelation extends Relation {
 
   private Entity entity;
-  private FieldRefs fieldRefs;
+  private ExposedFields exposedFields;
   private String tableAlias;
   private String tableName;
 
@@ -21,6 +17,16 @@ public class InputRelation extends Relation {
   public InputRelation(String tableName, String tableAlias) {
     this.tableName = tableName;
     this.tableAlias = tableAlias;
+  }
+
+  @Override
+  public ExposedFields getExposedFields() {
+    return exposedFields;
+  }
+
+  public void setExposedFields(
+      ExposedFields exposedFields) {
+    this.exposedFields = exposedFields;
   }
 
   public Entity getEntity() {
@@ -39,65 +45,48 @@ public class InputRelation extends Relation {
     return tableName;
   }
 
-  @Override
-  public FieldRef getFieldRef(String fieldName) {
-    if (!isValidated) {
-      throw new NotValidatedWorkloadException();
-    }
+//  public void setFieldRefs(ExposedFields fieldRefs) {
+//    this.fieldRefs = fieldRefs;
+//  }
 
-    return fieldRefs.get(fieldName);
-  }
+//  @Override
+//  public ExposedField getFieldRef(String fieldName) {
+//    if (!isValidated) {
+//      throw new NotValidatedWorkloadException();
+//    }
+//
+//    return fieldRefs.get(fieldName);
+//  }
+//
+//  @Override
+//  public ExposedField getFieldRef(String tableName, String fieldName) {
+//    if (!isValidated) {
+//      throw new NotValidatedWorkloadException();
+//    }
+//
+//    return fieldRefs.get(tableName, fieldName);
+//  }
+//
+//  @Override
+//  public ExposedFields getFieldRefs() {
+//    if (!isValidated) {
+//      throw new NotValidatedWorkloadException();
+//    }
+//
+//    return fieldRefs;
+//  }
 
-  @Override
-  public FieldRef getFieldRef(String tableName, String fieldName) {
-    if (!isValidated) {
-      throw new NotValidatedWorkloadException();
-    }
-
-    return fieldRefs.get(tableName, fieldName);
-  }
-
-  @Override
-  public FieldRefs getFieldRefs() {
-    if (!isValidated) {
-      throw new NotValidatedWorkloadException();
-    }
-
-    return fieldRefs;
-  }
-
-  @Override
-  public List<FieldRef> getFieldRefsForTable(String tableName) {
-    if (!isValidated) {
-      throw new NotValidatedWorkloadException();
-    }
-
-    return fieldRefs.getAllForTable(tableName);
-  }
+//  @Override
+//  public List<ExposedField> getFieldRefsForTable(String tableName) {
+//    if (!isValidated) {
+//      throw new NotValidatedWorkloadException();
+//    }
+//
+//    return fieldRefs.getAllForTable(tableName);
+//  }
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);
-  }
-
-  @Override
-  public void validate(Schema schema) throws NotMatchingWorkloadException {
-    Entity entity = schema.getEntity(this.tableName);
-
-    if (entity == null) {
-      throw new NotMatchingWorkloadException(String.format(
-          "Entity '%s' does not exist", this.tableName
-      ));
-    }
-
-    this.entity = entity;
-
-    if (this.tableAlias != null) {
-      this.fieldRefs = FieldRefs.create(entity, this.tableAlias);
-    } else {
-      this.fieldRefs = FieldRefs.create(entity);
-    }
-
-    this.isValidated = true;
   }
 }

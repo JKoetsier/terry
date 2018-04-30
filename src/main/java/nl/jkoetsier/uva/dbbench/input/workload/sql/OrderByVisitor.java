@@ -19,7 +19,7 @@ public class OrderByVisitor extends OrderByVisitorAdapter {
     orderBy.getExpression().accept(expressionVisitor);
     assert expressionVisitor.getExpression() instanceof FieldExpression;
 
-    this.orderBy = new OrderBy((FieldExpression)expressionVisitor.getExpression(),
+    this.orderBy = new OrderBy((FieldExpression) expressionVisitor.getExpression(),
         orderBy.isAsc() ? OrderBy.Direction.ASC : OrderBy.Direction.DESC);
   }
 }

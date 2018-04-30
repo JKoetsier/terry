@@ -4,14 +4,13 @@ package nl.jkoetsier.uva.dbbench.internal.workload.expression;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.ExposedFields;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
-public class Cast extends Expression {
+public class SelectExpression extends Expression {
 
   private Expression expression;
-  private String type;
+  private String alias;
 
-  public Cast(Expression expression, String type) {
+  public SelectExpression(Expression expression) {
     this.expression = expression;
-    this.type = type;
   }
 
   public Expression getExpression() {
@@ -22,18 +21,12 @@ public class Cast extends Expression {
     this.expression = expression;
   }
 
-  public String getType() {
-    return type;
+  public String getAlias() {
+    return alias;
   }
 
-  public void setType(String type) {
-    this.type = type;
-  }
-
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-    expression.validate(exposedFields);
+  public void setAlias(String alias) {
+    this.alias = alias;
   }
 
   @Override
@@ -41,5 +34,10 @@ public class Cast extends Expression {
     expression.acceptVisitor(workloadVisitor);
 
     workloadVisitor.visit(this);
+  }
+
+  @Override
+  public void validate(ExposedFields exposedFields) {
+    expression.validate(exposedFields);
   }
 }

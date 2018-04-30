@@ -25,29 +25,10 @@ public abstract class RAJoin extends BinaryRelation {
   }
 
   @Override
-  public FieldRef getFieldRef(String fieldName) {
-    FieldRef left = getLeftInput().getFieldRef(fieldName);
-
-    return left != null ? left : getRightInput().getFieldRef(fieldName);
-  }
-
-  @Override
-  public FieldRef getFieldRef(String tableName, String fieldName) {
-    FieldRef left = getLeftInput().getFieldRef(tableName, fieldName);
-
-    return left != null ? left : getRightInput().getFieldRef(tableName, fieldName);
-  }
-
-  @Override
-  public List<FieldRef> getFieldRefsForTable(String tableName) {
-    List<FieldRef> leftRefs = getLeftInput().getFieldRefsForTable(tableName);
-    leftRefs.addAll(getRightInput().getFieldRefsForTable(tableName));
-
-    return leftRefs;
-  }
-
-  @Override
-  public FieldRefs getFieldRefs() {
-    return null;
+  public ExposedFields getExposedFields() {
+    if (exposedFields == null) {
+      exposedFields = leftInput.getExposedFields().merge(rightInput.getExposedFields());
+    }
+    return exposedFields;
   }
 }
