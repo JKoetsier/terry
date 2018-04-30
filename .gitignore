@@ -28,4 +28,4 @@
 *.plantuml
 
 ### Tmp test file ###
-/test.sql
+/dev
