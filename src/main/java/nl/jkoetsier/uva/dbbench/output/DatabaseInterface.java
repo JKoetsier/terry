@@ -4,11 +4,10 @@ import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 
 public interface DatabaseInterface {
 
-  void start();
-
   void connect();
-
+  void dropTable(String table);
+  void executeQuery(String query);
+  void importSchema(Schema schema);
   void closeConnection();
 
-  void importSchema(Schema schema);
 }

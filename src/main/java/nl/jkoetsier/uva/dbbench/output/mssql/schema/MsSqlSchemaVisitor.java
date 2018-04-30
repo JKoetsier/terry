@@ -39,6 +39,7 @@ public class MsSqlSchemaVisitor extends SchemaVisitor {
     return columnDef;
   }
 
+  @Override
   public HashMap<String, String> getCreateQueries() {
     return createQueries;
   }
