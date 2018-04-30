@@ -73,6 +73,7 @@ import net.sf.jsqlparser.statement.select.PivotXml;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.Case;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
@@ -278,7 +279,28 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(CaseExpression expr) {
-    throw new RuntimeException("Not Implemented");
+    Case caseExpr = new Case();
+
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
+
+    for (net.sf.jsqlparser.expression.Expression whenExpr : expr.getWhenClauses()) {
+      WhenClause whenClause = (WhenClause) whenExpr;
+
+      if (whenClause.getThenExpression() != null) {
+        whenClause.getThenExpression().accept(expressionVisitor);
+        caseExpr.setTrueExpression(expressionVisitor.getExpression());
+      }
+
+      if (whenClause.getWhenExpression() != null) {
+        whenClause.getWhenExpression().accept(expressionVisitor);
+        caseExpr.setCondition(expressionVisitor.getExpression());
+      }
+    }
+
+    expr.getElseExpression().accept(expressionVisitor);
+    caseExpr.setFalseExpression(expressionVisitor.getExpression());
+
+    expression = caseExpr;
   }
 
   @Override

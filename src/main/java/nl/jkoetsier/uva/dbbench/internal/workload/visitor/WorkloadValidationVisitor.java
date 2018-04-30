@@ -6,6 +6,7 @@ import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.Case;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
@@ -248,6 +249,11 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(SelectExpression selectExpression) {
+
+  }
+
+  @Override
+  public void visit(Case caseExpr) {
 
   }
 

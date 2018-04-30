@@ -9,6 +9,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.element.OrderBy;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.Case;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
@@ -184,7 +185,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
   public void visit(Cast cast) {
     logger.debug("Visit Cast");
 
-    currentStack.push(String.format("CAST(%s)", currentStack.pop()));
+    currentStack.push(String.format("CAST(%s AS %s)", currentStack.pop(), cast.getType()));
   }
 
   @Override
@@ -206,7 +207,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(FullJoin fullJoin) {
-    logger.debug("Visit fullJoin");
+    logger.debug("Visit FullJoin");
 
     String onExpr = "";
 
@@ -222,7 +223,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InnerJoin innerJoin) {
-    logger.debug("Visit innerJoin");
+    logger.debug("Visit InnerJoin");
 
     String onExpr = "";
 
@@ -238,7 +239,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InputRelation inputRelation) {
-    logger.debug("Visit inputRelation");
+    logger.debug("Visit InputRelation");
 
     if (inputRelation.getTableAlias() != null) {
       currentStack.push(String.format("%s AS %s", inputRelation.getTableName(),
@@ -350,7 +351,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Query query) {
-    logger.debug("Visit query");
+    logger.debug("Visit Query");
 
     assert currentStack.size() == 1;
 
@@ -364,7 +365,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Workload workload) {
-    logger.debug("Visit workload");
+    logger.debug("Visit Workload");
   }
 
   @Override
@@ -403,5 +404,17 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
     logger.debug("Visit Rename");
 
     currentStack.push(String.format("%s AS %s", currentStack.pop(), rename.getName()));
+  }
+
+  @Override
+  public void visit(Case caseExpr) {
+    logger.debug("Visit Case");
+
+    String falseExpr = currentStack.pop();
+    String trueExpr = currentStack.pop();
+    String condition = currentStack.pop();
+
+    currentStack.push(String.format("CASE WHEN %s THEN %s ELSE %s END",
+        condition, trueExpr, falseExpr));
   }
 }

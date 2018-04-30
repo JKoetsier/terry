@@ -109,4 +109,12 @@ public class MsSqlWorkloadQueryGeneratorTest {
 
     compareMultipleQueriesFromFile("select_limit.sql", expected);
   }
+
+  @Test
+  public void testCase() {
+    String expected = "SELECT a, b, CASE WHEN c IS NULL THEN CAST(NULL AS int) ELSE 1 END AS c"
+        + " FROM tablename";
+
+    compareSingleQueryFromFile("select_case.sql", expected);
+  }
 }

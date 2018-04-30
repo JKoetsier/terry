@@ -16,7 +16,7 @@ public class SqlWorkloadWriterTest {
   public void testTest() {
     SqlWorkloadReader reader = new SqlWorkloadReader();
 
-    Workload workload = reader.fromFile("test.sql");
+    Workload workload = reader.fromFile("dev/test.sql");
 
     MsSqlWorkloadVisitor workloadVisitor = new MsSqlWorkloadVisitor();
     workloadVisitor.setFormat(true);

@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.internal.workload.visitor;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.Case;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
@@ -107,4 +108,6 @@ public abstract class WorkloadVisitor {
   public abstract void visit(SelectExpression selectExpression);
 
   public abstract void visit(Cast cast);
+
+  public abstract void visit(Case caseExpr);
 }
