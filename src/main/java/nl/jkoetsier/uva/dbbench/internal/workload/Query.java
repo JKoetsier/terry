@@ -7,9 +7,18 @@ import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 public class Query implements WorkloadElement {
 
   private Relation relation;
+  private Integer identifier;
 
   public Query(Relation relation) {
     this.relation = relation;
+  }
+
+  public Integer getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(Integer identifier) {
+    this.identifier = identifier;
   }
 
   public Relation getRelation() {

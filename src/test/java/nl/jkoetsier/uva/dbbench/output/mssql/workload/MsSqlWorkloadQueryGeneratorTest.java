@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.output.mssql.workload;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
@@ -22,7 +23,9 @@ public class MsSqlWorkloadQueryGeneratorTest {
     Workload workload = getWorkloadFromFile(filename);
 
     MsSqlWorkloadQueryGenerator msSqlWorkloadQueryGenerator = new MsSqlWorkloadQueryGenerator();
-    return msSqlWorkloadQueryGenerator.generateQueries(workload);
+    HashMap<Integer, String> result = msSqlWorkloadQueryGenerator.generateQueries(workload);
+
+    return new ArrayList<String>(result.values());
   }
 
 

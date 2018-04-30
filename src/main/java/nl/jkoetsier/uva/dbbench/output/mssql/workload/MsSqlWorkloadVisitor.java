@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.output.mssql.workload;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
@@ -48,13 +49,13 @@ import org.slf4j.LoggerFactory;
 
 public class MsSqlWorkloadVisitor extends WorkloadVisitor {
 
-  private List<String> result = new ArrayList<>();
+  private HashMap<Integer, String> result = new HashMap<>();
   private Stack<String> currentStack = new Stack<>();
   private static Logger logger = LoggerFactory.getLogger(MsSqlWorkloadVisitor.class);
 
   private boolean format = false;
 
-  public List<String> getResult() {
+  public HashMap<Integer, String> getResult() {
     return result;
   }
 
@@ -360,7 +361,8 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
     if (format) {
       queryString = formatQuery(queryString);
     }
-    result.add(queryString);
+
+    result.put(query.getIdentifier(), queryString);
   }
 
   @Override

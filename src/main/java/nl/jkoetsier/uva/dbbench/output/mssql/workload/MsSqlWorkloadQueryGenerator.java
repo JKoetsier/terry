@@ -1,11 +1,11 @@
 package nl.jkoetsier.uva.dbbench.output.mssql.workload;
 
-import java.util.List;
+import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 
 public class MsSqlWorkloadQueryGenerator {
 
-  public List<String> generateQueries(Workload workload) {
+  public HashMap<Integer, String> generateQueries(Workload workload) {
     MsSqlWorkloadVisitor workloadVisitor = new MsSqlWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 

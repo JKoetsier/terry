@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.output.mssql.workload.MsSqlWorkloadVisitor;
@@ -22,10 +23,9 @@ public class SqlWorkloadWriterTest {
     workloadVisitor.setFormat(true);
 
     workload.acceptVisitor(workloadVisitor);
-    List<String> result = workloadVisitor.getResult();
+    HashMap<Integer, String> result = workloadVisitor.getResult();
 
 //    System.out.println(addNewLines(result.get(0)));
-    System.out.println(result.get(0));
 
     //String expected = SqlWorkloadReader.readFile("test.sql", Charset.defaultCharset());
     //assertEquals(cleanupString(expected), cleanupString(result.get(0)));

@@ -3,6 +3,9 @@ package nl.jkoetsier.uva.dbbench.output;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +14,8 @@ public abstract class JdbcDatabaseInterface implements DatabaseInterface {
   private Connection connection;
 
   protected abstract String getConnectionString();
+  protected abstract HashMap<String, String> getCreateQueries(Schema schema);
+
   private static Logger logger = LoggerFactory.getLogger(JdbcDatabaseInterface.class);
 
 
@@ -54,6 +59,19 @@ public abstract class JdbcDatabaseInterface implements DatabaseInterface {
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void importSchema(Schema schema) {
+    HashMap<String, String> createQueries = getCreateQueries(schema);
+
+    logger.info(String.format("Start import of %d tables", createQueries.size()));
+
+    for (Entry<String, String> queryEntrySet : createQueries.entrySet()) {
+      logger.info(String.format("Creating table %s", queryEntrySet.getKey()));
+
+      executeQuery(queryEntrySet.getValue());
     }
   }
 }
