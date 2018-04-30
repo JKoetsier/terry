@@ -13,20 +13,6 @@ public class FieldExpression extends Expression {
   private ExposedField exposedField;
   private String fieldName;
 
-//  @Override
-//  public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
-//    fieldRef = relation.getFieldRef(fieldName);
-//
-//    if (fieldRef == null) {
-//      throw new NotMatchingWorkloadException(String.format(
-//          "Column '%s' does not exist", fieldName
-//      ));
-//    }
-//
-//    isValidated = true;
-//]
-
-
   public FieldExpression(String fieldName) {
     this.fieldName = fieldName;
   }

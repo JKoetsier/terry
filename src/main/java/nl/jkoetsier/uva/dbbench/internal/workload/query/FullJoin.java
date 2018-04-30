@@ -13,7 +13,6 @@ public class FullJoin extends RAJoin {
     super(leftInput, rightInput);
   }
 
-
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     leftInput.acceptVisitor(workloadVisitor);
@@ -25,17 +24,4 @@ public class FullJoin extends RAJoin {
 
     workloadVisitor.visit(this);
   }
-
-//  @Override
-//  public void validate(Schema schema) throws NotMatchingWorkloadException {
-//    leftInput.validate(schema);
-//    rightInput.validate(schema);
-//
-//    if (onExpression != null) {
-//      onExpression.validate(schema, this);
-//    }
-//
-//    isValidated = true;
-//  }
-
 }

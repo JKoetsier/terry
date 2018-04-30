@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.expression;
 
-
 import nl.jkoetsier.uva.dbbench.internal.workload.query.ExposedFields;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 

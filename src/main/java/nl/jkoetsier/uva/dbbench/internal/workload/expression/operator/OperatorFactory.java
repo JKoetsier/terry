@@ -27,7 +27,6 @@ public class OperatorFactory {
     mapping.put(">", GtOp.class);
   }
 
-
   public static Operator create(String type) {
     Class<? extends Operator> opClass = mapping.get(type.toLowerCase());
 
@@ -41,7 +40,6 @@ public class OperatorFactory {
       throw new RuntimeException(e);
     }
   }
-
 }
 
 

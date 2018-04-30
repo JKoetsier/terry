@@ -19,35 +19,6 @@ public class Rename extends UnaryRelation {
     return name;
   }
 
-//  @Override
-//  public ExposedField getFieldRef(String fieldName) {
-//    return input.getFieldRef(fieldName);
-//  }
-//
-//  @Override
-//  public ExposedField getFieldRef(String tableName, String fieldName) {
-//    if (tableName.equals(name)) {
-//      return input.getFieldRef(fieldName);
-//    }
-//
-//    return null;
-//  }
-//
-//  @Override
-//  public List<ExposedField> getFieldRefsForTable(String tableName) {
-//    throw new RuntimeException("Not implemented");
-//  }
-//
-//  @Override
-//  public ExposedFields getFieldRefs() {
-//    return input.getFieldRefs();
-//  }
-
-//  @Override
-//  public void validate(Schema schema) throws NotMatchingWorkloadException {
-//    input.validate(schema);
-//  }
-
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     input.acceptVisitor(workloadVisitor);
@@ -70,12 +41,7 @@ public class Rename extends UnaryRelation {
 
     for (ExposedField exposedField : inputExposedFields.getAll()) {
       ExposedField cloned = exposedField.clone();
-      logger.info("In Rename doing clones, with name: {}", name);
       cloned.setTableAlias(name);
-      logger.info(exposedField.getColumnName() + " " + cloned.getColumnName());
-      logger.info(exposedField.getTableAlias() + " " + cloned.getTableAlias());
-      logger.info(exposedField.getField() + " " + cloned.getField());
-      logger.info(exposedField.getTableName() + " " + cloned.getTableName());
 
       thisExposedFields.add(cloned);
     }

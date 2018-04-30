@@ -45,46 +45,6 @@ public class InputRelation extends Relation {
     return tableName;
   }
 
-//  public void setFieldRefs(ExposedFields fieldRefs) {
-//    this.fieldRefs = fieldRefs;
-//  }
-
-//  @Override
-//  public ExposedField getFieldRef(String fieldName) {
-//    if (!isValidated) {
-//      throw new NotValidatedWorkloadException();
-//    }
-//
-//    return fieldRefs.get(fieldName);
-//  }
-//
-//  @Override
-//  public ExposedField getFieldRef(String tableName, String fieldName) {
-//    if (!isValidated) {
-//      throw new NotValidatedWorkloadException();
-//    }
-//
-//    return fieldRefs.get(tableName, fieldName);
-//  }
-//
-//  @Override
-//  public ExposedFields getFieldRefs() {
-//    if (!isValidated) {
-//      throw new NotValidatedWorkloadException();
-//    }
-//
-//    return fieldRefs;
-//  }
-
-//  @Override
-//  public List<ExposedField> getFieldRefsForTable(String tableName) {
-//    if (!isValidated) {
-//      throw new NotValidatedWorkloadException();
-//    }
-//
-//    return fieldRefs.getAllForTable(tableName);
-//  }
-
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);

@@ -6,8 +6,6 @@ public class AndOp extends Operator {
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
-
     workloadVisitor.visit(this);
   }
-
 }

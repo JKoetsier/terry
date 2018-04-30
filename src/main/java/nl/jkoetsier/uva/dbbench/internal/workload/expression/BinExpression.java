@@ -11,8 +11,7 @@ public class BinExpression extends Expression {
   private Operator operator;
   private boolean not;
 
-  public BinExpression(Expression leftExpr, Expression rightExpr, Operator operator, boolean
-      not) {
+  public BinExpression(Expression leftExpr, Expression rightExpr, Operator operator, boolean not) {
     this.leftExpr = leftExpr;
     this.rightExpr = rightExpr;
     this.operator = operator;

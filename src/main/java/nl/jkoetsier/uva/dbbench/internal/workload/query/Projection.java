@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
-
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.internal.workload.element.OrderBy;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
@@ -83,23 +82,6 @@ public class Projection extends UnaryRelation {
 
     workloadVisitor.visit(this);
   }
-
-//  @Override
-//  public void validate(Schema schema) throws NotMatchingWorkloadException {
-//    input.validate(schema);
-//
-//    if (fieldRefs != null) {
-//      fieldRefs.validate(schema, input);
-//    } else if (tableName != null) {
-//      // Project all table columns
-//      fieldRefs = new FieldRefs();
-//      fieldRefs.addAll(input.getFieldRefsForTable(tableName));
-//    } else {
-//      fieldRefs = input.getFieldRefs();
-//    }
-//
-//    isValidated = true;
-//  }
 
   public List<OrderBy> getOrderBy() {
     return orderBy;

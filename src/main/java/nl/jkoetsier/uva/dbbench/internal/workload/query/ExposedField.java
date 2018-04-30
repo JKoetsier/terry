@@ -8,7 +8,6 @@ public class ExposedField {
   private String tableName;
   private String tableAlias;
   private String columnName;
-  private String columnAlias;
 
   public ExposedField(String fullColumnName) {
     String[] splitOnDot = fullColumnName.split("\\.");
@@ -20,7 +19,6 @@ public class ExposedField {
       columnName = splitOnDot[0];
     }
   }
-
 
   public ExposedField(Field field, String tableName, String columnName) {
     this.tableName = tableName;
@@ -63,24 +61,6 @@ public class ExposedField {
     this.field = field;
   }
 
-//  public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
-//    ExposedField existing;
-//    if (tableName != null) {
-//      existing = relation.getFieldRef(tableName, columnName);
-//    } else {
-//      existing = relation.getFieldRef(columnName);
-//    }
-//    if (existing == null) {
-//      throw new NotMatchingWorkloadException(String.format(
-//          "Field %s.%s does not exist", tableName, columnName
-//      ));
-//    }
-//
-//    field = existing.getField();
-//
-//    isValidated = true;
-//  }
-
   public String toString() {
 
     String columnPart;
@@ -91,23 +71,16 @@ public class ExposedField {
       columnPart = String.format("%s.%s", tableName, columnName);
     }
 
-    if (columnAlias != null) {
-      return String.format("%s AS %s", columnPart, columnAlias);
-    } else {
-      return String.format("%s", columnPart);
-    }
+    return String.format("%s", columnPart);
   }
 
   @Override
   protected ExposedField clone() {
-    try {
-      ExposedField cloned = (ExposedField)super.clone();
-      cloned.setField(getField());
-      return cloned;
-
-    } catch (CloneNotSupportedException e) {
-      e.printStackTrace();
-      return null;
-    }
+    return new ExposedField(
+        this.field,
+        this.tableName,
+        this.columnName,
+        this.tableAlias
+    );
   }
 }

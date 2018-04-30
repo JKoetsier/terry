@@ -10,7 +10,6 @@ import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 public class Workload implements WorkloadElement {
 
   private List<Query> queries;
-  private boolean isValidated = false;
 
   public Workload() {
     queries = new ArrayList<>();
@@ -41,14 +40,5 @@ public class Workload implements WorkloadElement {
     WorkloadValidationVisitor workloadValidationVisitor = new WorkloadValidationVisitor(schema);
 
     this.acceptVisitor(workloadValidationVisitor);
-//    for (Query query : queries) {
-//      query.validate(schema);
-//    }
-
-    isValidated = true;
-  }
-
-  public boolean isValidated() {
-    return isValidated;
   }
 }

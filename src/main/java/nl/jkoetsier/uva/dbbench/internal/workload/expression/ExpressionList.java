@@ -8,7 +8,6 @@ public class ExpressionList extends Expression {
 
   private List<Expression> expressions;
 
-
   public ExpressionList(
       List<Expression> expressions) {
     this.expressions = expressions;

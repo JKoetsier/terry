@@ -8,6 +8,4 @@ public class GteOp extends Operator {
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);
   }
-
-
 }

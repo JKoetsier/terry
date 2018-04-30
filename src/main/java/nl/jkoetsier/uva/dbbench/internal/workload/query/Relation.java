@@ -7,9 +7,6 @@ public abstract class Relation implements WorkloadElement {
   protected ExposedFields exposedFields;
   protected boolean isValidated = false;
 
-  // TODO insert Rename here?
-  // Or keep all current fieldrefs somewhere?
-
   public abstract ExposedFields getExposedFields();
 
   public boolean isValidated() {

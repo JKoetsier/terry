@@ -7,7 +7,6 @@ import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 public class Query implements WorkloadElement {
 
   private Relation relation;
-  private boolean isValidated = false;
 
   public Query(Relation relation) {
     this.relation = relation;
@@ -26,14 +25,5 @@ public class Query implements WorkloadElement {
     relation.acceptVisitor(workloadVisitor);
 
     workloadVisitor.visit(this);
-  }
-
-//  public void validate(Schema schema) throws NotMatchingWorkloadException {
-//    relation.validate(schema);
-//    isValidated = true;
-//  }
-
-  public boolean isValidated() {
-    return isValidated;
   }
 }

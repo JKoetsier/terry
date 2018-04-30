@@ -8,5 +8,4 @@ public class ModuloOp extends Operator {
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);
   }
-
 }

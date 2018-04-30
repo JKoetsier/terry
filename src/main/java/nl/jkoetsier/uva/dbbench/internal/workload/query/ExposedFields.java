@@ -8,7 +8,6 @@ import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
 public class ExposedFields {
 
   private List<ExposedField> exposedFields;
-//  private boolean isValidated = false;
 
   public ExposedFields() {
     exposedFields = new ArrayList<>();
@@ -94,14 +93,6 @@ public class ExposedFields {
     return resultRefs;
   }
 
-//  public void validate(Schema schema, Relation relation) throws NotMatchingWorkloadException {
-//    for (ExposedField exposedField : exposedFields) {
-//      exposedField.validate(schema, relation);
-//    }
-//
-//    isValidated = true;
-//  }
-
   public String toString() {
     List<String> children = new ArrayList<>();
 
@@ -129,8 +120,4 @@ public class ExposedFields {
 
     return merged;
   }
-
-//  public boolean isValidated() {
-//    return isValidated;
-//  }
 }

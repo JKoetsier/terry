@@ -24,16 +24,4 @@ public class InnerJoin extends RAJoin {
 
     workloadVisitor.visit(this);
   }
-
-//  @Override
-//  public void validate(Schema schema) throws NotMatchingWorkloadException {
-//    leftInput.validate(schema);
-//    rightInput.validate(schema);
-//
-//    if (onExpression != null) {
-//      onExpression.validate(schema, this);
-//    }
-//
-//    isValidated = true;
-//  }
 }
