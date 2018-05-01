@@ -1,7 +1,6 @@
 package nl.jkoetsier.uva.dbbench.output.mssql;
 
 import java.util.HashMap;
-import java.util.List;
 import nl.jkoetsier.uva.dbbench.config.MsSqlConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;

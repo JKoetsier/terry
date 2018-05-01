@@ -176,7 +176,7 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
     String alias = "";
 
     if (selectExpression.getAlias() != null) {
-      alias = String.format(" AS %s", selectExpression.getAlias());
+      alias = String.format(" AS [%s]", selectExpression.getAlias());
     }
 
     currentStack.push(String.format("%s%s", currentStack.pop(), alias));
@@ -203,7 +203,9 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
   public void visit(FieldExpression fieldExpression) {
     logger.debug("Visit FieldExpression");
 
-    currentStack.push(fieldExpression.getFieldName());
+    String[] fieldName = fieldExpression.getFieldName().split("\\.");
+
+    currentStack.push(String.format("[%s]", String.join("].[", fieldName)));
   }
 
   @Override
@@ -243,10 +245,10 @@ public class MsSqlWorkloadVisitor extends WorkloadVisitor {
     logger.debug("Visit InputRelation");
 
     if (inputRelation.getTableAlias() != null) {
-      currentStack.push(String.format("%s AS %s", inputRelation.getTableName(),
+      currentStack.push(String.format("[%s] AS [%s]", inputRelation.getTableName(),
           inputRelation.getTableAlias()));
     } else {
-      currentStack.push(inputRelation.getTableName());
+      currentStack.push(String.format("[%s]", inputRelation.getTableName()));
     }
   }
 

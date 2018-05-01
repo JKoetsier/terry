@@ -11,5 +11,4 @@ public interface DatabaseInterface {
   void importSchema(Schema schema);
   void closeConnection();
   HashMap<Integer, String> getWorkloadQueries(Workload workload);
-
 }
