@@ -88,12 +88,12 @@ public class DbbenchApplication implements ApplicationRunner {
     }
 
     if (error) {
-      System.out.println(String.format(
+      System.out.format(
           "Run program with parameters --workload=workloadfile.sql --datamodel=datamodel.sql"
-              + "--output_db=(%s) . Optional: %s",
+              + "--output_db=(%s) . Optional: %s%n",
           String.join("|", globalConfigProperties.getAcceptedDatabases()),
           String.join(" ", options)
-      ));
+      );
       System.exit(1);
     }
   }
@@ -116,9 +116,9 @@ public class DbbenchApplication implements ApplicationRunner {
       try {
         workload.validate(schema);
       } catch (NotMatchingWorkloadException e) {
-        System.out.println(String.format(
-            "Error in validating workload: %s", e.getMessage()
-        ));
+        System.out.format(
+            "Error in validating workload: %s%n", e.getMessage()
+        );
 
         System.exit(1);
       }
