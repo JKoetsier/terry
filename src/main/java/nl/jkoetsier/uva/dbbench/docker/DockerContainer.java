@@ -121,7 +121,6 @@ public class DockerContainer {
     return dockerClient.inspectContainerCmd(containerId).exec();
   }
 
-
   protected Container getContainer() {
     return dockerClient.listContainersCmd().withIdFilter(Arrays.asList(containerId)).exec().get(0);
   }

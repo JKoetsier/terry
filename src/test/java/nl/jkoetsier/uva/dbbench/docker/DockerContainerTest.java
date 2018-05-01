@@ -11,12 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.testclass.IntegrationTest;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Ignore
-// ignore for now. should be able to run separately from maven
 public class DockerContainerTest {
   private String testImage = "hello-world";
 

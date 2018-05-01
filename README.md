@@ -1,5 +1,14 @@
 # DBBENCH
 
+## Run Tests
+To run the default test suite, use
+    
+    mvn test
+    
+To run the integration tests, use the 'integration' profile:
+
+    mvn test -P integration
+
 
 ## Notes
 - Before running tests in IDE, make sure maven install or package has run once (to put the resources

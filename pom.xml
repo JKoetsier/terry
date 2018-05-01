@@ -16,7 +16,7 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.0.1.RELEASE</version>
-    <relativePath/> <!-- lookup parent from repository -->
+    <relativePath/>
   </parent>
 
   <properties>
@@ -84,6 +84,8 @@
       <version>3.1.0-rc-3</version>
     </dependency>
 
+
+
   </dependencies>
 
   <build>
@@ -93,7 +95,6 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
 
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -102,8 +103,52 @@
           <configLocation>google_checks.xml</configLocation>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.21.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit47</artifactId>
+            <version>2.19.1</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <groups>${includedTestGroups}</groups>
+          <excludedGroups>${excludedTestGroups}</excludedGroups>
+
+        </configuration>
+
+      </plugin>
     </plugins>
+
   </build>
+
+
+  <profiles>
+
+    <profile>
+      <id>default</id>
+      <properties>
+        <excludedTestGroups>nl.jkoetsier.uva.dbbench.testclass.IntegrationTest</excludedTestGroups>
+        <includedTestGroups></includedTestGroups>
+      </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+
+    <profile>
+      <id>integration</id>
+      <properties>
+        <includedTestGroups>nl.jkoetsier.uva.dbbench.testclass.IntegrationTest</includedTestGroups>
+        <excludedTestGroups></excludedTestGroups>
+      </properties>
+    </profile>
+
+  </profiles>
 
   <reporting>
     <plugins>
