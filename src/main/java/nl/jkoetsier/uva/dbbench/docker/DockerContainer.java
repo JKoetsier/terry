@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import nl.jkoetsier.uva.dbbench.docker.exception.NotExistingContainerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,28 @@ public class DockerContainer {
     this.image = image;
 
     createClient();
+  }
+
+  public DockerContainer() {
+    createClient();
+  }
+
+  public static DockerContainer fromExisting(String name) throws NotExistingContainerException {
+    DockerContainer dockerContainer = new DockerContainer();
+    dockerContainer.setName(name);
+
+    List<Container> containers = dockerContainer.dockerClient.listContainersCmd().withShowAll(true)
+        .withNameFilter(Arrays.asList(name)).exec();
+
+    if (containers.size() == 0) {
+      throw new NotExistingContainerException(String.format("Container '%s' does not exist", name));
+    }
+
+    Container container = containers.get(0);
+
+    dockerContainer.containerId = container.getId();
+
+    return dockerContainer;
   }
 
   public void setHost(String host) {
@@ -122,7 +145,8 @@ public class DockerContainer {
   }
 
   protected Container getContainer() {
-    return dockerClient.listContainersCmd().withIdFilter(Arrays.asList(containerId)).exec().get(0);
+    return dockerClient.listContainersCmd().withShowAll(true)
+        .withIdFilter(Arrays.asList(containerId)).exec().get(0);
   }
 
   public void stop() {
@@ -131,5 +155,9 @@ public class DockerContainer {
 
   public void remove() {
     dockerClient.removeContainerCmd(containerId).exec();
+  }
+
+  public boolean isRunning() {
+    return getContainer().getState().equals("running");
   }
 }

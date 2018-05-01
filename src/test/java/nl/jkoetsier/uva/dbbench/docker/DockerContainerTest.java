@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.docker;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
@@ -9,15 +10,34 @@ import com.github.dockerjava.api.model.ContainerPort;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.docker.exception.NotExistingContainerException;
 import nl.jkoetsier.uva.dbbench.testclass.IntegrationTest;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class DockerContainerTest {
+
   private String testImage = "hello-world";
+  private static String containerName = "testcontainer92824912240djkld";
 
   private DockerContainer dockerContainer;
+
+  @BeforeClass
+  public static void removeContainer() {
+    // Clean up possible mess from a previous run
+    try {
+      DockerContainer existingContainer = DockerContainer.fromExisting(containerName);
+
+      if (existingContainer.isRunning()) {
+        existingContainer.stop();
+      }
+      existingContainer.remove();
+    } catch (NotExistingContainerException e) {
+      // Do nothing
+    }
+  }
 
   @After
   public void cleanup() {
@@ -32,13 +52,13 @@ public class DockerContainerTest {
   @Category(IntegrationTest.class)
   public void testDockerRun() {
     dockerContainer = new DockerContainer(testImage);
-    dockerContainer.setName("testcontainer");
+    dockerContainer.setName(containerName);
     dockerContainer.run();
 
     assertEquals("running", dockerContainer.getContainer().getState());
 
     List<String> names = Arrays.asList(dockerContainer.getContainer().getNames());
-    assertTrue(names.contains("/testcontainer"));
+    assertTrue(names.contains("/" + containerName));
   }
 
   @Test
@@ -51,7 +71,7 @@ public class DockerContainerTest {
     portMapping.put(3600, 3800);
     dockerContainer.setPortMapping(portMapping);
 
-    dockerContainer.setName("testcontainer");
+    dockerContainer.setName(containerName);
     dockerContainer.run();
 
     Container container = dockerContainer.getContainer();
@@ -76,7 +96,7 @@ public class DockerContainerTest {
     envVars.put("envvarB", "valB");
 
     dockerContainer.setEnvironmentVariables(envVars);
-    dockerContainer.setName("testcontainer");
+    dockerContainer.setName(containerName);
     dockerContainer.run();
 
     InspectContainerResponse inspectContainerResponse = dockerContainer.getInspectContainer();
