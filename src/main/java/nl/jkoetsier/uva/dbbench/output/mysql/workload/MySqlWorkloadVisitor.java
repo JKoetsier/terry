@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output.mssql.workload;
+package nl.jkoetsier.uva.dbbench.output.mysql.workload;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,9 +13,9 @@ import nl.jkoetsier.uva.dbbench.output.BaseSqlWorkloadVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MsSqlWorkloadVisitor extends BaseSqlWorkloadVisitor {
+public class MySqlWorkloadVisitor extends BaseSqlWorkloadVisitor {
 
-  static Logger logger = LoggerFactory.getLogger(MsSqlWorkloadVisitor.class);
+  private static Logger logger = LoggerFactory.getLogger(MySqlWorkloadVisitor.class);
 
   @Override
   public void visit(SelectExpression selectExpression) {
@@ -24,7 +24,7 @@ public class MsSqlWorkloadVisitor extends BaseSqlWorkloadVisitor {
     String alias = "";
 
     if (selectExpression.getAlias() != null) {
-      alias = String.format(" AS [%s]", selectExpression.getAlias());
+      alias = String.format(" AS %s", selectExpression.getAlias());
     }
 
     currentStack.push(String.format("%s%s", currentStack.pop(), alias));
@@ -36,23 +36,12 @@ public class MsSqlWorkloadVisitor extends BaseSqlWorkloadVisitor {
 
     String[] fieldName = fieldExpression.getFieldName().split("\\.");
 
-    currentStack.push(String.format("[%s]", String.join("].[", fieldName)));
+    currentStack.push(String.format("%s", String.join(".", fieldName)));
   }
 
   @Override
   public void visit(FullJoin fullJoin) {
-    logger.debug("Visit FullJoin");
-
-    String onExpr = "";
-
-    if (fullJoin.getOnExpression() != null) {
-      onExpr = String.format(" ON %s", currentStack.pop());
-    }
-
-    String rightInp = currentStack.pop();
-    String leftInp = currentStack.pop();
-
-    currentStack.push(String.format("%s FULL JOIN %s%s", leftInp, rightInp, onExpr));
+    throw new RuntimeException("Not supported in MySQL. Do something with this");
   }
 
   @Override
@@ -60,10 +49,10 @@ public class MsSqlWorkloadVisitor extends BaseSqlWorkloadVisitor {
     logger.debug("Visit InputRelation");
 
     if (inputRelation.getTableAlias() != null) {
-      currentStack.push(String.format("[%s] AS [%s]", inputRelation.getTableName(),
+      currentStack.push(String.format("%s AS %s", inputRelation.getTableName(),
           inputRelation.getTableAlias()));
     } else {
-      currentStack.push(String.format("[%s]", inputRelation.getTableName()));
+      currentStack.push(String.format("%s", inputRelation.getTableName()));
     }
   }
 
@@ -71,11 +60,11 @@ public class MsSqlWorkloadVisitor extends BaseSqlWorkloadVisitor {
   public void visit(Projection projection) {
     logger.debug("Visit Projection");
 
-    String top = "";
+    String limit = "";
     String orderBy = "";
 
     if (projection.getLimit() != null) {
-      top = String.format(" TOP(%s)", currentStack.pop());
+      limit = String.format(" LIMIT %s", currentStack.pop());
     }
 
     if (projection.getOrderBy() != null) {
@@ -115,11 +104,11 @@ public class MsSqlWorkloadVisitor extends BaseSqlWorkloadVisitor {
         parentheses ? ")" : "");
 
     String str = String.format(
-        "SELECT%s %s FROM %s%s",
-        top,
+        "SELECT %s FROM %s%s%s",
         select,
         from,
-        orderBy
+        orderBy,
+        limit
     );
 
     currentStack.push(str);

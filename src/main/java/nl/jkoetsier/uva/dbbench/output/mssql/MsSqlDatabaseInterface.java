@@ -14,13 +14,14 @@ public class MsSqlDatabaseInterface extends JdbcDatabaseInterface {
 
   private MsSqlConfigProperties configProperties;
 
-  private static Logger logger = LoggerFactory.getLogger(MsSqlDatabaseInterface.class);
+  protected static Logger logger = LoggerFactory.getLogger(MsSqlDatabaseInterface.class);
 
   public MsSqlDatabaseInterface(MsSqlConfigProperties configProperties) {
     this.configProperties = configProperties;
   }
 
-  protected HashMap<String, String> getCreateQueries(Schema schema) {
+  @Override
+  public HashMap<String, String> getCreateQueries(Schema schema) {
     MsSqlSchemaVisitor schemaVisitor = new MsSqlSchemaVisitor();
     schema.acceptVisitor(schemaVisitor);
 
