@@ -140,11 +140,11 @@ public class DockerContainer {
     return cmd.withEnv(envs);
   }
 
-  protected InspectContainerResponse getInspectContainer() {
+  InspectContainerResponse getInspectContainer() {
     return dockerClient.inspectContainerCmd(containerId).exec();
   }
 
-  protected Container getContainer() {
+  Container getContainer() {
     return dockerClient.listContainersCmd().withShowAll(true)
         .withIdFilter(Arrays.asList(containerId)).exec().get(0);
   }
@@ -157,7 +157,7 @@ public class DockerContainer {
     dockerClient.removeContainerCmd(containerId).exec();
   }
 
-  public boolean isRunning() {
+  boolean isRunning() {
     return getContainer().getState().equals("running");
   }
 }
