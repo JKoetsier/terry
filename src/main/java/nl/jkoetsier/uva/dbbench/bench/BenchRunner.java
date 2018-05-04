@@ -1,9 +1,11 @@
 package nl.jkoetsier.uva.dbbench.bench;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.LongStream;
+import nl.jkoetsier.uva.dbbench.bench.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
@@ -33,7 +35,7 @@ public class BenchRunner {
     this.workload = workload;
   }
 
-  private void setup() {
+  private void setup() throws SQLException {
     databaseInterface.connect();
 
     if (schema != null) {
@@ -78,8 +80,12 @@ public class BenchRunner {
     }
   }
 
-  public void run() {
-    setup();
+  public void run() throws DatabaseException {
+    try {
+      setup();
+    } catch (SQLException e) {
+      throw new DatabaseException(e);
+    }
 
     int noRuns = globalConfigProperties.getNoRuns();
     int skipFirst = globalConfigProperties.getSkipFirst();
@@ -95,15 +101,21 @@ public class BenchRunner {
 
     for (int i = 0; i < noRuns + skipFirst; i++) {
       for (Entry<Integer, String> entry: queries.entrySet()) {
-        long time = timeQuery(entry.getValue());
+        try {
 
-        if (i < skipFirst) {
-          continue;
+          long time = timeQuery(entry.getValue());
+
+          if (i < skipFirst) {
+            continue;
+          }
+
+          results.get(entry.getKey())[i - skipFirst] = nanoToMicro(time);
+
+          logger.debug("Query {} Execution time: {}", entry.getKey(), formatTimeMicro(time));
+
+        } catch (SQLException e) {
+          throw new DatabaseException(e);
         }
-
-        results.get(entry.getKey())[i - skipFirst] = nanoToMicro(time);
-
-        logger.debug("Query {} Execution time: {}", entry.getKey(), formatTimeMicro(time));
       }
     }
 
@@ -125,7 +137,7 @@ public class BenchRunner {
    * @param query
    * @return
    */
-  private long timeQuery(String query) {
+  private long timeQuery(String query) throws SQLException {
     long start = System.nanoTime();
 
     databaseInterface.executeQuery(query);

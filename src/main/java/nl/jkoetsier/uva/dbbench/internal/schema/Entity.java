@@ -1,6 +1,9 @@
 package nl.jkoetsier.uva.dbbench.internal.schema;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
@@ -48,6 +51,22 @@ public class Entity implements SchemaTreeElement {
 
   public void setPrimaryKey(Set<Field> primaryKey) {
     this.primaryKey = primaryKey;
+  }
+
+  public List<String> getPrimaryKeyFieldNames() {
+    List<String> keyFields = new ArrayList<>();
+
+    if (primaryKey == null) {
+      return keyFields;
+    }
+
+    for (Field field : primaryKey) {
+      keyFields.add(field.getName());
+    }
+
+    Collections.reverse(keyFields);
+
+    return keyFields;
   }
 
   @Override

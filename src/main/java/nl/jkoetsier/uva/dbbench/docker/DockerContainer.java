@@ -110,10 +110,10 @@ public class DockerContainer {
     dockerClient.startContainerCmd(containerId).exec();
 
     Container container = getContainer();
-    logger.info("Container state: {}", container.getState());
-    assert container.getState().equals("running");
 
-    logger.info("Container is running");
+    logger.info("Container state: {}", container.getState());
+
+    assert container.getState().equals("running");
   }
 
   private CreateContainerCmd setPortBindings(CreateContainerCmd cmd) {

@@ -8,6 +8,7 @@ import nl.jkoetsier.uva.dbbench.bench.BenchRunner;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.CommandLineConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
+import nl.jkoetsier.uva.dbbench.connector.postgres.PostgresDatabaseInterface;
 import nl.jkoetsier.uva.dbbench.docker.DockerContainer;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
@@ -137,6 +138,9 @@ public class DbbenchApplication implements ApplicationRunner {
         break;
       case "mysql":
         databaseInterface = new MySqlDatabaseInterface(dbConfigProperties);
+        break;
+      case "postgres":
+        databaseInterface = new PostgresDatabaseInterface(dbConfigProperties);
         break;
       default:
         throw new Exception(String.format("Missing output database initialisation for %s",
