@@ -54,6 +54,8 @@ public abstract class JdbcDatabaseInterface implements DatabaseInterface {
     Connection connection = getConnection();
 
     try {
+      logger.debug("Query: {}", query);
+
       Statement statement = connection.createStatement();
       statement.execute(query);
     } catch (Exception e) {

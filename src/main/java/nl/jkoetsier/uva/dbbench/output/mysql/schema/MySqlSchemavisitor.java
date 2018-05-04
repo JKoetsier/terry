@@ -138,7 +138,6 @@ public class MySqlSchemavisitor extends SchemaVisitor {
 
       createTable = createTable.concat(String.format(
           "\n\tPRIMARY KEY (\n\t\t%s\n\t)",
-          entity.getName(),
           String.join(",\n\t\t", keyFields)
       ));
 

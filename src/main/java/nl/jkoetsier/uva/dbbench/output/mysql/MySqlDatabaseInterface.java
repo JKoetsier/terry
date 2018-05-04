@@ -1,11 +1,12 @@
 package nl.jkoetsier.uva.dbbench.output.mysql;
 
 import java.util.HashMap;
-import nl.jkoetsier.uva.dbbench.config.MySqlConfigProperties;
+import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.output.JdbcDatabaseInterface;
 import nl.jkoetsier.uva.dbbench.output.mysql.schema.MySqlSchemavisitor;
+import nl.jkoetsier.uva.dbbench.output.mysql.workload.MySqlWorkloadQueryGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,20 +14,23 @@ public class MySqlDatabaseInterface extends JdbcDatabaseInterface {
 
   private static Logger logger = LoggerFactory.getLogger(MySqlDatabaseInterface.class);
 
-  private MySqlConfigProperties configProperties;
+  private DbConfigProperties configProperties;
 
-  public MySqlDatabaseInterface(MySqlConfigProperties configProperties) {
+  public MySqlDatabaseInterface(DbConfigProperties configProperties) {
     this.configProperties = configProperties;
   }
 
   @Override
   protected String getConnectionString() {
-    return String.format("jdbc:mysql://%s:%s/%s?user=%s&password=%s",
+    String otherProperties = "&useSSL=false";
+
+    return String.format("jdbc:mysql://%s:%s/%s?user=%s&password=%s%s",
         configProperties.getHost(),
         configProperties.getPort(),
         configProperties.getDatabase(),
         configProperties.getUsername(),
-        configProperties.getPassword()
+        configProperties.getPassword(),
+        otherProperties
     );
   }
 
@@ -39,7 +43,19 @@ public class MySqlDatabaseInterface extends JdbcDatabaseInterface {
   }
 
   @Override
+  public boolean isDocker() {
+    return configProperties.isDocker();
+  }
+
+  @Override
   public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
-    return null;
+    MySqlWorkloadQueryGenerator queryGenerator = new MySqlWorkloadQueryGenerator();
+
+    return queryGenerator.generateQueries(workload);
+  }
+
+  @Override
+  public DbConfigProperties getConfigProperties() {
+    return configProperties;
   }
 }

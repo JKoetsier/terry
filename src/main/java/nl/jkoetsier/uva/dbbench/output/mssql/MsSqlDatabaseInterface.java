@@ -1,7 +1,7 @@
 package nl.jkoetsier.uva.dbbench.output.mssql;
 
 import java.util.HashMap;
-import nl.jkoetsier.uva.dbbench.config.MsSqlConfigProperties;
+import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.output.JdbcDatabaseInterface;
@@ -12,11 +12,11 @@ import org.slf4j.LoggerFactory;
 
 public class MsSqlDatabaseInterface extends JdbcDatabaseInterface {
 
-  private MsSqlConfigProperties configProperties;
+  private DbConfigProperties configProperties;
 
   protected static Logger logger = LoggerFactory.getLogger(MsSqlDatabaseInterface.class);
 
-  public MsSqlDatabaseInterface(MsSqlConfigProperties configProperties) {
+  public MsSqlDatabaseInterface(DbConfigProperties configProperties) {
     this.configProperties = configProperties;
   }
 
@@ -26,6 +26,11 @@ public class MsSqlDatabaseInterface extends JdbcDatabaseInterface {
     schema.acceptVisitor(schemaVisitor);
 
     return schemaVisitor.getCreateQueries();
+  }
+
+  @Override
+  public boolean isDocker() {
+    return configProperties.isDocker();
   }
 
   @Override
@@ -58,4 +63,8 @@ public class MsSqlDatabaseInterface extends JdbcDatabaseInterface {
   }
 
 
+  @Override
+  public DbConfigProperties getConfigProperties() {
+    return configProperties;
+  }
 }

@@ -1,15 +1,18 @@
 package nl.jkoetsier.uva.dbbench.docker;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ContainerConfig;
 import com.github.dockerjava.api.model.ContainerPort;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import nl.jkoetsier.uva.dbbench.docker.exception.NotExistingContainerException;
 import nl.jkoetsier.uva.dbbench.testclass.IntegrationTest;
 import org.junit.After;
@@ -69,7 +72,10 @@ public class DockerContainerTest {
     HashMap<Integer, Integer> portMapping = new HashMap<>();
     portMapping.put(3500, 3700);
     portMapping.put(3600, 3800);
-    dockerContainer.setPortMapping(portMapping);
+
+    for (Entry<Integer, Integer> entry : portMapping.entrySet()) {
+      dockerContainer.addPortMapping(entry.getKey(), entry.getValue());
+    }
 
     dockerContainer.setName(containerName);
     dockerContainer.run();
@@ -95,22 +101,67 @@ public class DockerContainerTest {
     envVars.put("envvarA", "valA");
     envVars.put("envvarB", "valB");
 
-    dockerContainer.setEnvironmentVariables(envVars);
+    for (Entry<String, String> entry : envVars.entrySet()) {
+      dockerContainer.addEnvironmentVariable(entry.getKey(), entry.getValue());
+    }
+
     dockerContainer.setName(containerName);
     dockerContainer.run();
 
+    checkEnvironmentVariables(envVars, dockerContainer);
+  }
+
+  private void checkEnvironmentVariables(HashMap<String, String> expected, DockerContainer dockerContainer) {
     InspectContainerResponse inspectContainerResponse = dockerContainer.getInspectContainer();
     ContainerConfig config = inspectContainerResponse.getConfig();
 
     for (String env : config.getEnv()) {
       String[] split = env.split("=");
 
-      if (envVars.get(split[0]) != null) {
-        assertEquals(envVars.get(split[0]), split[1]);
-        envVars.remove(split[0]);
+      if (expected.get(split[0]) != null) {
+        assertEquals(expected.get(split[0]), split[1]);
+        expected.remove(split[0]);
       }
     }
 
-    assertEquals(0, envVars.size());
+    assertEquals(0, expected.size());
+  }
+
+  @Test
+  @Category(IntegrationTest.class)
+  public void testEnvironmentVariablesAsStrings() {
+    dockerContainer = new DockerContainer(testImage);
+
+    HashMap<String, String> envVars = new HashMap<>();
+    envVars.put("envvarA", "valA");
+    envVars.put("envvarB", "valB");
+
+    for (Entry<String, String> entry : envVars.entrySet()) {
+      dockerContainer.addEnvironmentVariable(String.format("%s=%s", entry.getKey(), entry.getValue()));
+    }
+
+    assertEquals(envVars, dockerContainer.getEnvironmentVariables());
+  }
+
+
+  @Test
+  @Category(IntegrationTest.class)
+  public void testEnvironmentVariablesAsListOfStrings() {
+    dockerContainer = new DockerContainer(testImage);
+
+    HashMap<String, String> envVars = new HashMap<>();
+    envVars.put("envvarA", "valA");
+    envVars.put("envvarB", "valB");
+
+    List<String> envVarStrings = new ArrayList<>();
+
+    for (Entry<String, String> entry : envVars.entrySet()) {
+
+      envVarStrings.add(String.format("%s=%s", entry.getKey(), entry.getValue()));
+    }
+
+    dockerContainer.addEnvironmentVariables(envVarStrings.toArray(new String[0]));
+
+    assertEquals(envVars, dockerContainer.getEnvironmentVariables());
   }
 }

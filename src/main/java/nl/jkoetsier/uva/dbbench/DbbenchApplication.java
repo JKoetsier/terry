@@ -5,15 +5,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import nl.jkoetsier.uva.dbbench.bench.BenchRunner;
+import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.CommandLineConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
-import nl.jkoetsier.uva.dbbench.config.MsSqlConfigProperties;
+import nl.jkoetsier.uva.dbbench.docker.DockerContainer;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
+import nl.jkoetsier.uva.dbbench.output.DatabaseInterface;
 import nl.jkoetsier.uva.dbbench.output.mssql.MsSqlDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.output.mysql.MySqlDatabaseInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +38,7 @@ public class DbbenchApplication implements ApplicationRunner {
   private GlobalConfigProperties globalConfigProperties;
 
   @Autowired
-  private MsSqlConfigProperties msSqlConfigProperties;
+  private DbConfigProperties dbConfigProperties;
 
   private Boolean verifyWorkload = true;
   private Boolean skipDataModel = false;
@@ -73,22 +76,22 @@ public class DbbenchApplication implements ApplicationRunner {
     }
 
     if (commandLineConfigProperties.getWorkload().trim().equals("")) {
-      System.out.println("No workload provided. Provide workload");
+      System.err.println("No workload provided. Provide workload");
       error = true;
     }
 
     if (commandLineConfigProperties.getDatamodel().trim().equals("") && !skipDataModel) {
-      System.out.println("No datamodel provided. Provide datamodel");
+      System.err.println("No datamodel provided. Provide datamodel");
       error = true;
     }
 
     if (commandLineConfigProperties.getOutputDb().trim().equals("") ||
         !globalConfigProperties.getAcceptedDatabases().contains(commandLineConfigProperties.getOutputDb())) {
-      System.out.println("No correct output database provided. Provide output database");
+      System.err.println("No correct output database provided. Provide output database");
     }
 
     if (error) {
-      System.out.format(
+      System.err.format(
           "Run program with parameters --workload=workloadfile.sql --datamodel=datamodel.sql"
               + "--output_db=(%s) . Optional: %s%n",
           String.join("|", globalConfigProperties.getAcceptedDatabases()),
@@ -116,7 +119,7 @@ public class DbbenchApplication implements ApplicationRunner {
       try {
         workload.validate(schema);
       } catch (NotMatchingWorkloadException e) {
-        System.out.format(
+        System.err.format(
             "Error in validating workload: %s%n", e.getMessage()
         );
 
@@ -124,23 +127,71 @@ public class DbbenchApplication implements ApplicationRunner {
       }
     }
 
-    BenchRunner benchRunner;
+    DatabaseInterface databaseInterface;
+
+    logger.info("Output database: {}", commandLineConfigProperties.getOutputDb());
 
     switch (commandLineConfigProperties.getOutputDb()) {
       case "mssql":
-        benchRunner = new BenchRunner(new MsSqlDatabaseInterface(msSqlConfigProperties), globalConfigProperties);
+        databaseInterface = new MsSqlDatabaseInterface(dbConfigProperties);
+        break;
+      case "mysql":
+        databaseInterface = new MySqlDatabaseInterface(dbConfigProperties);
         break;
       default:
         throw new Exception(String.format("Missing output database initialisation for %s",
             commandLineConfigProperties.getOutputDb()));
     }
 
-    benchRunner.setWorkload(workload);
+    BenchRunner benchRunner = new BenchRunner(databaseInterface, globalConfigProperties);
 
-    if (schema != null) {
-      benchRunner.setSchema(schema);
+    logger.info("Is docker: {}", databaseInterface.isDocker());
+
+
+    DockerContainer dockerContainer = null;
+
+    try {
+
+      if (databaseInterface.isDocker()) {
+        DbConfigProperties configProperties = databaseInterface.getConfigProperties();
+
+        if (!validateDockerConfig(configProperties)) {
+          System.err.println("Missing docker settings");
+          System.exit(1);
+        }
+
+        Integer port = 43210;
+        dockerContainer = new DockerContainer(configProperties.getDockerImage());
+        dockerContainer.addPortMapping(port, configProperties.getDefaultPort());
+
+        if (configProperties.getDockerEnvvars() != null) {
+          dockerContainer.addEnvironmentVariables(configProperties.getDockerEnvvars());
+        }
+
+        dockerContainer.run();
+
+        configProperties.setPort(port);
+      }
+
+      benchRunner.setWorkload(workload);
+
+      if (schema != null) {
+        benchRunner.setSchema(schema);
+      }
+
+      benchRunner.run();
+    } catch (Exception e) {
+      e.printStackTrace();
+
+      if (dockerContainer != null) {
+        dockerContainer.stop();
+      }
     }
 
-    benchRunner.run();
+  }
+
+  private boolean validateDockerConfig(DbConfigProperties configProperties) {
+    return !(configProperties.getDockerImage() == null ||
+        configProperties.getDefaultPort() == null);
   }
 }

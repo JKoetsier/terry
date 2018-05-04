@@ -3,7 +3,6 @@ package nl.jkoetsier.uva.dbbench.docker;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.InspectContainerCmd;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ExposedPort;
@@ -26,8 +25,8 @@ public class DockerContainer {
   private String image;
   private String name;
   private String host;
-  private HashMap<String, String> environmentVariables;
-  private HashMap<Integer, Integer> portMapping;
+  private HashMap<String, String> environmentVariables = new HashMap<>();
+  private HashMap<Integer, Integer> portMapping = new HashMap<>();
 
   private DockerClient dockerClient;
   private String containerId;
@@ -36,6 +35,14 @@ public class DockerContainer {
     this.image = image;
 
     createClient();
+  }
+
+  public HashMap<String, String> getEnvironmentVariables() {
+    return environmentVariables;
+  }
+
+  public HashMap<Integer, Integer> getPortMapping() {
+    return portMapping;
   }
 
   public DockerContainer() {
@@ -72,15 +79,6 @@ public class DockerContainer {
     this.name = name;
   }
 
-  public void setEnvironmentVariables(
-      HashMap<String, String> environmentVariables) {
-    this.environmentVariables = environmentVariables;
-  }
-
-  public void setPortMapping(HashMap<Integer, Integer> portMapping) {
-    this.portMapping = portMapping;
-  }
-
   private void createClient() {
     if (host != null) {
       dockerClient = DockerClientBuilder.getInstance(host).build();
@@ -99,11 +97,11 @@ public class DockerContainer {
       cmd = cmd.withName(name);
     }
 
-    if (portMapping != null) {
+    if (portMapping.size() > 0) {
       cmd = setPortBindings(cmd);
     }
 
-    if (environmentVariables != null) {
+    if (environmentVariables.size() > 0) {
       cmd = setEnvs(cmd);
     }
 
@@ -112,6 +110,7 @@ public class DockerContainer {
     dockerClient.startContainerCmd(containerId).exec();
 
     Container container = getContainer();
+    logger.info("Container state: {}", container.getState());
     assert container.getState().equals("running");
 
     logger.info("Container is running");
@@ -125,6 +124,8 @@ public class DockerContainer {
       ExposedPort exposedPort = ExposedPort.tcp(entry.getValue());
       portBindings.bind(exposedPort, Binding.bindPort(entry.getKey()));
       exposedPorts.add(exposedPort);
+
+      logger.debug("Setting docker portmapping from {} to {}", entry.getKey(), entry.getValue());
     }
 
     return cmd.withExposedPorts(exposedPorts).withPortBindings(portBindings);
@@ -134,7 +135,10 @@ public class DockerContainer {
     List<String> envs = new ArrayList<>();
 
     for (Entry<String, String> entry : environmentVariables.entrySet()) {
-      envs.add(String.format("%s=%s", entry.getKey(), entry.getValue()));
+      String envString = String.format("%s=%s", entry.getKey(), entry.getValue());
+      envs.add(envString);
+
+      logger.debug("Setting docker environment variable {}", envString);
     }
 
     return cmd.withEnv(envs);
@@ -150,14 +154,44 @@ public class DockerContainer {
   }
 
   public void stop() {
-    dockerClient.stopContainerCmd(containerId).exec();
+    if (containerId != null) {
+      dockerClient.stopContainerCmd(containerId).exec();
+    }
   }
 
   public void remove() {
-    dockerClient.removeContainerCmd(containerId).exec();
+    if (containerId != null) {
+      dockerClient.removeContainerCmd(containerId).exec();
+    }
   }
 
   boolean isRunning() {
     return getContainer().getState().equals("running");
+  }
+
+  public void addPortMapping(Integer publicPort, Integer internalPort) {
+    this.portMapping.put(publicPort, internalPort);
+  }
+
+  public void addEnvironmentVariable(String key, String value) {
+    this.environmentVariables.put(key, value);
+  }
+
+  /**
+   * Accepts envvar as string (key=value)
+   * @param envVarString
+   */
+  public void addEnvironmentVariable(String envVarString) {
+    String[] splitted = envVarString.split("=");
+
+    if (splitted.length == 2) {
+      addEnvironmentVariable(splitted[0], splitted[1]);
+    }
+  }
+
+  public void addEnvironmentVariables(String[] envVarStrings) {
+    for (String envVarString : envVarStrings) {
+      addEnvironmentVariable(envVarString);
+    }
   }
 }
