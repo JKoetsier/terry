@@ -43,26 +43,7 @@ public abstract class JdbcDatabaseInterface implements DatabaseInterface {
       return connection;
     }
 
-    int tries = 0;
-
-    while (connection == null) {
-      try {
-        connection = DriverManager.getConnection(getConnectionString());
-      } catch (SQLException e) {
-        tries++;
-        logger.info("Failed to connect to database ({})", tries);
-
-        if (tries >= MAX_TRIES) {
-          throw e;
-        }
-
-        try {
-          Thread.sleep(1000);
-        } catch (InterruptedException e1) {
-
-        }
-      }
-    }
+    connection = DriverManager.getConnection(getConnectionString());
 
     return connection;
   }

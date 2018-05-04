@@ -1,26 +1,22 @@
-package nl.jkoetsier.uva.dbbench.connector.mysql.workload;
+package nl.jkoetsier.uva.dbbench.connector.postgres.workload;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import nl.jkoetsier.uva.dbbench.internal.workload.element.OrderBy;
+import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
-import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MySqlWorkloadVisitor extends SqlWorkloadVisitor {
+public class PostgresWorkloadVisitor extends SqlWorkloadVisitor {
 
-  private static Logger logger = LoggerFactory.getLogger(MySqlWorkloadVisitor.class);
+  private static Logger logger = LoggerFactory.getLogger(PostgresWorkloadVisitor.class);
 
-  @Override
-  public void visit(FullJoin fullJoin) {
-    throw new RuntimeException("Not supported in MySQL. Do something with this");
-  }
 
   @Override
   public void visit(Projection projection) {

@@ -4,16 +4,21 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.command.LogContainerCmd;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.Ports.Binding;
 import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.command.LogContainerResultCallback;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import nl.jkoetsier.uva.dbbench.docker.exception.ContainerInitException;
 import nl.jkoetsier.uva.dbbench.docker.exception.NotExistingContainerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +26,9 @@ import org.slf4j.LoggerFactory;
 public class DockerContainer {
 
   private static Logger logger = LoggerFactory.getLogger(DockerContainer.class);
+
+  // Max wait time in seconds
+  private static Integer MAX_WAIT_FOR_INIT = 10;
 
   private String image;
   private String name;
@@ -30,6 +38,7 @@ public class DockerContainer {
 
   private DockerClient dockerClient;
   private String containerId;
+  private String readyLogLine;
 
   public DockerContainer(String image) {
     this.image = image;
@@ -88,6 +97,8 @@ public class DockerContainer {
   }
 
   public void run() {
+    assert readyLogLine != null;
+
     logger.info("Spinning up docker container with image {}", image);
 
     CreateContainerCmd cmd = dockerClient.createContainerCmd(image);
@@ -114,6 +125,46 @@ public class DockerContainer {
     logger.info("Container state: {}", container.getState());
 
     assert container.getState().equals("running");
+    final boolean[] containerInitialised = {false};
+
+    LogContainerCmd logCmd = dockerClient.logContainerCmd(containerId).withStdOut(true)
+        .withStdErr(true).withFollowStream(true);
+
+    logCmd.exec(new LogContainerResultCallback() {
+
+      @Override
+      public void onNext(Frame item) {
+        if (item.toString().contains(readyLogLine)) {
+          containerInitialised[0] = true;
+
+          try {
+            close();
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+      }
+    });
+
+    Integer maxWait = MAX_WAIT_FOR_INIT * 1000;
+    Integer interval = 500;
+    Integer passed = 0;
+
+    while (!containerInitialised[0]) {
+      try {
+        Thread.sleep(interval);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+
+      passed += interval;
+
+      if (passed > maxWait) {
+        throw new ContainerInitException(
+            "Container took too long to initialise. Check if ready log line is set correctly"
+        );
+      }
+    }
   }
 
   private CreateContainerCmd setPortBindings(CreateContainerCmd cmd) {
@@ -181,7 +232,6 @@ public class DockerContainer {
 
   /**
    * Accepts envvar as string (key=value)
-   * @param envVarString
    */
   public void addEnvironmentVariable(String envVarString) {
     String[] splitted = envVarString.split("=");
@@ -195,5 +245,9 @@ public class DockerContainer {
     for (String envVarString : envVarStrings) {
       addEnvironmentVariable(envVarString);
     }
+  }
+
+  public void setReadyLogLine(String dockerReadyLogLine) {
+    this.readyLogLine = dockerReadyLogLine;
   }
 }

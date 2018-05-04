@@ -167,6 +167,7 @@ public class DbbenchApplication implements ApplicationRunner {
         Integer port = 43210;
         dockerContainer = new DockerContainer(configProperties.getDockerImage());
         dockerContainer.addPortMapping(port, configProperties.getDefaultPort());
+        dockerContainer.setReadyLogLine(configProperties.getDockerReadyLogLine());
 
         if (configProperties.getDockerEnvvars() != null) {
           dockerContainer.addEnvironmentVariables(configProperties.getDockerEnvvars());
@@ -198,6 +199,8 @@ public class DbbenchApplication implements ApplicationRunner {
 
   private boolean validateDockerConfig(DbConfigProperties configProperties) {
     return !(configProperties.getDockerImage() == null ||
-        configProperties.getDefaultPort() == null);
+        configProperties.getDefaultPort() == null ||
+        configProperties.getDockerReadyLogLine() == null
+    );
   }
 }

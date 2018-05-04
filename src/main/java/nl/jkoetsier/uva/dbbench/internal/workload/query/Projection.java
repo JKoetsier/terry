@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
+import java.util.ArrayList;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.internal.workload.element.OrderBy;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
@@ -77,10 +78,31 @@ public class Projection extends UnaryRelation {
     }
 
     if (limit != null) {
+      if (offset != null) {
+        offset.acceptVisitor(workloadVisitor);
+      }
+
       limit.acceptVisitor(workloadVisitor);
     }
 
+
     workloadVisitor.visit(this);
+  }
+
+  public List<String> getOrderByAsStrings() {
+    List<String> orderByList = new ArrayList<>();
+
+    if (orderBy == null) {
+      return orderByList;
+    }
+
+    for (OrderBy orderByElm : orderBy) {
+
+      orderByList.add(String.format("%s %s", orderByElm.getFieldExpression().getFieldName(),
+          orderByElm.getDirection()));
+    }
+
+    return orderByList;
   }
 
   public List<OrderBy> getOrderBy() {

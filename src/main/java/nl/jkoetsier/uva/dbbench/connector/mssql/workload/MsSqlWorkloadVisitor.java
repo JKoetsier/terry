@@ -39,21 +39,6 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
     currentStack.push(String.format("[%s]", String.join("].[", fieldName)));
   }
 
-  @Override
-  public void visit(FullJoin fullJoin) {
-    logger.debug("Visit FullJoin");
-
-    String onExpr = "";
-
-    if (fullJoin.getOnExpression() != null) {
-      onExpr = String.format(" ON %s", currentStack.pop());
-    }
-
-    String rightInp = currentStack.pop();
-    String leftInp = currentStack.pop();
-
-    currentStack.push(String.format("%s FULL JOIN %s%s", leftInp, rightInp, onExpr));
-  }
 
   @Override
   public void visit(InputRelation inputRelation) {
@@ -73,20 +58,20 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
 
     String top = "";
     String orderBy = "";
+    String offset = "";
 
     if (projection.getLimit() != null) {
-      top = String.format(" TOP(%s)", currentStack.pop());
+      String topStack = currentStack.pop();
+      top = String.format(" TOP(%s)", topStack);
+
+      if (projection.getOffset() != null) {
+        top = "";
+        offset = String.format(" OFFSET %s FETCH %s", top, currentStack.pop());
+      }
     }
 
     if (projection.getOrderBy() != null) {
-      List<String> orderByList = new ArrayList<>();
-
-      for (OrderBy orderByElm : projection.getOrderBy()) {
-
-        orderByList.add(String.format("%s %s", orderByElm.getFieldExpression().getFieldName(),
-            orderByElm.getDirection()));
-      }
-
+      List<String> orderByList = projection.getOrderByAsStrings();
       orderBy = String.format(" ORDER BY %s", String.join(", ", orderByList));
     }
 
@@ -115,11 +100,12 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
         parentheses ? ")" : "");
 
     String str = String.format(
-        "SELECT%s %s FROM %s%s",
+        "SELECT%s %s FROM %s%s%s",
         top,
         select,
         from,
-        orderBy
+        orderBy,
+        offset
     );
 
     currentStack.push(str);

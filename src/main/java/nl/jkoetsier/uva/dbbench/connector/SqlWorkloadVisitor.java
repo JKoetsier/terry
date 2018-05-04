@@ -10,9 +10,11 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Case;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
@@ -30,7 +32,9 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.MultiplyOp
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.NeqOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.OrOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.PlusOp;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InnerJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
@@ -177,6 +181,22 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
   }
 
   @Override
+  public void visit(FullJoin fullJoin) {
+    logger.debug("Visit FullJoin");
+
+    String onExpr = "";
+
+    if (fullJoin.getOnExpression() != null) {
+      onExpr = String.format(" ON %s", currentStack.pop());
+    }
+
+    String rightInp = currentStack.pop();
+    String leftInp = currentStack.pop();
+
+    currentStack.push(String.format("%s FULL JOIN %s%s", leftInp, rightInp, onExpr));
+  }
+
+  @Override
   public void visit(Selection selection) {
     logger.debug("Visit Selection");
 
@@ -281,5 +301,39 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
     String leftInp = currentStack.pop();
 
     currentStack.push(String.format("%s INNER JOIN %s%s", leftInp, rightInp, onExpr));
+  }
+
+  @Override
+  public void visit(SelectExpression selectExpression) {
+    logger.debug("Visit SelectExpression");
+
+    String alias = "";
+
+    if (selectExpression.getAlias() != null) {
+      alias = String.format(" AS %s", selectExpression.getAlias());
+    }
+
+    currentStack.push(String.format("%s%s", currentStack.pop(), alias));
+  }
+
+  @Override
+  public void visit(FieldExpression fieldExpression) {
+    logger.debug("Visit FieldExpression");
+
+    String[] fieldName = fieldExpression.getFieldName().split("\\.");
+
+    currentStack.push(String.format("%s", String.join(".", fieldName)));
+  }
+
+  @Override
+  public void visit(InputRelation inputRelation) {
+    logger.debug("Visit InputRelation");
+
+    if (inputRelation.getTableAlias() != null) {
+      currentStack.push(String.format("%s AS %s", inputRelation.getTableName(),
+          inputRelation.getTableAlias()));
+    } else {
+      currentStack.push(String.format("%s", inputRelation.getTableName()));
+    }
   }
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseInterface;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
+import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadQueryGenerator;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -61,6 +62,8 @@ public class PostgresDatabaseInterface extends JdbcDatabaseInterface {
 
   @Override
   public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
-    return null;
+    PostgresWorkloadQueryGenerator queryGenerator = new PostgresWorkloadQueryGenerator();
+
+    return queryGenerator.generateQueries(workload);
   }
 }

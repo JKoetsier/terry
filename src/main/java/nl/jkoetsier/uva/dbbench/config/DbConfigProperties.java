@@ -14,12 +14,21 @@ public class DbConfigProperties {
   private String dockerImage;
   private Integer defaultPort;
   private String[] dockerEnvvars;
+  private String dockerReadyLogLine;
 
   private String host;
   private Integer port;
   private String database;
   private String username;
   private String password;
+
+  public String getDockerReadyLogLine() {
+    return dockerReadyLogLine;
+  }
+
+  public void setDockerReadyLogLine(String dockerReadyLogLine) {
+    this.dockerReadyLogLine = dockerReadyLogLine;
+  }
 
   public String getUsername() {
     return username;

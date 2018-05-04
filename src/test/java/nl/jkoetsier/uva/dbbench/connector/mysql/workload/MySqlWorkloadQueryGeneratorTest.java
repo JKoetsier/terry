@@ -90,11 +90,9 @@ public class MySqlWorkloadQueryGeneratorTest {
         + "ON basetable.b = jointable2.e "
         + "INNER JOIN jointable3 "
         + "ON basetable.b = jointable3.f "
-//        + "FULL JOIN jointable4 "
-//        + "ON basetable.b = jointable4.h "
         + "WHERE basetable.b = 34";
 
-    compareSingleQueryFromFile("select_join_multiple.sql", expected);
+    compareSingleQueryFromFile("select_join_multiple_no_fulljoin.sql", expected);
   }
 
   @Test
