@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 
 public abstract class JdbcDatabaseInterface implements DatabaseInterface {
 
-  private static Integer MAX_TRIES = 10;
-
   protected Connection connection;
 
   protected abstract String getConnectionString();
