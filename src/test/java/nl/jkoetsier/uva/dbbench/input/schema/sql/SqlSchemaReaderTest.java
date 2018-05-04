@@ -4,10 +4,8 @@ import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.*;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import static org.junit.Assert.*;

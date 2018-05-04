@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
 import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaTreeElement;
 import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
@@ -14,7 +13,7 @@ public class Entity implements SchemaTreeElement {
 
   private LinkedHashMap<String, Field> fields;
   private String name;
-  private Set<Field> primaryKey;
+  private List<Field> primaryKey;
 
   public Entity(String name) {
     this.name = name;
@@ -45,11 +44,11 @@ public class Entity implements SchemaTreeElement {
     return fields.get(name);
   }
 
-  public Set<Field> getPrimaryKey() {
+  public List<Field> getPrimaryKey() {
     return primaryKey;
   }
 
-  public void setPrimaryKey(Set<Field> primaryKey) {
+  public void setPrimaryKey(List<Field> primaryKey) {
     this.primaryKey = primaryKey;
   }
 
@@ -63,8 +62,6 @@ public class Entity implements SchemaTreeElement {
     for (Field field : primaryKey) {
       keyFields.add(field.getName());
     }
-
-    Collections.reverse(keyFields);
 
     return keyFields;
   }

@@ -1,7 +1,8 @@
 package nl.jkoetsier.uva.dbbench.input.schema.sql;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
@@ -50,7 +51,7 @@ public class SqlSchemaStatementVisitor extends StatementVisitorAdapter {
     for (Index index : createTable.getIndexes()) {
       if (index.getType().equals("PRIMARY KEY")) {
 
-        Set<Field> columns = new HashSet<>();
+        List<Field> columns = new ArrayList<>();
 
         for (String columnName : index.getColumnsNames()) {
           Field field = entity.getField(columnName);
