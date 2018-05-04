@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output;
+package nl.jkoetsier.uva.dbbench.connector;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

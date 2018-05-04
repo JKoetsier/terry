@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output.mssql.workload;
+package nl.jkoetsier.uva.dbbench.connector.mssql.workload;
 
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;

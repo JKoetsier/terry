@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output.mssql.workload;
+package nl.jkoetsier.uva.dbbench.connector.mssql.workload;
 
 import static org.junit.Assert.*;
 

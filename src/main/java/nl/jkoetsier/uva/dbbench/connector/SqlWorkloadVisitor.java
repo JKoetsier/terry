@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output;
+package nl.jkoetsier.uva.dbbench.connector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,13 +36,12 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
-import nl.jkoetsier.uva.dbbench.output.mssql.workload.MsSqlWorkloadVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class BaseSqlWorkloadVisitor extends WorkloadVisitor {
+public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
-  protected Logger logger = LoggerFactory.getLogger(BaseSqlWorkloadVisitor.class);
+  protected Logger logger = LoggerFactory.getLogger(SqlWorkloadVisitor.class);
 
   protected HashMap<Integer, String> result = new HashMap<>();
   protected Stack<String> currentStack = new Stack<>();

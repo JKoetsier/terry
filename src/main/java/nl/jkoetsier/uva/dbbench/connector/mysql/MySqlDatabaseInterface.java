@@ -1,12 +1,12 @@
-package nl.jkoetsier.uva.dbbench.output.mysql;
+package nl.jkoetsier.uva.dbbench.connector.mysql;
 
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.output.JdbcDatabaseInterface;
-import nl.jkoetsier.uva.dbbench.output.mysql.schema.MySqlSchemavisitor;
-import nl.jkoetsier.uva.dbbench.output.mysql.workload.MySqlWorkloadQueryGenerator;
+import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.mysql.schema.MySqlSchemaVisitor;
+import nl.jkoetsier.uva.dbbench.connector.mysql.workload.MySqlWorkloadQueryGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ public class MySqlDatabaseInterface extends JdbcDatabaseInterface {
 
   @Override
   protected HashMap<String, String> getCreateQueries(Schema schema) {
-    MySqlSchemavisitor schemavisitor = new MySqlSchemavisitor();
+    MySqlSchemaVisitor schemavisitor = new MySqlSchemaVisitor();
     schema.acceptVisitor(schemavisitor);
 
     return schemavisitor.getCreateQueries();

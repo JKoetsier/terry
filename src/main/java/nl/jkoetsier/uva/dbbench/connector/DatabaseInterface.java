@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output;
+package nl.jkoetsier.uva.dbbench.connector;
 
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;

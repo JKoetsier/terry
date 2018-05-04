@@ -1,6 +1,7 @@
-package nl.jkoetsier.uva.dbbench.output.mssql.schema;
+package nl.jkoetsier.uva.dbbench.connector.mssql.schema;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
@@ -136,6 +137,8 @@ public class MsSqlSchemaVisitor extends SchemaVisitor {
       for (Field field : entity.getPrimaryKey()) {
         keyFields.add(field.getName());
       }
+
+      Collections.reverse(keyFields);
 
       createTable = createTable.concat(String.format(
           "\n\tCONSTRAINT PK_%s PRIMARY KEY (\n\t\t%s\n\t)",

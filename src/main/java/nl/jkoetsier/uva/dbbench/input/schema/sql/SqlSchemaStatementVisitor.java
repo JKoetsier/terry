@@ -14,10 +14,10 @@ import nl.jkoetsier.uva.dbbench.internal.schema.fields.FieldFactory;
 
 public class SqlSchemaStatementVisitor extends StatementVisitorAdapter {
 
-  private Schema dataModel = Schema.getInstance();
+  private Schema schema = new Schema();
 
-  public Schema getDataModel() {
-    return dataModel;
+  public Schema getSchema() {
+    return schema;
   }
 
   @Override
@@ -43,7 +43,7 @@ public class SqlSchemaStatementVisitor extends StatementVisitorAdapter {
       setPrimaryKey(createTable, entity);
     }
 
-    dataModel.addEntity(entity);
+    schema.addEntity(entity);
   }
 
   private void setPrimaryKey(CreateTable createTable, Entity entity) {

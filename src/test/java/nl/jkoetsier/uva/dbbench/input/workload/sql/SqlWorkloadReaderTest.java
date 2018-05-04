@@ -38,7 +38,7 @@ public class SqlWorkloadReaderTest {
 
   private static Logger logger = LoggerFactory.getLogger(SqlWorkloadReaderTest.class);
   private TestDataHelper testDataHelper = new TestDataHelper();
-  Schema dataModel = Schema.getInstance();
+  Schema dataModel = new Schema();
 
   private Workload getWorkload(String filename) {
     SqlWorkloadReader workloadReader = new SqlWorkloadReader();

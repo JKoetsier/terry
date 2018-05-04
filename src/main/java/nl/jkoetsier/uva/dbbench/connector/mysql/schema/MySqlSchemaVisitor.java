@@ -1,6 +1,7 @@
-package nl.jkoetsier.uva.dbbench.output.mysql.schema;
+package nl.jkoetsier.uva.dbbench.connector.mysql.schema;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
@@ -21,9 +22,9 @@ import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MySqlSchemavisitor extends SchemaVisitor {
+public class MySqlSchemaVisitor extends SchemaVisitor {
 
-  private static Logger logger = LoggerFactory.getLogger(MySqlSchemavisitor.class);
+  private static Logger logger = LoggerFactory.getLogger(MySqlSchemaVisitor.class);
 
   private HashMap<String, String> createQueries = new HashMap<>();
   private List<ColumnDef> columnDefStack = new ArrayList<>();
@@ -135,6 +136,8 @@ public class MySqlSchemavisitor extends SchemaVisitor {
       for (Field field : entity.getPrimaryKey()) {
         keyFields.add(field.getName());
       }
+
+      Collections.reverse(keyFields);
 
       createTable = createTable.concat(String.format(
           "\n\tPRIMARY KEY (\n\t\t%s\n\t)",

@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.dbbench.bench;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -8,7 +7,7 @@ import java.util.stream.LongStream;
 import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.output.DatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.DatabaseInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,15 +52,27 @@ public class BenchRunner {
   }
 
   private void printResults(HashMap<Integer, long[]> results) {
+    long[] firstRow = results.get(0);
+    String runs = String.format("%6s", "all");
+
+    if (firstRow != null) {
+        for (int i = 1; i < firstRow.length; i++) {
+          runs = runs.concat(String.format("%6s", i));
+        }
+    }
+
+    String header = String.format("%3s | %7s | %s", "Q", "avg", runs);
+    logger.info(header);
+
     for (Entry<Integer, long[]> entry : results.entrySet()) {
       long avg = LongStream.of(entry.getValue()).sum() / entry.getValue().length;
 
       String values = "";
       for (long time : entry.getValue()) {
-        values = values.concat(String.format("%6s ", time));
+        values = values.concat(String.format("%6s", time));
       }
 
-      String row = String.format("%3s | avg: %6s\u00B5s | all: %s", entry.getKey(), avg, values);
+      String row = String.format("%3s | %7s | %s", entry.getKey(), String.format("%s\u00B5s", avg), values);
 
       logger.info(row);
     }

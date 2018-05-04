@@ -7,19 +7,10 @@ import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
 public class Schema implements SchemaTreeElement {
 
-  private static Schema instance;
   private HashMap<String, Entity> entities;
 
-  private Schema() {
+  public Schema() {
     entities = new HashMap<>();
-  }
-
-  public static Schema getInstance() {
-    if (instance == null) {
-      instance = new Schema();
-    }
-
-    return instance;
   }
 
   public HashMap<String, Entity> getEntities() {

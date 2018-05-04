@@ -16,4 +16,8 @@ public class TestDataHelper {
     return getClass().getResource(file).getFile();
   }
 
+  // Removes all unnecessary whitespace, only keeps one space.
+  public String normalise(String str) {
+    return str.replaceAll("\\s+", " ");
+  }
 }

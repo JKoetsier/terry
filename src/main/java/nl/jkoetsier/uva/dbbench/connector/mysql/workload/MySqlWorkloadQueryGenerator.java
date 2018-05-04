@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output.mysql.workload;
+package nl.jkoetsier.uva.dbbench.connector.mysql.workload;
 
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;

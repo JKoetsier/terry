@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output.mysql;
+package nl.jkoetsier.uva.dbbench.connector.mysql;
 
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;

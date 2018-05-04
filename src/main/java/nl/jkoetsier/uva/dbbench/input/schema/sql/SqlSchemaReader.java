@@ -44,6 +44,6 @@ public class SqlSchemaReader implements SchemaReader {
     SqlSchemaStatementVisitor visitor = new SqlSchemaStatementVisitor();
     statements.accept(visitor);
 
-    return visitor.getDataModel();
+    return visitor.getSchema();
   }
 }

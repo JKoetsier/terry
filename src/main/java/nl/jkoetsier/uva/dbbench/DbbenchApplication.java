@@ -14,9 +14,9 @@ import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.output.DatabaseInterface;
-import nl.jkoetsier.uva.dbbench.output.mssql.MsSqlDatabaseInterface;
-import nl.jkoetsier.uva.dbbench.output.mysql.MySqlDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.DatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.mssql.MsSqlDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.mysql.MySqlDatabaseInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,9 +180,11 @@ public class DbbenchApplication implements ApplicationRunner {
       }
 
       benchRunner.run();
+
     } catch (Exception e) {
       e.printStackTrace();
 
+    } finally {
       if (dockerContainer != null) {
         dockerContainer.stop();
       }

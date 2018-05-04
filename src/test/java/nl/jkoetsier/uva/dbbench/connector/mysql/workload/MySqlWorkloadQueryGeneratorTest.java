@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output.mysql.workload;
+package nl.jkoetsier.uva.dbbench.connector.mysql.workload;
 
 import static org.junit.Assert.*;
 
@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.output.mssql.workload.MsSqlWorkloadQueryGenerator;
-import nl.jkoetsier.uva.dbbench.output.mysql.schema.MySqlSchemavisitor;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Ignore;
 import org.junit.Test;

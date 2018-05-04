@@ -1,12 +1,12 @@
-package nl.jkoetsier.uva.dbbench.output.mssql;
+package nl.jkoetsier.uva.dbbench.connector.mssql;
 
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.output.JdbcDatabaseInterface;
-import nl.jkoetsier.uva.dbbench.output.mssql.schema.MsSqlSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.output.mssql.workload.MsSqlWorkloadQueryGenerator;
+import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.mssql.schema.MsSqlSchemaVisitor;
+import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadQueryGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

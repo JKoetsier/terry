@@ -21,11 +21,6 @@ public class SqlSchemaReaderTest {
     return schemaReader.fromFile(testDataHelper.getFilePath("sql/" + filename));
   }
 
-  @Before
-  public void resetDataModel() {
-    Schema.getInstance().setEntities(new HashMap<>());
-  }
-
   @Test
   public void testCreateTable() {
     Schema dataModel = getDataModel("create_table.sql");

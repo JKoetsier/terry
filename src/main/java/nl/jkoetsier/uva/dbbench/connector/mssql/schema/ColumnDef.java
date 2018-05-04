@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.output.mysql.schema;
+package nl.jkoetsier.uva.dbbench.connector.mssql.schema;
 
 import java.util.List;
 

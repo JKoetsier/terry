@@ -155,6 +155,8 @@ public class DockerContainer {
 
   public void stop() {
     if (containerId != null) {
+      logger.info("Stopping docker container");
+
       dockerClient.stopContainerCmd(containerId).exec();
     }
   }
