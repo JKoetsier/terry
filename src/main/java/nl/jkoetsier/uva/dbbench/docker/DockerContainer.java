@@ -5,6 +5,7 @@ import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.command.LogContainerCmd;
+import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Frame;
@@ -208,13 +209,22 @@ public class DockerContainer {
     if (containerId != null) {
       logger.info("Stopping docker container");
 
-      dockerClient.stopContainerCmd(containerId).exec();
+      try {
+        dockerClient.stopContainerCmd(containerId).exec();
+      } catch (NotModifiedException e) {
+        // Happens when container already stopped
+      }
     }
   }
 
   public void remove() {
     if (containerId != null) {
-      dockerClient.removeContainerCmd(containerId).exec();
+
+      try {
+        dockerClient.removeContainerCmd(containerId).exec();
+      } catch (NotModifiedException e) {
+        // Happens when container already removed
+      }
     }
   }
 

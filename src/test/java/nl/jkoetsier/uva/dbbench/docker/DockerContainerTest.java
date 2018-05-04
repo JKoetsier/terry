@@ -23,6 +23,7 @@ import org.junit.experimental.categories.Category;
 public class DockerContainerTest {
 
   private String testImage = "hello-world";
+  private String readyLogLine = "Hello from Docker!";
   private static String containerName = "testcontainer92824912240djkld";
 
   private DockerContainer dockerContainer;
@@ -55,6 +56,7 @@ public class DockerContainerTest {
   @Category(IntegrationTest.class)
   public void testDockerRun() {
     dockerContainer = new DockerContainer(testImage);
+    dockerContainer.setReadyLogLine(readyLogLine);
     dockerContainer.setName(containerName);
     dockerContainer.run();
 
@@ -68,6 +70,7 @@ public class DockerContainerTest {
   @Category(IntegrationTest.class)
   public void testDockerRunWithPorts() {
     dockerContainer = new DockerContainer(testImage);
+    dockerContainer.setReadyLogLine(readyLogLine);
 
     HashMap<Integer, Integer> portMapping = new HashMap<>();
     portMapping.put(3500, 3700);
@@ -96,6 +99,7 @@ public class DockerContainerTest {
   @Category(IntegrationTest.class)
   public void testDockerWithEnvironmentVariables() {
     dockerContainer = new DockerContainer(testImage);
+    dockerContainer.setReadyLogLine(readyLogLine);
 
     HashMap<String, String> envVars = new HashMap<>();
     envVars.put("envvarA", "valA");
@@ -131,6 +135,7 @@ public class DockerContainerTest {
   @Category(IntegrationTest.class)
   public void testEnvironmentVariablesAsStrings() {
     dockerContainer = new DockerContainer(testImage);
+    dockerContainer.setReadyLogLine(readyLogLine);
 
     HashMap<String, String> envVars = new HashMap<>();
     envVars.put("envvarA", "valA");
@@ -148,6 +153,7 @@ public class DockerContainerTest {
   @Category(IntegrationTest.class)
   public void testEnvironmentVariablesAsListOfStrings() {
     dockerContainer = new DockerContainer(testImage);
+    dockerContainer.setReadyLogLine(readyLogLine);
 
     HashMap<String, String> envVars = new HashMap<>();
     envVars.put("envvarA", "valA");
