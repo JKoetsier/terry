@@ -20,10 +20,11 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   public MonetDbDatabaseConnector(
       DbConfigProperties dbConfigProperties) {
     super(dbConfigProperties);
+
     try {
       Class.forName("nl.cwi.monetdb.jdbc.MonetDriver");
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
   }
 
