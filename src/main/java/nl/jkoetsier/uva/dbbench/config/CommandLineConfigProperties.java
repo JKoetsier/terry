@@ -14,6 +14,7 @@ public class CommandLineConfigProperties {
   private String outputDb = "";
   private String workload = "";
   private String datamodel = "";
+  private boolean stopContainer = true;
 
   public String getOutputDb() {
     return outputDb;
@@ -33,6 +34,14 @@ public class CommandLineConfigProperties {
 
   public String getDatamodel() {
     return datamodel;
+  }
+
+  public boolean isStopContainer() {
+    return stopContainer;
+  }
+
+  public void setStopContainer(boolean stopContainer) {
+    this.stopContainer = stopContainer;
   }
 
   public void setDatamodel(String datamodel) {

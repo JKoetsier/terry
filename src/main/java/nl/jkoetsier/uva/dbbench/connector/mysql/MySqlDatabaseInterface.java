@@ -1,5 +1,7 @@
 package nl.jkoetsier.uva.dbbench.connector.mysql;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
@@ -24,7 +26,7 @@ public class MySqlDatabaseInterface extends JdbcDatabaseInterface {
   protected String getConnectionString() {
     String otherProperties = "&useSSL=false";
 
-    return String.format("jdbc:mysql://%s:%s/%s?user=%s&password=%s%s",
+    String connectionString = String.format("jdbc:mysql://%s:%s/%s?user=%s&password=%s%s",
         configProperties.getHost(),
         configProperties.getPort(),
         configProperties.getDatabase(),
@@ -32,6 +34,10 @@ public class MySqlDatabaseInterface extends JdbcDatabaseInterface {
         configProperties.getPassword(),
         otherProperties
     );
+
+    logger.debug("Connection string: {}", connectionString);
+
+    return connectionString;
   }
 
   @Override

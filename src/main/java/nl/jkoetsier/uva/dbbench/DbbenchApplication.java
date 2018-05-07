@@ -64,8 +64,9 @@ public class DbbenchApplication implements ApplicationRunner {
     Set<String> optionNames = args.getOptionNames();
 
     List<String> options = new ArrayList<>();
-    options.add("no-check-workload");
-    options.add("skip-datamodel");
+    options.add("--no-check-workload");
+    options.add("--skip-datamodel");
+    options.add("--stop-container=(true|false)");
 
     if (optionNames.contains("no-check-workload")) {
       verifyWorkload = false;
@@ -93,10 +94,10 @@ public class DbbenchApplication implements ApplicationRunner {
 
     if (error) {
       System.err.format(
-          "Run program with parameters --workload=workloadfile.sql --datamodel=datamodel.sql"
-              + "--output_db=(%s) . Optional: %s%n",
+          "\nRun program with parameters:\n --workload=workloadfile.sql\n --datamodel=datamodel.sql\n "
+              + "--output_db=(%s)\nOptional:\n %s%n",
           String.join("|", globalConfigProperties.getAcceptedDatabases()),
-          String.join(" ", options)
+          String.join("\n ", options)
       );
       System.exit(1);
     }
@@ -190,8 +191,10 @@ public class DbbenchApplication implements ApplicationRunner {
       e.printStackTrace();
 
     } finally {
-      if (dockerContainer != null) {
+      if (dockerContainer != null && commandLineConfigProperties.isStopContainer()) {
         dockerContainer.stop();
+      } else {
+        logger.info("Keeping container running");
       }
     }
 
