@@ -54,7 +54,7 @@ public class MySqlSchemaVisitorTest {
     String expected = "CREATE TABLE TableName ( Id int AUTO_INCREMENT NOT NULL, "
         + "IntField int NULL, VarChar250Field varchar(250) NULL, "
         + "DecimalField decimal(15, 6) NULL, DateTimeOffsetField timestamp NULL, "
-        + "VarCharMaxField varchar NULL, DateField date NULL, BitField bit NULL, "
+        + "VarCharMaxField varchar NULL, DateField date NULL, BitField boolean NULL, "
         + "DecimalField2 decimal(38, 15) NULL, "
         + "PRIMARY KEY ( Id ) );";
 
@@ -74,7 +74,7 @@ public class MySqlSchemaVisitorTest {
     String expected = "CREATE TABLE TableName ( Id int AUTO_INCREMENT NOT NULL, "
         + "IntField int NULL, VarChar250Field varchar(250) NULL, "
         + "DecimalField decimal(15, 6) NULL, DateTimeOffsetField timestamp NULL, "
-        + "VarCharMaxField varchar NULL, DateField date NULL, BitField bit NULL, "
+        + "VarCharMaxField varchar NULL, DateField date NULL, BitField boolean NULL, "
         + "DecimalField2 decimal(38, 15) NULL, "
         + "PRIMARY KEY ( Id, IntField ) );";
 
@@ -100,7 +100,7 @@ public class MySqlSchemaVisitorTest {
     expected.add("CREATE TABLE Table2Name ( DateTimeOffsetField timestamp NULL, "
         + "VarCharMaxField varchar NULL, "
         + "DateField date NULL, "
-        + "BitField bit NULL, "
+        + "BitField boolean NULL, "
         + "DecimalField2 decimal(38, 15) NULL, "
         + "PRIMARY KEY ( BitField ) );");
 
