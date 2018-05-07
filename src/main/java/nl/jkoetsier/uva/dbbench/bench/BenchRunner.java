@@ -6,10 +6,11 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.LongStream;
 import nl.jkoetsier.uva.dbbench.bench.exception.DatabaseException;
+import nl.jkoetsier.uva.dbbench.bench.monitoring.MonitoringThread;
 import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.connector.DatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,12 +18,12 @@ public class BenchRunner {
 
   private static Logger logger = LoggerFactory.getLogger(BenchRunner.class);
 
-  private DatabaseInterface databaseInterface;
+  private DatabaseConnector databaseInterface;
   private Schema schema;
   private Workload workload;
   private GlobalConfigProperties globalConfigProperties;
 
-  public BenchRunner(DatabaseInterface databaseInterface, GlobalConfigProperties globalConfigProperties) {
+  public BenchRunner(DatabaseConnector databaseInterface, GlobalConfigProperties globalConfigProperties) {
     this.databaseInterface = databaseInterface;
     this.globalConfigProperties = globalConfigProperties;
   }
@@ -99,6 +100,9 @@ public class BenchRunner {
       results.put(entry.getKey(), new long[noRuns]);
     }
 
+    MonitoringThread monitoringThread = new MonitoringThread();
+    monitoringThread.start();
+
     for (int i = 0; i < noRuns + skipFirst; i++) {
       for (Entry<Integer, String> entry: queries.entrySet()) {
         try {
@@ -117,6 +121,11 @@ public class BenchRunner {
           throw new DatabaseException(e);
         }
       }
+    }
+    try {
+      monitoringThread.join();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
 
     printResults(results);

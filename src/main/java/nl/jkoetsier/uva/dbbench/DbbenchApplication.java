@@ -8,16 +8,17 @@ import nl.jkoetsier.uva.dbbench.bench.BenchRunner;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.CommandLineConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
-import nl.jkoetsier.uva.dbbench.connector.postgres.PostgresDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.monetdb.MonetDbDatabaseConnector;
+import nl.jkoetsier.uva.dbbench.connector.postgres.PostgresDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.docker.DockerContainer;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.connector.DatabaseInterface;
-import nl.jkoetsier.uva.dbbench.connector.mssql.MsSqlDatabaseInterface;
-import nl.jkoetsier.uva.dbbench.connector.mysql.MySqlDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
+import nl.jkoetsier.uva.dbbench.connector.mssql.MsSqlDatabaseConnector;
+import nl.jkoetsier.uva.dbbench.connector.mysql.MySqlDatabaseConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,54 +130,56 @@ public class DbbenchApplication implements ApplicationRunner {
       }
     }
 
-    DatabaseInterface databaseInterface;
+    DatabaseConnector databaseConnector;
 
     logger.info("Output database: {}", commandLineConfigProperties.getOutputDb());
 
     switch (commandLineConfigProperties.getOutputDb()) {
       case "mssql":
-        databaseInterface = new MsSqlDatabaseInterface(dbConfigProperties);
+        databaseConnector = new MsSqlDatabaseConnector(dbConfigProperties);
         break;
       case "mysql":
-        databaseInterface = new MySqlDatabaseInterface(dbConfigProperties);
+        databaseConnector = new MySqlDatabaseConnector(dbConfigProperties);
         break;
       case "postgres":
-        databaseInterface = new PostgresDatabaseInterface(dbConfigProperties);
+        databaseConnector = new PostgresDatabaseConnector(dbConfigProperties);
+        break;
+      case "monetdb":
+        databaseConnector = new MonetDbDatabaseConnector(dbConfigProperties);
         break;
       default:
         throw new Exception(String.format("Missing output database initialisation for %s",
             commandLineConfigProperties.getOutputDb()));
     }
 
-    BenchRunner benchRunner = new BenchRunner(databaseInterface, globalConfigProperties);
+    BenchRunner benchRunner = new BenchRunner(databaseConnector, globalConfigProperties);
 
-    logger.info("Is docker: {}", databaseInterface.isDocker());
+    logger.info("Is docker: {}", databaseConnector.isDocker());
 
 
     DockerContainer dockerContainer = null;
 
     try {
 
-      if (databaseInterface.isDocker()) {
-        DbConfigProperties configProperties = databaseInterface.getConfigProperties();
+      if (databaseConnector.isDocker()) {
 
-        if (!validateDockerConfig(configProperties)) {
+        if (!validateDockerConfig()) {
           System.err.println("Missing docker settings");
           System.exit(1);
         }
 
         Integer port = 43210;
-        dockerContainer = new DockerContainer(configProperties.getDockerImage());
-        dockerContainer.addPortMapping(port, configProperties.getDefaultPort());
-        dockerContainer.setReadyLogLine(configProperties.getDockerReadyLogLine());
+        dockerContainer = new DockerContainer(dbConfigProperties.getDockerImage());
+        dockerContainer.addPortMapping(port, dbConfigProperties.getDefaultPort());
+        dockerContainer.setReadyLogLine(dbConfigProperties.getDockerReadyLogLine());
 
-        if (configProperties.getDockerEnvvars() != null) {
-          dockerContainer.addEnvironmentVariables(configProperties.getDockerEnvvars());
+        if (dbConfigProperties.getDockerEnvvars() != null) {
+          dockerContainer.addEnvironmentVariables(dbConfigProperties.getDockerEnvvars());
         }
 
         dockerContainer.run();
 
-        configProperties.setPort(port);
+        dbConfigProperties.setPort(port);
       }
 
       benchRunner.setWorkload(workload);
@@ -200,10 +203,10 @@ public class DbbenchApplication implements ApplicationRunner {
 
   }
 
-  private boolean validateDockerConfig(DbConfigProperties configProperties) {
-    return !(configProperties.getDockerImage() == null ||
-        configProperties.getDefaultPort() == null ||
-        configProperties.getDockerReadyLogLine() == null
+  private boolean validateDockerConfig() {
+    return !(dbConfigProperties.getDockerImage() == null ||
+        dbConfigProperties.getDefaultPort() == null ||
+        dbConfigProperties.getDockerReadyLogLine() == null
     );
   }
 }

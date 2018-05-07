@@ -1,11 +1,8 @@
 package nl.jkoetsier.uva.dbbench.connector.postgres;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
-import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadQueryGenerator;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
@@ -13,24 +10,13 @@ import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PostgresDatabaseInterface extends JdbcDatabaseInterface {
+public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
 
-  private static Logger logger = LoggerFactory.getLogger(PostgresDatabaseInterface.class);
+  private static Logger logger = LoggerFactory.getLogger(PostgresDatabaseConnector.class);
 
-  private DbConfigProperties dbConfigProperties;
-
-  public PostgresDatabaseInterface(DbConfigProperties dbConfigProperties) {
-    this.dbConfigProperties = dbConfigProperties;
-  }
-
-  @Override
-  public boolean isDocker() {
-    return dbConfigProperties.isDocker();
-  }
-
-  @Override
-  public DbConfigProperties getConfigProperties() {
-    return dbConfigProperties;
+  public PostgresDatabaseConnector(
+      DbConfigProperties dbConfigProperties) {
+    super(dbConfigProperties);
   }
 
   @Override
@@ -53,7 +39,7 @@ public class PostgresDatabaseInterface extends JdbcDatabaseInterface {
   }
 
   @Override
-  protected HashMap<String, String> getCreateQueries(Schema schema) {
+  public HashMap<String, String> getCreateQueries(Schema schema) {
     PostgresSchemaVisitor schemaVisitor = new PostgresSchemaVisitor();
     schema.acceptVisitor(schemaVisitor);
 

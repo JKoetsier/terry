@@ -1,25 +1,21 @@
 package nl.jkoetsier.uva.dbbench.connector.mysql;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseInterface;
+import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.mysql.schema.MySqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.mysql.workload.MySqlWorkloadQueryGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MySqlDatabaseInterface extends JdbcDatabaseInterface {
+public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
 
-  private static Logger logger = LoggerFactory.getLogger(MySqlDatabaseInterface.class);
+  private static Logger logger = LoggerFactory.getLogger(MySqlDatabaseConnector.class);
 
-  private DbConfigProperties configProperties;
-
-  public MySqlDatabaseInterface(DbConfigProperties configProperties) {
-    this.configProperties = configProperties;
+  public MySqlDatabaseConnector(DbConfigProperties dbConfigProperties) {
+    super(dbConfigProperties);
   }
 
   @Override
@@ -27,11 +23,11 @@ public class MySqlDatabaseInterface extends JdbcDatabaseInterface {
     String otherProperties = "&useSSL=false";
 
     String connectionString = String.format("jdbc:mysql://%s:%s/%s?user=%s&password=%s%s",
-        configProperties.getHost(),
-        configProperties.getPort(),
-        configProperties.getDatabase(),
-        configProperties.getUsername(),
-        configProperties.getPassword(),
+        dbConfigProperties.getHost(),
+        dbConfigProperties.getPort(),
+        dbConfigProperties.getDatabase(),
+        dbConfigProperties.getUsername(),
+        dbConfigProperties.getPassword(),
         otherProperties
     );
 
@@ -41,27 +37,16 @@ public class MySqlDatabaseInterface extends JdbcDatabaseInterface {
   }
 
   @Override
-  protected HashMap<String, String> getCreateQueries(Schema schema) {
+  public HashMap<String, String> getCreateQueries(Schema schema) {
     MySqlSchemaVisitor schemavisitor = new MySqlSchemaVisitor();
     schema.acceptVisitor(schemavisitor);
 
     return schemavisitor.getCreateQueries();
   }
-
-  @Override
-  public boolean isDocker() {
-    return configProperties.isDocker();
-  }
-
   @Override
   public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
     MySqlWorkloadQueryGenerator queryGenerator = new MySqlWorkloadQueryGenerator();
 
     return queryGenerator.generateQueries(workload);
-  }
-
-  @Override
-  public DbConfigProperties getConfigProperties() {
-    return configProperties;
   }
 }

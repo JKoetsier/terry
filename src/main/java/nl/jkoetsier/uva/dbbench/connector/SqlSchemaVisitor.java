@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.connector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BigIntegerField;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
@@ -54,7 +55,7 @@ public abstract class SqlSchemaVisitor extends SchemaVisitor {
 
   @Override
   public void visit(BooleanField booleanField) {
-    columnDefStack.add(createColumnDef(booleanField, "BIT"));
+    columnDefStack.add(createColumnDef(booleanField, "BOOLEAN"));
   }
 
   @Override

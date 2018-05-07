@@ -60,6 +60,8 @@
       <version>1.1</version>
     </dependency>
 
+    <!-- START JDBC DRIVERS -->
+
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
@@ -72,20 +74,27 @@
       <version>5.1.46</version>
     </dependency>
 
-    <!-- Postgres JDBC driver -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>42.2.2</version>
     </dependency>
 
+    <dependency>
+      <groupId>monetdb</groupId>
+      <artifactId>monetdb-jdbc-new</artifactId>
+      <version>2.35</version>
+    </dependency>
+
+
+
+    <!-- END JDBC DRIVERS -->
 
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>6.0.9.Final</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.apache.commons</groupId>

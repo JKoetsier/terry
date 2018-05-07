@@ -1,23 +1,17 @@
-package nl.jkoetsier.uva.dbbench.connector.mysql.workload;
+package nl.jkoetsier.uva.dbbench.connector.monetdb.workload;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MySqlWorkloadVisitor extends SqlWorkloadVisitor {
+public class MonetDbWorkloadVisitor extends SqlWorkloadVisitor {
 
-  private static Logger logger = LoggerFactory.getLogger(MySqlWorkloadVisitor.class);
-
-  @Override
-  public void visit(FullJoin fullJoin) {
-    throw new RuntimeException("Not supported in MySQL. Do something with this");
-  }
+  static Logger logger = LoggerFactory.getLogger(MonetDbWorkloadVisitor.class);
 
   @Override
   public void visit(Projection projection) {

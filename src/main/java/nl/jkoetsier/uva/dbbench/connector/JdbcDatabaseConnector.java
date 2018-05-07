@@ -6,23 +6,32 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class JdbcDatabaseInterface implements DatabaseInterface {
+public abstract class JdbcDatabaseConnector implements DatabaseConnector {
 
   protected Connection connection;
+  protected DbConfigProperties dbConfigProperties;
 
   protected abstract String getConnectionString();
-  protected abstract HashMap<String, String> getCreateQueries(Schema schema);
 
-  private static Logger logger = LoggerFactory.getLogger(JdbcDatabaseInterface.class);
+  private static Logger logger = LoggerFactory.getLogger(JdbcDatabaseConnector.class);
 
+  public JdbcDatabaseConnector(DbConfigProperties dbConfigProperties) {
+    this.dbConfigProperties = dbConfigProperties;
+  }
 
   @Override
   public void connect() throws SQLException {
     getConnection();
+  }
+
+  @Override
+  public boolean isDocker() {
+    return dbConfigProperties.isDocker();
   }
 
   @Override
@@ -36,7 +45,7 @@ public abstract class JdbcDatabaseInterface implements DatabaseInterface {
     }
   }
 
-  private Connection getConnection() throws SQLException {
+  protected Connection getConnection() throws SQLException {
     if (connection != null) {
       return connection;
     }

@@ -17,13 +17,13 @@ public class MySqlDatabaseInterfaceTest {
 //  public void testGetCreateQueries() {
 //    Schema schema = getSchemaFromFile("create_table.sql");
 //
-//    MySqlDatabaseInterface databaseInterface = new MySqlDatabaseInterface(new MySqlConfigProperties());
+//    MySqlDatabaseConnector databaseInterface = new MySqlDatabaseConnector(new MySqlConfigProperties());
 //
 //    HashMap<String, String> myQueries = databaseInterface.getCreateQueries(schema);
 //
 //    System.out.println(myQueries.get("TableName"));
 //
-//    MsSqlDatabaseInterface msSqlDatabaseInterface = new MsSqlDatabaseInterface(new MsSqlConfigProperties());
+//    MsSqlDatabaseConnector msSqlDatabaseInterface = new MsSqlDatabaseConnector(new MsSqlConfigProperties());
 //    HashMap<String, String> msQueries = msSqlDatabaseInterface.getCreateQueries(schema);
 //
 //    System.out.println(msQueries.get("TableName"));

@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.connector.mssql.schema;
 import nl.jkoetsier.uva.dbbench.connector.ColumnDef;
 import nl.jkoetsier.uva.dbbench.connector.SqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeTimezoneField;
 
 public class MsSqlSchemaVisitor extends SqlSchemaVisitor {
@@ -10,6 +11,11 @@ public class MsSqlSchemaVisitor extends SqlSchemaVisitor {
   @Override
   public void visit(DateTimeTimezoneField dateTimeOffsetField) {
     columnDefStack.add(createColumnDef(dateTimeOffsetField, "DATETIMEOFFSET"));
+  }
+
+  @Override
+  public void visit(BooleanField booleanField) {
+    columnDefStack.add(createColumnDef(booleanField, "BIT"));
   }
 
   @Override
