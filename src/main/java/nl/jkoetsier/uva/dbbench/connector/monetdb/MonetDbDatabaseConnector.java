@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
-import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.schema.MonetDbSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadQueryGenerator;
@@ -17,10 +16,7 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
 
   private static Logger logger = LoggerFactory.getLogger(MonetDbDatabaseConnector.class);
 
-  public MonetDbDatabaseConnector(
-      DbConfigProperties dbConfigProperties) {
-    super(dbConfigProperties);
-
+  public MonetDbDatabaseConnector() {
     try {
       Class.forName("nl.cwi.monetdb.jdbc.MonetDriver");
     } catch (ClassNotFoundException e) {

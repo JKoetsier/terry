@@ -1,20 +1,26 @@
 package nl.jkoetsier.uva.dbbench.config;
 
 
+import javax.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.validation.annotation.Validated;
 
 @Configuration
 @ConfigurationProperties
 @PropertySource("classpath:db.${outputdb:mssql}.properties")
+@Validated
 public class DbConfigProperties {
 
+
+  @NotBlank
   private String type;
   private String dockerImage;
   private Integer defaultPort;
   private String[] dockerEnvvars;
-  private String dockerReadyLogLine;
+  private String dockerReadyLogLine = "";
+  private String connector;
 
   private String host;
   private Integer port;
@@ -104,5 +110,13 @@ public class DbConfigProperties {
 
   public boolean isDocker() {
     return type.equals("docker");
+  }
+
+  public String getConnector() {
+    return connector;
+  }
+
+  public void setConnector(String connector) {
+    this.connector = connector;
   }
 }

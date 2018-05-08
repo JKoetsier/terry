@@ -5,20 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import nl.jkoetsier.uva.dbbench.bench.BenchRunner;
-import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.CommandLineConfigProperties;
+import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
-import nl.jkoetsier.uva.dbbench.connector.monetdb.MonetDbDatabaseConnector;
-import nl.jkoetsier.uva.dbbench.connector.postgres.PostgresDatabaseConnector;
+import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.docker.DockerContainer;
+import nl.jkoetsier.uva.dbbench.input.SchemaReader;
+import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
-import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
-import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
-import nl.jkoetsier.uva.dbbench.connector.mssql.MsSqlDatabaseConnector;
-import nl.jkoetsier.uva.dbbench.connector.mysql.MySqlDatabaseConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +37,15 @@ public class DbbenchApplication implements ApplicationRunner {
 
   @Autowired
   private DbConfigProperties dbConfigProperties;
+
+  @Autowired
+  private SchemaReader schemaReader;
+
+  @Autowired
+  private WorkloadReader workloadReader;
+
+  @Autowired
+  private DatabaseConnector databaseConnector;
 
   private Boolean verifyWorkload = true;
   private Boolean skipDataModel = false;
@@ -89,7 +94,8 @@ public class DbbenchApplication implements ApplicationRunner {
     }
 
     if (commandLineConfigProperties.getOutputDb().trim().equals("") ||
-        !globalConfigProperties.getAcceptedDatabases().contains(commandLineConfigProperties.getOutputDb())) {
+        !globalConfigProperties.getAcceptedDatabases()
+            .contains(commandLineConfigProperties.getOutputDb())) {
       System.err.println("No correct output database provided. Provide output database");
     }
 
@@ -105,17 +111,15 @@ public class DbbenchApplication implements ApplicationRunner {
   }
 
   @Override
-  public void run(ApplicationArguments args) throws Exception {
+  public void run(ApplicationArguments args) {
     checkParameters(args);
 
     Schema schema = null;
 
     if (!skipDataModel) {
-      SqlSchemaReader sqlSchemaReader = new SqlSchemaReader();
-      schema = sqlSchemaReader.fromFile(commandLineConfigProperties.getDatamodel());
+      schema = schemaReader.fromFile(commandLineConfigProperties.getDatamodel());
     }
 
-    SqlWorkloadReader workloadReader = new SqlWorkloadReader();
     Workload workload = workloadReader.fromFile(commandLineConfigProperties.getWorkload());
 
     if (verifyWorkload && schema != null) {
@@ -130,32 +134,11 @@ public class DbbenchApplication implements ApplicationRunner {
       }
     }
 
-    DatabaseConnector databaseConnector;
-
     logger.info("Output database: {}", commandLineConfigProperties.getOutputDb());
-
-    switch (commandLineConfigProperties.getOutputDb()) {
-      case "mssql":
-        databaseConnector = new MsSqlDatabaseConnector(dbConfigProperties);
-        break;
-      case "mysql":
-        databaseConnector = new MySqlDatabaseConnector(dbConfigProperties);
-        break;
-      case "postgres":
-        databaseConnector = new PostgresDatabaseConnector(dbConfigProperties);
-        break;
-      case "monetdb":
-        databaseConnector = new MonetDbDatabaseConnector(dbConfigProperties);
-        break;
-      default:
-        throw new Exception(String.format("Missing output database initialisation for %s",
-            commandLineConfigProperties.getOutputDb()));
-    }
 
     BenchRunner benchRunner = new BenchRunner(databaseConnector, globalConfigProperties);
 
     logger.info("Is docker: {}", databaseConnector.isDocker());
-
 
     DockerContainer dockerContainer = null;
 
@@ -168,7 +151,7 @@ public class DbbenchApplication implements ApplicationRunner {
           System.exit(1);
         }
 
-        Integer port = 43210;
+        Integer port = globalConfigProperties.getDefaultPort();
         dockerContainer = new DockerContainer(dbConfigProperties.getDockerImage());
         dockerContainer.addPortMapping(port, dbConfigProperties.getDefaultPort());
         dockerContainer.setReadyLogLine(dbConfigProperties.getDockerReadyLogLine());

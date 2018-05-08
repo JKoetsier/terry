@@ -15,6 +15,7 @@ public class GlobalConfigProperties {
   private List<String> acceptedDatabases;
   private int noRuns;
   private int skipFirst;
+  private int defaultPort;
 
   public List<String> getAcceptedDatabases() {
     return acceptedDatabases;
@@ -38,5 +39,13 @@ public class GlobalConfigProperties {
 
   public int getNoRuns() {
     return noRuns;
+  }
+
+  public Integer getDefaultPort() {
+    return defaultPort;
+  }
+
+  public void setDefaultPort(Integer defaultPort) {
+    this.defaultPort = defaultPort;
   }
 }

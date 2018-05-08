@@ -1,22 +1,17 @@
 package nl.jkoetsier.uva.dbbench.connector.mssql;
 
 import java.util.HashMap;
-import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
-import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.mssql.schema.MsSqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadQueryGenerator;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
 
   protected static Logger logger = LoggerFactory.getLogger(MsSqlDatabaseConnector.class);
-
-  public MsSqlDatabaseConnector(DbConfigProperties dbConfigProperties) {
-    super(dbConfigProperties);
-  }
 
   @Override
   public HashMap<String, String> getCreateQueries(Schema schema) {

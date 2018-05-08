@@ -1,7 +1,6 @@
 package nl.jkoetsier.uva.dbbench.connector.postgres;
 
 import java.util.HashMap;
-import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadQueryGenerator;
@@ -13,11 +12,6 @@ import org.slf4j.LoggerFactory;
 public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
 
   private static Logger logger = LoggerFactory.getLogger(PostgresDatabaseConnector.class);
-
-  public PostgresDatabaseConnector(
-      DbConfigProperties dbConfigProperties) {
-    super(dbConfigProperties);
-  }
 
   @Override
   protected String getConnectionString() {

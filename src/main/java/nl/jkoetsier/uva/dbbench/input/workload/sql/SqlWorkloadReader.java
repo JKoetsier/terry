@@ -9,7 +9,9 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statements;
 import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SqlWorkloadReader implements WorkloadReader {
 
   static String readFile(String path, Charset encoding) {

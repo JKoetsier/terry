@@ -9,7 +9,9 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statements;
 import nl.jkoetsier.uva.dbbench.input.SchemaReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SqlSchemaReader implements SchemaReader {
 
 

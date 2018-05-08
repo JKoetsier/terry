@@ -10,19 +10,20 @@ import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public abstract class JdbcDatabaseConnector implements DatabaseConnector {
 
-  protected Connection connection;
+  @Autowired
   protected DbConfigProperties dbConfigProperties;
+
+  protected Connection connection;
 
   protected abstract String getConnectionString();
 
   private static Logger logger = LoggerFactory.getLogger(JdbcDatabaseConnector.class);
-
-  public JdbcDatabaseConnector(DbConfigProperties dbConfigProperties) {
-    this.dbConfigProperties = dbConfigProperties;
-  }
 
   @Override
   public void connect() throws SQLException {
