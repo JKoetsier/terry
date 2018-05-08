@@ -8,9 +8,11 @@ import nl.jkoetsier.uva.dbbench.input.SchemaReader;
 import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
+import nl.jkoetsier.uva.dbbench.testclass.IntegrationTest;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @SpringBootTest
+@Category(IntegrationTest.class)
 public class DbbenchApplicationTests {
 
   static {
