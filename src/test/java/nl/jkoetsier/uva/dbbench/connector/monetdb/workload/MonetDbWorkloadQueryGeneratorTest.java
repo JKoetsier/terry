@@ -5,13 +5,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.connector.WorkloadTest;
 import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadQueryGenerator;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Test;
 
-public class MonetDbWorkloadQueryGeneratorTest {
+public class MonetDbWorkloadQueryGeneratorTest implements WorkloadTest {
 
   private TestDataHelper testDataHelper = new TestDataHelper();
 
@@ -47,14 +48,16 @@ public class MonetDbWorkloadQueryGeneratorTest {
     }
   }
 
+  @Override
   @Test
-  public void generateSimpleQuery() {
+  public void testSimpleQuery() {
     String expected = "SELECT t1.a AS a, tn2.b AS b FROM tableName AS t1 "
         + "LEFT OUTER JOIN tableName2 AS tn2 ON t1.c = tn2.c WHERE t1.a = 4";
 
     compareSingleQueryFromFile("output_sql_simple.sql", expected);
   }
 
+  @Override
   @Test
   public void testUnionQuery() {
     String expected = "SELECT a, b FROM basetable WHERE a = 4 UNION "
@@ -63,6 +66,7 @@ public class MonetDbWorkloadQueryGeneratorTest {
     compareSingleQueryFromFile("select_union_simple.sql", expected);
   }
 
+  @Override
   @Test
   public void testUnionAllQuery() {
     String expected = "SELECT a, b FROM basetable WHERE a = 4 UNION ALL "
@@ -71,6 +75,7 @@ public class MonetDbWorkloadQueryGeneratorTest {
     compareSingleQueryFromFile("select_union_all_simple.sql", expected);
   }
 
+  @Override
   @Test
   public void testJoinSimpleQuery() {
     String expected = "SELECT basetable.a, basetable.b, jointable.d FROM basetable "
@@ -79,6 +84,7 @@ public class MonetDbWorkloadQueryGeneratorTest {
     compareSingleQueryFromFile("select_join_simple.sql", expected);
   }
 
+  @Override
   @Test
   public void testJoinMultipleQuery() {
     String expected = "SELECT basetable.a, basetable.b, jointable.d, jointable2.e, "
@@ -97,6 +103,7 @@ public class MonetDbWorkloadQueryGeneratorTest {
     compareSingleQueryFromFile("select_join_multiple.sql", expected);
   }
 
+  @Override
   @Test
   public void testTopQuery() {
     List<String> expected = new ArrayList<>();
@@ -106,6 +113,7 @@ public class MonetDbWorkloadQueryGeneratorTest {
     compareMultipleQueriesFromFile("select_top.sql", expected);
   }
 
+  @Override
   @Test
   public void testLimitQuery() {
     List<String> expected = new ArrayList<>();
@@ -115,6 +123,7 @@ public class MonetDbWorkloadQueryGeneratorTest {
     compareMultipleQueriesFromFile("select_limit.sql", expected);
   }
 
+  @Override
   @Test
   public void testCase() {
     String expected = "SELECT a, b, CASE WHEN c IS NULL THEN CAST(NULL AS int) ELSE 1 END AS c"

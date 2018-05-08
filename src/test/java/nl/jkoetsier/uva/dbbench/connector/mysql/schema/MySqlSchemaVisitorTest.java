@@ -4,12 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.connector.SchemaTest;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Test;
 
-public class MySqlSchemaVisitorTest {
+public class MySqlSchemaVisitorTest implements SchemaTest {
 
   private TestDataHelper testDataHelper = new TestDataHelper();
 

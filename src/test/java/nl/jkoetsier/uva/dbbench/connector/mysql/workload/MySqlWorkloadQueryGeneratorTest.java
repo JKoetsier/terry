@@ -5,13 +5,14 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.connector.WorkloadTest;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class MySqlWorkloadQueryGeneratorTest {
+public class MySqlWorkloadQueryGeneratorTest implements WorkloadTest {
 
   private TestDataHelper testDataHelper = new TestDataHelper();
 
@@ -48,7 +49,7 @@ public class MySqlWorkloadQueryGeneratorTest {
   }
 
   @Test
-  public void generateSimpleQuery() {
+  public void testSimpleQuery() {
     String expected = "SELECT t1.a AS a, tn2.b AS b FROM tableName AS t1 "
         + "LEFT OUTER JOIN tableName2 AS tn2 ON t1.c = tn2.c WHERE t1.a = 4";
 

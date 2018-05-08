@@ -4,13 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.connector.SchemaTest;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Test;
 
-public class MonetDbSchemaVisitorTest {
+public class MonetDbSchemaVisitorTest implements SchemaTest {
 
   private TestDataHelper testDataHelper = new TestDataHelper();
 
@@ -50,6 +51,7 @@ public class MonetDbSchemaVisitorTest {
     }
   }
 
+  @Override
   @Test
   public void testCreateTable() {
     String expected = "CREATE TABLE TableName ( Id SERIAL NOT NULL, "
@@ -62,6 +64,7 @@ public class MonetDbSchemaVisitorTest {
     compareSingleQueryFromFile("create_table.sql", expected);
   }
 
+  @Override
   @Test
   public void testCreateTableArguments() {
     String expected = "CREATE TABLE TableName ( A decimal(5, 2) NULL, "
@@ -70,6 +73,7 @@ public class MonetDbSchemaVisitorTest {
     compareSingleQueryFromFile("create_table_arguments.sql", expected);
   }
 
+  @Override
   @Test
   public void testCreateTableCompositePrimaryKey() {
     String expected = "CREATE TABLE TableName ( Id SERIAL NOT NULL, "
@@ -82,6 +86,7 @@ public class MonetDbSchemaVisitorTest {
     compareSingleQueryFromFile("create_table_composite_primarykey.sql", expected);
   }
 
+  @Override
   @Test
   public void testCreateTableNullNotNull() {
     String expected = "CREATE TABLE TableName ( A int NOT NULL, B int NULL, "
@@ -90,6 +95,7 @@ public class MonetDbSchemaVisitorTest {
     compareSingleQueryFromFile("create_table_null_not_null.sql", expected);
   }
 
+  @Override
   @Test
   public void testCreateTables() {
     List<String> expected = new ArrayList<>();
