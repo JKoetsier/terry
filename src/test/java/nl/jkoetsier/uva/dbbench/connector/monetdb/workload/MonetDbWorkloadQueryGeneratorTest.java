@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.WorkloadTest;
-import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadQueryGenerator;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;

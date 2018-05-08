@@ -21,6 +21,6 @@ public class ConnectorConfig {
 
     logger.debug("Linking DatabaseConnector {}", dbConfigProperties.getConnector());
 
-    return (DatabaseConnector)Class.forName(dbConfigProperties.getConnector()).newInstance();
+    return (DatabaseConnector) Class.forName(dbConfigProperties.getConnector()).newInstance();
   }
 }

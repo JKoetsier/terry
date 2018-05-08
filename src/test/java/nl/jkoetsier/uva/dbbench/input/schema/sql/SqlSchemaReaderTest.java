@@ -1,14 +1,21 @@
 package nl.jkoetsier.uva.dbbench.input.schema.sql;
 
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.*;
-import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedHashMap;
-
-import static org.junit.Assert.*;
+import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.VarCharField;
+import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
+import org.junit.Test;
 
 public class SqlSchemaReaderTest {
 
@@ -75,10 +82,10 @@ public class SqlSchemaReaderTest {
     Entity entity = dataModel.getEntity("TableName");
     LinkedHashMap<String, Field> fields = entity.getFields();
 
-    assertTrue(5 == ((DecimalField)(fields.get("A"))).getPrecision());
-    assertTrue(2 == ((DecimalField)(fields.get("A"))).getScale());
-    assertTrue(200 == ((VarCharField)(fields.get("B"))).getLength());
-    assertTrue(50 == ((VarCharField)(fields.get("C"))).getLength());
+    assertTrue(5 == ((DecimalField) (fields.get("A"))).getPrecision());
+    assertTrue(2 == ((DecimalField) (fields.get("A"))).getScale());
+    assertTrue(200 == ((VarCharField) (fields.get("B"))).getLength());
+    assertTrue(50 == ((VarCharField) (fields.get("C"))).getLength());
   }
 
   @Test

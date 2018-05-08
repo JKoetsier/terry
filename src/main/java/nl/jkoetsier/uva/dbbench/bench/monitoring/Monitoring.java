@@ -103,13 +103,37 @@ public class Monitoring {
     System.out.println("ProcessorID: " + processor.getProcessorID());
   }
 
+  private static void getProcessInfo(OperatingSystem os, GlobalMemory memory, String name) {
+    List<OSProcess> processes = Arrays
+        .asList(os.getProcesses(os.getProcessCount(), ProcessSort.CPU));
+
+    List<OSProcess> filtered = processes.stream()
+        .filter(process -> process.getName().equals(name))
+        .collect(Collectors.toList());
+
+    System.out.format("Process '%s'%n", name);
+
+    System.out.println("   PID  %CPU %MEM       VSZ       RSS Name");
+    for (OSProcess p : filtered) {
+      System.out.format(" %5d %5.1f %4.1f %9s %9s %s%n", p.getProcessID(),
+          100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
+          100d * p.getResidentSetSize() / memory.getTotal(),
+          FormatUtil.formatBytes(p.getVirtualSize()),
+          FormatUtil.formatBytes(p.getResidentSetSize()), p.getName());
+
+      System.out
+          .format("Read: %d, Written: %s, Open files: %d %n", p.getBytesRead(), p.getBytesWritten(),
+              p.getOpenFiles());
+
+    }
+  }
+
   public SystemStats getStats() {
 
     MemoryStats memoryStats = getMemoryStats();
     CpuStats cpuStats = getCpuStats();
     DiskStats diskStats = getDiskStats();
     SystemStats systemStats = new SystemStats(cpuStats, memoryStats, diskStats);
-
 
     return systemStats;
   }
@@ -123,7 +147,7 @@ public class Monitoring {
     float[] cpuLoads = new float[dCpuLoads.length];
 
     for (int i = 0; i < dCpuLoads.length; i++) {
-      cpuLoads[i] = (float)dCpuLoads[i];
+      cpuLoads[i] = (float) dCpuLoads[i];
     }
 
     double[] loadAverages = processor.getSystemLoadAverage(3);
@@ -139,11 +163,11 @@ public class Monitoring {
         .withSoftIrqTicks(ticks[TickType.SOFTIRQ.getIndex()])
         .withStealTicks(ticks[TickType.STEAL.getIndex()])
         .withTimestamp(System.currentTimeMillis())
-        .withCpuLoad((float)processor.getSystemCpuLoad() * 100)
+        .withCpuLoad((float) processor.getSystemCpuLoad() * 100)
         .withCpuCoreLoads(cpuLoads)
-        .withLoadAvg1((float)loadAverages[0])
-        .withLoadAvg5((float)loadAverages[1])
-        .withLoadAvg15((float)loadAverages[2])
+        .withLoadAvg1((float) loadAverages[0])
+        .withLoadAvg5((float) loadAverages[1])
+        .withLoadAvg15((float) loadAverages[2])
         .build();
   }
 
@@ -157,24 +181,6 @@ public class Monitoring {
         .withUsedSwap(memory.getSwapUsed())
         .withTotalSwap(memory.getSwapTotal())
         .withTimestamp(System.currentTimeMillis())
-        .build();
-  }
-
-  public DiskStats getDiskStats() {
-    HWDiskStore[] diskStores = hal.getDiskStores();
-
-    long totalWrites = 0;
-    long totalReads = 0;
-
-    for (HWDiskStore diskStore : diskStores) {
-      totalReads += diskStore.getReads();
-      totalWrites += diskStore.getWrites();
-    }
-
-    return DiskStatsBuilder
-        .aDiskStats()
-        .withTotalReads(totalReads)
-        .withTotalWrites(totalWrites)
         .build();
   }
 
@@ -243,27 +249,22 @@ public class Monitoring {
 //    getProcessInfo(os, memory, "docker");
 //  }
 
-  private static void getProcessInfo(OperatingSystem os, GlobalMemory memory, String name) {
-    List<OSProcess> processes = Arrays.asList(os.getProcesses(os.getProcessCount(), ProcessSort.CPU));
+  public DiskStats getDiskStats() {
+    HWDiskStore[] diskStores = hal.getDiskStores();
 
-    List<OSProcess> filtered = processes.stream()
-        .filter(process -> process.getName().equals(name))
-        .collect(Collectors.toList());
+    long totalWrites = 0;
+    long totalReads = 0;
 
-    System.out.format("Process '%s'%n", name);
-
-    System.out.println("   PID  %CPU %MEM       VSZ       RSS Name");
-    for (OSProcess p : filtered) {
-      System.out.format(" %5d %5.1f %4.1f %9s %9s %s%n", p.getProcessID(),
-          100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
-          100d * p.getResidentSetSize() / memory.getTotal(),
-          FormatUtil.formatBytes(p.getVirtualSize()),
-          FormatUtil.formatBytes(p.getResidentSetSize()), p.getName());
-
-      System.out.format("Read: %d, Written: %s, Open files: %d %n", p.getBytesRead(), p.getBytesWritten(),
-          p.getOpenFiles());
-
+    for (HWDiskStore diskStore : diskStores) {
+      totalReads += diskStore.getReads();
+      totalWrites += diskStore.getWrites();
     }
+
+    return DiskStatsBuilder
+        .aDiskStats()
+        .withTotalReads(totalReads)
+        .withTotalWrites(totalWrites)
+        .build();
   }
 
 //  private static void printSensors(Sensors sensors) {

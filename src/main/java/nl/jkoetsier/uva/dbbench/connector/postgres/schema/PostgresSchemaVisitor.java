@@ -3,7 +3,6 @@ package nl.jkoetsier.uva.dbbench.connector.postgres.schema;
 import nl.jkoetsier.uva.dbbench.connector.ColumnDef;
 import nl.jkoetsier.uva.dbbench.connector.SqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalField;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DoubleField;
 import org.slf4j.Logger;

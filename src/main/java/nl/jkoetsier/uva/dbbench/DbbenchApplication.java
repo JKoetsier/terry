@@ -29,28 +29,21 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan("nl.jkoetsier.uva.dbbench")
 public class DbbenchApplication implements ApplicationRunner {
 
+  private static Logger logger = LoggerFactory.getLogger(DbbenchApplication.class);
   @Autowired
   private CommandLineConfigProperties commandLineConfigProperties;
-
   @Autowired
   private GlobalConfigProperties globalConfigProperties;
-
   @Autowired
   private DbConfigProperties dbConfigProperties;
-
   @Autowired
   private SchemaReader schemaReader;
-
   @Autowired
   private WorkloadReader workloadReader;
-
   @Autowired
   private DatabaseConnector databaseConnector;
-
   private Boolean verifyWorkload = true;
   private Boolean skipDataModel = false;
-
-  private static Logger logger = LoggerFactory.getLogger(DbbenchApplication.class);
 
   public static void main(String[] args) {
     ApplicationContext applicationContext = SpringApplication.run(DbbenchApplication.class, args);

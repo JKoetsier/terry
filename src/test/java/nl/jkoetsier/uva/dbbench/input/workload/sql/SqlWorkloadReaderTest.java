@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 public class SqlWorkloadReaderTest {
 
   private static Logger logger = LoggerFactory.getLogger(SqlWorkloadReaderTest.class);
-  private TestDataHelper testDataHelper = new TestDataHelper();
   Schema dataModel = new Schema();
+  private TestDataHelper testDataHelper = new TestDataHelper();
 
   private Workload getWorkload(String filename) {
     SqlWorkloadReader workloadReader = new SqlWorkloadReader();

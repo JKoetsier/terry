@@ -1,6 +1,6 @@
 package nl.jkoetsier.uva.dbbench.connector.postgres.schema;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;

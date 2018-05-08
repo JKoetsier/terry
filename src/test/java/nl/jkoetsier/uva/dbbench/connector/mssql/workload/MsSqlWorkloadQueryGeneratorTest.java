@@ -1,6 +1,6 @@
 package nl.jkoetsier.uva.dbbench.connector.mssql.workload;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,8 +117,9 @@ public class MsSqlWorkloadQueryGeneratorTest implements WorkloadTest {
 
   @Test
   public void testCase() {
-    String expected = "SELECT [a], [b], CASE WHEN [c] IS NULL THEN CAST(NULL AS int) ELSE 1 END AS [c]"
-        + " FROM [tablename]";
+    String expected =
+        "SELECT [a], [b], CASE WHEN [c] IS NULL THEN CAST(NULL AS int) ELSE 1 END AS [c]"
+            + " FROM [tablename]";
 
     compareSingleQueryFromFile("select_case.sql", expected);
   }

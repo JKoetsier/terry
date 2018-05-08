@@ -1,20 +1,15 @@
 package nl.jkoetsier.uva.dbbench.config;
 
 
-import javax.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.validation.annotation.Validated;
 
 @Configuration
 @ConfigurationProperties
 @PropertySource("classpath:db.${outputdb:mssql}.properties")
-@Validated
 public class DbConfigProperties {
 
-
-  @NotBlank
   private String type;
   private String dockerImage;
   private Integer defaultPort;

@@ -1,13 +1,10 @@
 package nl.jkoetsier.uva.dbbench.configuration;
 
 import nl.jkoetsier.uva.dbbench.config.CommandLineConfigProperties;
-import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
-import nl.jkoetsier.uva.dbbench.connector.SqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.input.SchemaReader;
 import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
-import org.junit.BeforeClass;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -85,7 +85,6 @@ public class Projection extends UnaryRelation {
       limit.acceptVisitor(workloadVisitor);
     }
 
-
     workloadVisitor.visit(this);
   }
 

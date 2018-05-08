@@ -21,24 +21,24 @@ public class GlobalConfigProperties {
     return acceptedDatabases;
   }
 
-  public void setNoRuns(int noRuns) {
-    this.noRuns = noRuns;
-  }
-
-  public void setSkipFirst(int skipFirst) {
-    this.skipFirst = skipFirst;
+  public void setAcceptedDatabases(List<String> acceptedDatabases) {
+    this.acceptedDatabases = acceptedDatabases;
   }
 
   public int getSkipFirst() {
     return skipFirst;
   }
 
-  public void setAcceptedDatabases(List<String> acceptedDatabases) {
-    this.acceptedDatabases = acceptedDatabases;
+  public void setSkipFirst(int skipFirst) {
+    this.skipFirst = skipFirst;
   }
 
   public int getNoRuns() {
     return noRuns;
+  }
+
+  public void setNoRuns(int noRuns) {
+    this.noRuns = noRuns;
   }
 
   public Integer getDefaultPort() {

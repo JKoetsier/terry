@@ -4,12 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
-import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
-import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

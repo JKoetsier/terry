@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory;
 
 public class SelectVisitor extends SelectVisitorAdapter {
 
-  private Relation relation;
   private static Logger logger = LoggerFactory.getLogger(SelectVisitor.class);
+  private Relation relation;
 
   public Relation getRelation() {
     return relation;

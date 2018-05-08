@@ -36,15 +36,15 @@ public class CommandLineConfigProperties {
     return datamodel;
   }
 
+  public void setDatamodel(String datamodel) {
+    this.datamodel = datamodel;
+  }
+
   public boolean isStopContainer() {
     return stopContainer;
   }
 
   public void setStopContainer(boolean stopContainer) {
     this.stopContainer = stopContainer;
-  }
-
-  public void setDatamodel(String datamodel) {
-    this.datamodel = datamodel;
   }
 }

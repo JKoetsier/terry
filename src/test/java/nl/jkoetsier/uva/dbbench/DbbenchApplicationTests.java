@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import nl.jkoetsier.uva.dbbench.config.CommandLineConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
@@ -9,8 +10,6 @@ import nl.jkoetsier.uva.dbbench.input.WorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.testclass.IntegrationTest;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -51,5 +50,4 @@ public class DbbenchApplicationTests {
 
     assertEquals("testUser", dbConfigProperties.getUsername());
   }
-
 }

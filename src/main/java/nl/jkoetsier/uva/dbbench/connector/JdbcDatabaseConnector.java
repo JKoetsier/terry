@@ -16,14 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 public abstract class JdbcDatabaseConnector implements DatabaseConnector {
 
+  private static Logger logger = LoggerFactory.getLogger(JdbcDatabaseConnector.class);
   @Autowired
   protected DbConfigProperties dbConfigProperties;
-
   protected Connection connection;
 
   protected abstract String getConnectionString();
-
-  private static Logger logger = LoggerFactory.getLogger(JdbcDatabaseConnector.class);
 
   @Override
   public void connect() throws SQLException {

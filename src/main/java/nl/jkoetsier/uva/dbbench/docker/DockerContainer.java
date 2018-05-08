@@ -47,14 +47,6 @@ public class DockerContainer {
     createClient();
   }
 
-  public HashMap<String, String> getEnvironmentVariables() {
-    return environmentVariables;
-  }
-
-  public HashMap<Integer, Integer> getPortMapping() {
-    return portMapping;
-  }
-
   public DockerContainer() {
     createClient();
   }
@@ -75,6 +67,14 @@ public class DockerContainer {
     dockerContainer.containerId = container.getId();
 
     return dockerContainer;
+  }
+
+  public HashMap<String, String> getEnvironmentVariables() {
+    return environmentVariables;
+  }
+
+  public HashMap<Integer, Integer> getPortMapping() {
+    return portMapping;
   }
 
   public void setHost(String host) {

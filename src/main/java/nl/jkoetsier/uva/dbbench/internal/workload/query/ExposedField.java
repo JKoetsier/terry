@@ -33,10 +33,6 @@ public class ExposedField {
     this.tableAlias = tableAlias;
   }
 
-  public void setTableAlias(String tableAlias) {
-    this.tableAlias = tableAlias;
-  }
-
   public String getTableName() {
     return tableName;
   }
@@ -51,6 +47,10 @@ public class ExposedField {
 
   public String getTableAlias() {
     return tableAlias;
+  }
+
+  public void setTableAlias(String tableAlias) {
+    this.tableAlias = tableAlias;
   }
 
   public Field getField() {

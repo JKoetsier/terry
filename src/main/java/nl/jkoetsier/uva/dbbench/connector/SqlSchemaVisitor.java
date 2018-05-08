@@ -3,7 +3,6 @@ package nl.jkoetsier.uva.dbbench.connector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BigIntegerField;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;

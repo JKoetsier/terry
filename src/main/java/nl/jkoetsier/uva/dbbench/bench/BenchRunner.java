@@ -8,9 +8,9 @@ import java.util.stream.LongStream;
 import nl.jkoetsier.uva.dbbench.bench.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.MonitoringThread;
 import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
+import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,8 @@ public class BenchRunner {
   private Workload workload;
   private GlobalConfigProperties globalConfigProperties;
 
-  public BenchRunner(DatabaseConnector databaseInterface, GlobalConfigProperties globalConfigProperties) {
+  public BenchRunner(DatabaseConnector databaseInterface,
+      GlobalConfigProperties globalConfigProperties) {
     this.databaseInterface = databaseInterface;
     this.globalConfigProperties = globalConfigProperties;
   }
@@ -59,9 +60,9 @@ public class BenchRunner {
     String runs = String.format("%6s", "all");
 
     if (firstRow != null) {
-        for (int i = 1; i < firstRow.length; i++) {
-          runs = runs.concat(String.format("%6s", i));
-        }
+      for (int i = 1; i < firstRow.length; i++) {
+        runs = runs.concat(String.format("%6s", i));
+      }
     }
 
     String header = String.format("%3s | %7s | %s", "Q", "avg", runs);
@@ -75,7 +76,8 @@ public class BenchRunner {
         values = values.concat(String.format("%6s", time));
       }
 
-      String row = String.format("%3s | %7s | %s", entry.getKey(), String.format("%s\u00B5s", avg), values);
+      String row = String
+          .format("%3s | %7s | %s", entry.getKey(), String.format("%s\u00B5s", avg), values);
 
       logger.info(row);
     }
@@ -91,7 +93,8 @@ public class BenchRunner {
     int noRuns = globalConfigProperties.getNoRuns();
     int skipFirst = globalConfigProperties.getSkipFirst();
 
-    TreeMap<Integer, String> queries = new TreeMap<>(databaseInterface.getWorkloadQueries(workload));
+    TreeMap<Integer, String> queries = new TreeMap<>(
+        databaseInterface.getWorkloadQueries(workload));
     HashMap<Integer, long[]> results = new HashMap<>();
 
     printQueries(queries);
@@ -104,7 +107,7 @@ public class BenchRunner {
     monitoringThread.start();
 
     for (int i = 0; i < noRuns + skipFirst; i++) {
-      for (Entry<Integer, String> entry: queries.entrySet()) {
+      for (Entry<Integer, String> entry : queries.entrySet()) {
         try {
 
           long time = timeQuery(entry.getValue());
@@ -143,8 +146,6 @@ public class BenchRunner {
 
   /**
    * Returns time in nanoseconds
-   * @param query
-   * @return
    */
   private long timeQuery(String query) throws SQLException {
     long start = System.nanoTime();

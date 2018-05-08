@@ -8,10 +8,16 @@ import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 public interface DatabaseConnector {
 
   void connect() throws SQLException;
+
   void executeQuery(String query) throws SQLException;
+
   void importSchema(Schema schema) throws SQLException;
+
   void closeConnection();
+
   boolean isDocker();
+
   HashMap<Integer, String> getWorkloadQueries(Workload workload);
+
   HashMap<String, String> getCreateQueries(Schema schema);
 }

@@ -1,7 +1,6 @@
 package nl.jkoetsier.uva.dbbench.docker;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
@@ -22,10 +21,9 @@ import org.junit.experimental.categories.Category;
 
 public class DockerContainerTest {
 
+  private static String containerName = "testcontainer92824912240djkld";
   private String testImage = "hello-world";
   private String readyLogLine = "Hello from Docker!";
-  private static String containerName = "testcontainer92824912240djkld";
-
   private DockerContainer dockerContainer;
 
   @BeforeClass
@@ -115,7 +113,8 @@ public class DockerContainerTest {
     checkEnvironmentVariables(envVars, dockerContainer);
   }
 
-  private void checkEnvironmentVariables(HashMap<String, String> expected, DockerContainer dockerContainer) {
+  private void checkEnvironmentVariables(HashMap<String, String> expected,
+      DockerContainer dockerContainer) {
     InspectContainerResponse inspectContainerResponse = dockerContainer.getInspectContainer();
     ContainerConfig config = inspectContainerResponse.getConfig();
 
@@ -142,7 +141,8 @@ public class DockerContainerTest {
     envVars.put("envvarB", "valB");
 
     for (Entry<String, String> entry : envVars.entrySet()) {
-      dockerContainer.addEnvironmentVariable(String.format("%s=%s", entry.getKey(), entry.getValue()));
+      dockerContainer
+          .addEnvironmentVariable(String.format("%s=%s", entry.getKey(), entry.getValue()));
     }
 
     assertEquals(envVars, dockerContainer.getEnvironmentVariables());

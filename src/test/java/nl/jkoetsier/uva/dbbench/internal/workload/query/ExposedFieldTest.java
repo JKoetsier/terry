@@ -1,9 +1,10 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
 import org.junit.Test;
 
 public class ExposedFieldTest {
