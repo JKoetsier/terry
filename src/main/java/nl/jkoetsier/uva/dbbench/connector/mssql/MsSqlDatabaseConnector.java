@@ -3,7 +3,7 @@ package nl.jkoetsier.uva.dbbench.connector.mssql;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.mssql.schema.MsSqlSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadQueryGenerator;
+import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -23,9 +23,10 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
-    MsSqlWorkloadQueryGenerator queryGenerator = new MsSqlWorkloadQueryGenerator();
+    MsSqlWorkloadVisitor workloadVisitor = new MsSqlWorkloadVisitor();
+    workload.acceptVisitor(workloadVisitor);
 
-    return queryGenerator.generateQueries(workload);
+    return workloadVisitor.getResult();
   }
 
   @Override

@@ -3,7 +3,7 @@ package nl.jkoetsier.uva.dbbench.connector.mysql;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.mysql.schema.MySqlSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.connector.mysql.workload.MySqlWorkloadQueryGenerator;
+import nl.jkoetsier.uva.dbbench.connector.mysql.workload.MySqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -41,8 +41,9 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
-    MySqlWorkloadQueryGenerator queryGenerator = new MySqlWorkloadQueryGenerator();
+    MySqlWorkloadVisitor workloadVisitor = new MySqlWorkloadVisitor();
+    workload.acceptVisitor(workloadVisitor);
 
-    return queryGenerator.generateQueries(workload);
+    return workloadVisitor.getResult();
   }
 }

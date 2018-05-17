@@ -11,7 +11,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Test;
 
-public class PostgresWorkloadQueryGeneratorTest implements WorkloadTest {
+public class PostgresWorkloadVisitorTest implements WorkloadTest {
 
   private TestDataHelper testDataHelper = new TestDataHelper();
 
@@ -23,8 +23,9 @@ public class PostgresWorkloadQueryGeneratorTest implements WorkloadTest {
   private List<String> getGeneratedWorkload(String filename) {
     Workload workload = getWorkloadFromFile(filename);
 
-    PostgresWorkloadQueryGenerator postgresWorkloadQueryGenerator = new PostgresWorkloadQueryGenerator();
-    HashMap<Integer, String> result = postgresWorkloadQueryGenerator.generateQueries(workload);
+    PostgresWorkloadVisitor workloadVisitor = new PostgresWorkloadVisitor();
+    workload.acceptVisitor(workloadVisitor);
+    HashMap<Integer, String> result = workloadVisitor.getResult();
 
     return new ArrayList<>(result.values());
   }

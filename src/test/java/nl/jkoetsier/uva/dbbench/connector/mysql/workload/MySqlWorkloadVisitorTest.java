@@ -12,7 +12,7 @@ import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class MySqlWorkloadQueryGeneratorTest implements WorkloadTest {
+public class MySqlWorkloadVisitorTest implements WorkloadTest {
 
   private TestDataHelper testDataHelper = new TestDataHelper();
 
@@ -24,8 +24,9 @@ public class MySqlWorkloadQueryGeneratorTest implements WorkloadTest {
   private List<String> getGeneratedWorkload(String filename) {
     Workload workload = getWorkloadFromFile(filename);
 
-    MySqlWorkloadQueryGenerator mySqlWorkloadQueryGenerator = new MySqlWorkloadQueryGenerator();
-    HashMap<Integer, String> result = mySqlWorkloadQueryGenerator.generateQueries(workload);
+    MySqlWorkloadVisitor workloadVisitor = new MySqlWorkloadVisitor();
+    workload.acceptVisitor(workloadVisitor);
+    HashMap<Integer, String> result = workloadVisitor.getResult();
 
     return new ArrayList<>(result.values());
   }

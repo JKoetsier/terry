@@ -11,7 +11,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Test;
 
-public class MsSqlWorkloadQueryGeneratorTest implements WorkloadTest {
+public class MsSqlWorkloadVisitorTest implements WorkloadTest {
 
   private TestDataHelper testDataHelper = new TestDataHelper();
 
@@ -23,8 +23,9 @@ public class MsSqlWorkloadQueryGeneratorTest implements WorkloadTest {
   private List<String> getGeneratedWorkload(String filename) {
     Workload workload = getWorkloadFromFile(filename);
 
-    MsSqlWorkloadQueryGenerator msSqlWorkloadQueryGenerator = new MsSqlWorkloadQueryGenerator();
-    HashMap<Integer, String> result = msSqlWorkloadQueryGenerator.generateQueries(workload);
+    MsSqlWorkloadVisitor workloadVisitor = new MsSqlWorkloadVisitor();
+    workload.acceptVisitor(workloadVisitor);
+    HashMap<Integer, String> result = workloadVisitor.getResult();
 
     return new ArrayList<>(result.values());
   }

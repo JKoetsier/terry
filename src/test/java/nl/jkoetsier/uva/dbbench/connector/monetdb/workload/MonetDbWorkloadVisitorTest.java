@@ -11,7 +11,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Test;
 
-public class MonetDbWorkloadQueryGeneratorTest implements WorkloadTest {
+public class MonetDbWorkloadVisitorTest implements WorkloadTest {
 
   private TestDataHelper testDataHelper = new TestDataHelper();
 
@@ -23,8 +23,9 @@ public class MonetDbWorkloadQueryGeneratorTest implements WorkloadTest {
   private List<String> getGeneratedWorkload(String filename) {
     Workload workload = getWorkloadFromFile(filename);
 
-    MonetDbWorkloadQueryGenerator monetDbWorkloadQueryGenerator = new MonetDbWorkloadQueryGenerator();
-    HashMap<Integer, String> result = monetDbWorkloadQueryGenerator.generateQueries(workload);
+    MonetDbWorkloadVisitor workloadVisitor = new MonetDbWorkloadVisitor();
+    workload.acceptVisitor(workloadVisitor);
+    HashMap<Integer, String> result = workloadVisitor.getResult();
 
     return new ArrayList<>(result.values());
   }

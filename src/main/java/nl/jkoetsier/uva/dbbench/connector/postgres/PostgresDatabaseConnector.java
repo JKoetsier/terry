@@ -3,7 +3,7 @@ package nl.jkoetsier.uva.dbbench.connector.postgres;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadQueryGenerator;
+import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -42,8 +42,9 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
-    PostgresWorkloadQueryGenerator queryGenerator = new PostgresWorkloadQueryGenerator();
+    PostgresWorkloadVisitor workloadVisitor = new PostgresWorkloadVisitor();
+    workload.acceptVisitor(workloadVisitor);
 
-    return queryGenerator.generateQueries(workload);
+    return workloadVisitor.getResult();
   }
 }

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.schema.MonetDbSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadQueryGenerator;
+import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -59,8 +59,9 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
-    MonetDbWorkloadQueryGenerator queryGenerator = new MonetDbWorkloadQueryGenerator();
+    MonetDbWorkloadVisitor workloadVisitor = new MonetDbWorkloadVisitor();
+    workload.acceptVisitor(workloadVisitor);
 
-    return queryGenerator.generateQueries(workload);
+    return workloadVisitor.getResult();
   }
 }
