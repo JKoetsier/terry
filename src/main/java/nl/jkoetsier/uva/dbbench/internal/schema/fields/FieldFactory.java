@@ -4,39 +4,39 @@ import java.util.HashMap;
 
 public class FieldFactory {
 
-  private static final HashMap<String, Class<? extends Field>> mapping;
+  private static final HashMap<String, Class<? extends Column>> mapping;
 
   static {
     mapping = new HashMap<>();
 
     /* Integer fields */
-    mapping.put("int", IntegerField.class);
-    mapping.put("bigint", BigIntegerField.class);
+    mapping.put("int", IntegerColumn.class);
+    mapping.put("bigint", BigIntegerColumn.class);
 
     /* Character fields */
-    mapping.put("nvarchar", VarCharField.class);
-    mapping.put("varchar", VarCharField.class);
-    mapping.put("char", CharField.class);
+    mapping.put("nvarchar", VarCharColumn.class);
+    mapping.put("varchar", VarCharColumn.class);
+    mapping.put("char", CharColumn.class);
 
     /* Datetime fields */
-    mapping.put("datetime", DateTimeField.class);
-    mapping.put("datetime2", DateTimeField.class);
-    mapping.put("datetimeoffset", DateTimeTimezoneField.class);
-    mapping.put("date", DateField.class);
+    mapping.put("datetime", DateTimeColumn.class);
+    mapping.put("datetime2", DateTimeColumn.class);
+    mapping.put("datetimeoffset", DateTimeTimezoneColumn.class);
+    mapping.put("date", DateColumn.class);
 
     /* Float fields */
-    mapping.put("double", DoubleField.class);
-    mapping.put("float", FloatField.class);
+    mapping.put("double", DoubleColumn.class);
+    mapping.put("float", FloatColumn.class);
 
-    mapping.put("bit", BooleanField.class);
+    mapping.put("bit", BooleanColumn.class);
 
-    mapping.put("decimal", DecimalField.class);
+    mapping.put("decimal", DecimalColumn.class);
 
   }
 
 
-  public static Field create(String type) {
-    Class<? extends Field> fieldClass = mapping.get(type.toLowerCase());
+  public static Column create(String type) {
+    Class<? extends Column> fieldClass = mapping.get(type.toLowerCase());
 
     if (fieldClass == null) {
       throw new RuntimeException(String.format("Can't find class for type [%s]", type));

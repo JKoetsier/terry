@@ -2,12 +2,12 @@ package nl.jkoetsier.uva.dbbench.internal.schema.fields;
 
 import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
-public class CharField extends Field {
+public class DateTimeTimezoneColumn extends Column {
 
-  public CharField() {
+  public DateTimeTimezoneColumn() {
   }
 
-  public CharField(String name) {
+  public DateTimeTimezoneColumn(String name) {
     super(name);
   }
 

@@ -2,13 +2,13 @@ package nl.jkoetsier.uva.dbbench.internal.schema.fields;
 
 import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
-public class DateField extends Field {
+public class DateTimeColumn extends Column {
 
-  public DateField(String name) {
+  public DateTimeColumn(String name) {
     super(name);
   }
 
-  public DateField() {
+  public DateTimeColumn() {
   }
 
   @Override

@@ -9,9 +9,9 @@ import static org.junit.Assert.fail;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerColumn;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
@@ -51,39 +51,39 @@ public class SqlWorkloadReaderTest {
   }
 
   private void loadDataModel() {
-    Entity entity = new Entity("table2name");
-    IntegerField fieldA = new IntegerField("a");
-    IntegerField fieldB = new IntegerField("b");
-    entity.addField(fieldA);
-    entity.addField(fieldB);
-    dataModel.addEntity(entity);
+    Table table = new Table("table2name");
+    IntegerColumn fieldA = new IntegerColumn("a");
+    IntegerColumn fieldB = new IntegerColumn("b");
+    table.addColumn(fieldA);
+    table.addColumn(fieldB);
+    dataModel.addEntity(table);
   }
 
   private void loadJoinDataModel() {
-    Entity entity = new Entity("basetable");
-    IntegerField fieldA = new IntegerField("a");
-    IntegerField fieldB = new IntegerField("b");
-    entity.addField(fieldA);
-    entity.addField(fieldB);
+    Table table = new Table("basetable");
+    IntegerColumn fieldA = new IntegerColumn("a");
+    IntegerColumn fieldB = new IntegerColumn("b");
+    table.addColumn(fieldA);
+    table.addColumn(fieldB);
 
-    Entity joinTable = new Entity("jointable");
-    IntegerField fieldC = new IntegerField("c");
-    IntegerField fieldD = new IntegerField("d");
-    joinTable.addField(fieldC);
-    joinTable.addField(fieldD);
+    Table joinTable = new Table("jointable");
+    IntegerColumn fieldC = new IntegerColumn("c");
+    IntegerColumn fieldD = new IntegerColumn("d");
+    joinTable.addColumn(fieldC);
+    joinTable.addColumn(fieldD);
 
-    Entity joinTable2 = new Entity("jointable2");
-    Entity joinTable3 = new Entity("jointable3");
-    Entity joinTable4 = new Entity("jointable4");
-    IntegerField fieldE = new IntegerField("e");
-    IntegerField fieldF = new IntegerField("f");
-    IntegerField fieldG = new IntegerField("g");
-    IntegerField fieldH = new IntegerField("h");
-    joinTable2.addField(fieldE);
-    joinTable3.addField(fieldF);
-    joinTable3.addField(fieldG);
-    joinTable4.addField(fieldH);
-    dataModel.addEntity(entity);
+    Table joinTable2 = new Table("jointable2");
+    Table joinTable3 = new Table("jointable3");
+    Table joinTable4 = new Table("jointable4");
+    IntegerColumn fieldE = new IntegerColumn("e");
+    IntegerColumn fieldF = new IntegerColumn("f");
+    IntegerColumn fieldG = new IntegerColumn("g");
+    IntegerColumn fieldH = new IntegerColumn("h");
+    joinTable2.addColumn(fieldE);
+    joinTable3.addColumn(fieldF);
+    joinTable3.addColumn(fieldG);
+    joinTable4.addColumn(fieldH);
+    dataModel.addEntity(table);
     dataModel.addEntity(joinTable);
     dataModel.addEntity(joinTable2);
     dataModel.addEntity(joinTable3);

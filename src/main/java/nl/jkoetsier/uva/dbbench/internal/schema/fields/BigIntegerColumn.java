@@ -2,12 +2,12 @@ package nl.jkoetsier.uva.dbbench.internal.schema.fields;
 
 import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
-public class DateTimeTimezoneField extends Field {
+public class BigIntegerColumn extends Column {
 
-  public DateTimeTimezoneField() {
+  public BigIntegerColumn() {
   }
 
-  public DateTimeTimezoneField(String name) {
+  public BigIntegerColumn(String name) {
     super(name);
   }
 

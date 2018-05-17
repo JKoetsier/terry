@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanColumn;
 import org.junit.Test;
 
-public class ExposedFieldTest {
+public class ExposedColumnTest {
 
   @Test
   public void testDotConstructor() {
@@ -26,8 +26,8 @@ public class ExposedFieldTest {
 
   @Test
   public void testClone() {
-    BooleanField booleanField = new BooleanField("boolfield");
-    ExposedField exposedField = new ExposedField(booleanField, "tableName",
+    BooleanColumn booleanColumn = new BooleanColumn("boolfield");
+    ExposedField exposedField = new ExposedField(booleanColumn, "tableName",
         "columnName", "tableAlias");
 
     ExposedField cloned = exposedField.clone();
@@ -35,7 +35,7 @@ public class ExposedFieldTest {
     assertEquals("columnName", exposedField.getColumnName());
     assertEquals("tableAlias", exposedField.getTableAlias());
 
-    assertSame(exposedField.getField(), cloned.getField());
+    assertSame(exposedField.getColumn(), cloned.getColumn());
 
     exposedField = new ExposedField("table.column");
     cloned = exposedField.clone();
@@ -43,6 +43,6 @@ public class ExposedFieldTest {
     assertEquals("table", cloned.getTableName());
     assertEquals("column", cloned.getColumnName());
     assertNull(cloned.getTableAlias());
-    assertNull(cloned.getField());
+    assertNull(cloned.getColumn());
   }
 }

@@ -99,7 +99,7 @@ public class MySqlWorkloadQueryGeneratorTest implements WorkloadTest {
   @Test
   @Ignore
   public void testJoinMultipleQuery() {
-    // TODO Do soething with FULL JOIN, if necessary
+    // TODO Do something with FULL JOIN, if necessary
     String expected = "SELECT basetable.a, basetable.b, jointable.d, jointable2.e, "
         + "jointable3.g "
         + "FROM basetable "

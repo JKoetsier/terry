@@ -2,26 +2,26 @@ package nl.jkoetsier.uva.dbbench.connector.mssql.schema;
 
 import nl.jkoetsier.uva.dbbench.connector.ColumnDef;
 import nl.jkoetsier.uva.dbbench.connector.SqlSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeTimezoneField;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeTimezoneColumn;
 
 public class MsSqlSchemaVisitor extends SqlSchemaVisitor {
 
   @Override
-  public void visit(DateTimeTimezoneField dateTimeOffsetField) {
+  public void visit(DateTimeTimezoneColumn dateTimeOffsetField) {
     columnDefStack.add(createColumnDef(dateTimeOffsetField, "DATETIMEOFFSET"));
   }
 
   @Override
-  public void visit(BooleanField booleanField) {
-    columnDefStack.add(createColumnDef(booleanField, "BIT"));
+  public void visit(BooleanColumn booleanColumn) {
+    columnDefStack.add(createColumnDef(booleanColumn, "BIT"));
   }
 
   @Override
-  public void visit(Entity entity) {
+  public void visit(Table table) {
     String createTable = String.format(
-        "CREATE TABLE [%s] (", entity.getName()
+        "CREATE TABLE [%s] (", table.getName()
     );
 
     for (ColumnDef columnDef : columnDefStack) {
@@ -44,11 +44,11 @@ public class MsSqlSchemaVisitor extends SqlSchemaVisitor {
       ));
     }
 
-    if (entity.getPrimaryKey() != null) {
+    if (table.getPrimaryKey() != null) {
       createTable = createTable.concat(String.format(
           "\n\tCONSTRAINT PK_%s PRIMARY KEY (\n\t\t%s\n\t)",
-          entity.getName(),
-          String.join(",\n\t\t", entity.getPrimaryKeyFieldNames())
+          table.getName(),
+          String.join(",\n\t\t", table.getPrimaryKeyFieldNames())
       ));
     } else if (createTable.charAt(createTable.length() - 1) == ',') {
       createTable = createTable.substring(0, createTable.length() - 1);
@@ -56,7 +56,7 @@ public class MsSqlSchemaVisitor extends SqlSchemaVisitor {
 
     createTable = createTable.concat("\n)");
 
-    createQueries.put(entity.getName(), createTable);
+    createQueries.put(table.getName(), createTable);
     columnDefStack.clear();
   }
 }

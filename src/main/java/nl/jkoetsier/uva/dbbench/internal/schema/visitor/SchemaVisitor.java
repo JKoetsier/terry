@@ -1,47 +1,47 @@
 package nl.jkoetsier.uva.dbbench.internal.schema.visitor;
 
 import java.util.HashMap;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.BigIntegerField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.CharField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeTimezoneField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DoubleField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.FloatField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.VarCharField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.BigIntegerColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.CharColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeTimezoneColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DoubleColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.FloatColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.VarCharColumn;
 
 public abstract class SchemaVisitor {
 
-  public abstract void visit(BigIntegerField bigIntegerField);
+  public abstract void visit(BigIntegerColumn bigIntegerColumn);
 
-  public abstract void visit(BooleanField booleanField);
+  public abstract void visit(BooleanColumn booleanColumn);
 
-  public abstract void visit(CharField charField);
+  public abstract void visit(CharColumn charColumn);
 
-  public abstract void visit(DateField dateField);
+  public abstract void visit(DateColumn dateColumn);
 
-  public abstract void visit(DateTimeField dateTimeField);
+  public abstract void visit(DateTimeColumn dateTimeColumn);
 
-  public abstract void visit(DateTimeTimezoneField dateTimeOffsetField);
+  public abstract void visit(DateTimeTimezoneColumn dateTimeOffsetField);
 
-  public abstract void visit(DecimalField decimalField);
+  public abstract void visit(DecimalColumn decimalColumn);
 
-  public abstract void visit(DoubleField doubleField);
+  public abstract void visit(DoubleColumn doubleColumn);
 
-  public abstract void visit(FloatField floatField);
+  public abstract void visit(FloatColumn floatField);
 
-  public abstract void visit(IntegerField integerField);
+  public abstract void visit(IntegerColumn integerField);
 
-  public abstract void visit(VarCharField varCharField);
+  public abstract void visit(VarCharColumn varCharField);
 
   public abstract void visit(Schema dataModel);
 
-  public abstract void visit(Entity entity);
+  public abstract void visit(Table table);
 
   /**
    * @return Returns a Hashmap of <EntityName, QueryString> pairs

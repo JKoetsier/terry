@@ -5,16 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
-public class DecimalField extends Field {
+public class DecimalColumn extends Column {
 
   private Integer precision;
   private Integer scale;
 
-  public DecimalField(String name) {
+  public DecimalColumn(String name) {
     super(name);
   }
 
-  public DecimalField() {
+  public DecimalColumn() {
   }
 
   public Integer getPrecision() {

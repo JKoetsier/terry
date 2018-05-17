@@ -6,19 +6,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public abstract class JdbcDatabaseConnector implements DatabaseConnector {
+public abstract class JdbcDatabaseConnector extends DatabaseConnector {
 
   private static Logger logger = LoggerFactory.getLogger(JdbcDatabaseConnector.class);
-  @Autowired
-  protected DbConfigProperties dbConfigProperties;
+
   protected Connection connection;
 
   protected abstract String getConnectionString();
@@ -26,11 +23,6 @@ public abstract class JdbcDatabaseConnector implements DatabaseConnector {
   @Override
   public void connect() throws SQLException {
     getConnection();
-  }
-
-  @Override
-  public boolean isDocker() {
-    return dbConfigProperties.isDocker();
   }
 
   @Override

@@ -1,11 +1,11 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
 public class InputRelation extends Relation {
 
-  private Entity entity;
+  private Table table;
   private ExposedFields exposedFields;
   private String tableAlias;
   private String tableName;
@@ -29,12 +29,12 @@ public class InputRelation extends Relation {
     this.exposedFields = exposedFields;
   }
 
-  public Entity getEntity() {
-    return entity;
+  public Table getTable() {
+    return table;
   }
 
-  public void setEntity(Entity entity) {
-    this.entity = entity;
+  public void setTable(Table table) {
+    this.table = table;
   }
 
   public String getTableAlias() {

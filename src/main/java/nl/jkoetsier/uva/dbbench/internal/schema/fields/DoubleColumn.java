@@ -2,7 +2,7 @@ package nl.jkoetsier.uva.dbbench.internal.schema.fields;
 
 import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
-public class FloatField extends Field {
+public class DoubleColumn extends Column {
 
   @Override
   public void acceptVisitor(SchemaVisitor v) {

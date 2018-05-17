@@ -142,7 +142,6 @@ public class Monitoring {
     CentralProcessor processor = hal.getProcessor();
 
     long[] ticks = processor.getSystemCpuLoadTicks();
-
     double[] dCpuLoads = processor.getProcessorCpuLoadBetweenTicks();
     float[] cpuLoads = new float[dCpuLoads.length];
 

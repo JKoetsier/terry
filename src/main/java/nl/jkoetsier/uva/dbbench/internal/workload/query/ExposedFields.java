@@ -2,8 +2,8 @@ package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
 import java.util.ArrayList;
 import java.util.List;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.Column;
 
 public class ExposedFields {
 
@@ -17,22 +17,22 @@ public class ExposedFields {
     this.exposedFields = exposedField;
   }
 
-  public static ExposedFields create(Entity entity) {
+  public static ExposedFields create(Table table) {
     ExposedFields exposedFields = new ExposedFields();
 
-    for (Field field : entity.getFields().values()) {
-      ExposedField exposedField = new ExposedField(field, entity.getName(), field.getName());
+    for (Column column : table.getColumns().values()) {
+      ExposedField exposedField = new ExposedField(column, table.getName(), column.getName());
       exposedFields.add(exposedField);
     }
 
     return exposedFields;
   }
 
-  public static ExposedFields create(Entity entity, String tableAlias) {
+  public static ExposedFields create(Table table, String tableAlias) {
     ExposedFields exposedFields = new ExposedFields();
 
-    for (Field field : entity.getFields().values()) {
-      ExposedField exposedField = new ExposedField(field, entity.getName(), field.getName(),
+    for (Column column : table.getColumns().values()) {
+      ExposedField exposedField = new ExposedField(column, table.getName(), column.getName(),
           tableAlias);
       exposedFields.add(exposedField);
     }

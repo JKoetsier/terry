@@ -6,14 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedHashMap;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.VarCharField;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.Column;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.VarCharColumn;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Test;
 
@@ -31,22 +31,22 @@ public class SqlSchemaReaderTest {
     Schema dataModel = getDataModel("create_table.sql");
     assertEquals(dataModel.getEntities().size(), 1);
 
-    Entity entity = dataModel.getEntities().get("TableName");
-    assertEquals(entity.getFields().size(), 9);
-    assertEquals("TableName", entity.getName());
+    Table table = dataModel.getEntities().get("TableName");
+    assertEquals(table.getColumns().size(), 9);
+    assertEquals("TableName", table.getName());
 
-    LinkedHashMap<String, Field> fields = entity.getFields();
+    LinkedHashMap<String, Column> fields = table.getColumns();
 
     assertEquals("Id", fields.get("Id").getName());
     assertEquals("IntField", fields.get("IntField").getName());
 
-    assertTrue(fields.get("Id") instanceof IntegerField);
-    assertTrue(fields.get("VarChar250Field") instanceof VarCharField);
-    assertTrue(fields.get("DateField") instanceof DateField);
-    assertTrue(fields.get("BitField") instanceof BooleanField);
+    assertTrue(fields.get("Id") instanceof IntegerColumn);
+    assertTrue(fields.get("VarChar250Field") instanceof VarCharColumn);
+    assertTrue(fields.get("DateField") instanceof DateColumn);
+    assertTrue(fields.get("BitField") instanceof BooleanColumn);
 
-    assertNotNull(entity.getPrimaryKey());
-    assertTrue(entity.getPrimaryKey().contains(fields.get("Id")));
+    assertNotNull(table.getPrimaryKey());
+    assertTrue(table.getPrimaryKey().contains(fields.get("Id")));
   }
 
   @Test
@@ -54,24 +54,24 @@ public class SqlSchemaReaderTest {
     Schema dataModel = getDataModel("create_tables.sql");
     assertEquals(dataModel.getEntities().size(), 2);
 
-    Entity entity1 = dataModel.getEntities().get("TableName");
-    Entity entity2 = dataModel.getEntities().get("Table2Name");
-    assertEquals(entity1.getFields().size(), 4);
-    assertEquals(entity2.getFields().size(), 5);
-    assertEquals("TableName", entity1.getName());
-    assertEquals("Table2Name", entity2.getName());
+    Table table1 = dataModel.getEntities().get("TableName");
+    Table table2 = dataModel.getEntities().get("Table2Name");
+    assertEquals(table1.getColumns().size(), 4);
+    assertEquals(table2.getColumns().size(), 5);
+    assertEquals("TableName", table1.getName());
+    assertEquals("Table2Name", table2.getName());
 
-    LinkedHashMap<String, Field> fields1 = entity1.getFields();
-    LinkedHashMap<String, Field> fields2 = entity2.getFields();
+    LinkedHashMap<String, Column> fields1 = table1.getColumns();
+    LinkedHashMap<String, Column> fields2 = table2.getColumns();
 
     assertEquals("Id", fields1.get("Id").getName());
     assertEquals("IntField", fields1.get("IntField").getName());
     assertEquals("BitField", fields2.get("BitField").getName());
 
-    assertTrue(fields1.get("Id") instanceof IntegerField);
-    assertTrue(fields1.get("VarChar250Field") instanceof VarCharField);
-    assertTrue(fields2.get("DateField") instanceof DateField);
-    assertTrue(fields2.get("BitField") instanceof BooleanField);
+    assertTrue(fields1.get("Id") instanceof IntegerColumn);
+    assertTrue(fields1.get("VarChar250Field") instanceof VarCharColumn);
+    assertTrue(fields2.get("DateField") instanceof DateColumn);
+    assertTrue(fields2.get("BitField") instanceof BooleanColumn);
   }
 
   @Test
@@ -79,13 +79,13 @@ public class SqlSchemaReaderTest {
     Schema dataModel = getDataModel("create_table_arguments.sql");
     assertEquals(dataModel.getEntities().size(), 1);
 
-    Entity entity = dataModel.getEntity("TableName");
-    LinkedHashMap<String, Field> fields = entity.getFields();
+    Table table = dataModel.getEntity("TableName");
+    LinkedHashMap<String, Column> fields = table.getColumns();
 
-    assertTrue(5 == ((DecimalField) (fields.get("A"))).getPrecision());
-    assertTrue(2 == ((DecimalField) (fields.get("A"))).getScale());
-    assertTrue(200 == ((VarCharField) (fields.get("B"))).getLength());
-    assertTrue(50 == ((VarCharField) (fields.get("C"))).getLength());
+    assertTrue(5 == ((DecimalColumn) (fields.get("A"))).getPrecision());
+    assertTrue(2 == ((DecimalColumn) (fields.get("A"))).getScale());
+    assertTrue(200 == ((VarCharColumn) (fields.get("B"))).getLength());
+    assertTrue(50 == ((VarCharColumn) (fields.get("C"))).getLength());
   }
 
   @Test
@@ -93,8 +93,8 @@ public class SqlSchemaReaderTest {
     Schema dataModel = getDataModel("create_table_null_not_null.sql");
     assertEquals(dataModel.getEntities().size(), 1);
 
-    Entity entity = dataModel.getEntity("TableName");
-    LinkedHashMap<String, Field> fields = entity.getFields();
+    Table table = dataModel.getEntity("TableName");
+    LinkedHashMap<String, Column> fields = table.getColumns();
 
     assertEquals(false, fields.get("A").isAllowedEmpty());
     assertEquals(true, fields.get("B").isAllowedEmpty());
@@ -105,11 +105,11 @@ public class SqlSchemaReaderTest {
   @Test
   public void testCompositePrimaryKey() {
     Schema dataModel = getDataModel("create_table_composite_primarykey.sql");
-    Entity entity = dataModel.getEntity("TableName");
+    Table table = dataModel.getEntity("TableName");
 
-    assertTrue(entity.getPrimaryKey().contains(entity.getField("Id")));
-    assertTrue(entity.getPrimaryKey().contains(entity.getField("IntField")));
-    assertFalse(entity.getPrimaryKey().contains(entity.getField("DecimalField")));
+    assertTrue(table.getPrimaryKey().contains(table.getColumn("Id")));
+    assertTrue(table.getPrimaryKey().contains(table.getColumn("IntField")));
+    assertFalse(table.getPrimaryKey().contains(table.getColumn("DecimalColumn")));
   }
 
 }

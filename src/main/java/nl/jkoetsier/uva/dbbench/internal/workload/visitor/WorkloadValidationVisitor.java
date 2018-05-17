@@ -1,7 +1,7 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.visitor;
 
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
@@ -165,20 +165,20 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InputRelation inputRelation) {
-    Entity entity = schema.getEntity(inputRelation.getTableName());
+    Table table = schema.getEntity(inputRelation.getTableName());
 
-    if (entity == null) {
+    if (table == null) {
       throw new NotMatchingWorkloadException(String.format(
-          "Entity '%s' does not exist", inputRelation.getTableName()
+          "Table '%s' does not exist", inputRelation.getTableName()
       ));
     }
 
-    inputRelation.setEntity(entity);
+    inputRelation.setTable(table);
 
     if (inputRelation.getTableAlias() != null) {
-      inputRelation.setExposedFields(ExposedFields.create(entity, inputRelation.getTableAlias()));
+      inputRelation.setExposedFields(ExposedFields.create(table, inputRelation.getTableAlias()));
     } else {
-      inputRelation.setExposedFields(ExposedFields.create(entity));
+      inputRelation.setExposedFields(ExposedFields.create(table));
     }
 
     inputRelation.setValidated(true);

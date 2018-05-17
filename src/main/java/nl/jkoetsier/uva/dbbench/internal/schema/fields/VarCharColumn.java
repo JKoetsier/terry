@@ -4,18 +4,18 @@ import java.util.Arrays;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
-public class VarCharField extends Field {
+public class VarCharColumn extends Column {
 
   private Integer length;
 
-  public VarCharField() {
+  public VarCharColumn() {
   }
 
-  public VarCharField(String name) {
+  public VarCharColumn(String name) {
     super(name);
   }
 
-  public VarCharField(String name, Integer length) {
+  public VarCharColumn(String name, Integer length) {
     super(name);
     this.length = length;
   }

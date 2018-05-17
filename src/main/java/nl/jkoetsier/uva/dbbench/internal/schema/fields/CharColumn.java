@@ -2,12 +2,12 @@ package nl.jkoetsier.uva.dbbench.internal.schema.fields;
 
 import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
-public class BooleanField extends Field {
+public class CharColumn extends Column {
 
-  public BooleanField() {
+  public CharColumn() {
   }
 
-  public BooleanField(String name) {
+  public CharColumn(String name) {
     super(name);
   }
 

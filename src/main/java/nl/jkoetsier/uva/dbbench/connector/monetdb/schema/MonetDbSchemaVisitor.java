@@ -2,7 +2,7 @@ package nl.jkoetsier.uva.dbbench.connector.monetdb.schema;
 
 import nl.jkoetsier.uva.dbbench.connector.ColumnDef;
 import nl.jkoetsier.uva.dbbench.connector.SqlSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,9 +11,9 @@ public class MonetDbSchemaVisitor extends SqlSchemaVisitor {
   private static Logger logger = LoggerFactory.getLogger(MonetDbSchemaVisitor.class);
 
   @Override
-  public void visit(Entity entity) {
+  public void visit(Table table) {
     String createTable = String.format(
-        "CREATE TABLE %s (", entity.getName()
+        "CREATE TABLE %s (", table.getName()
     );
 
     for (ColumnDef columnDef : columnDefStack) {
@@ -36,10 +36,10 @@ public class MonetDbSchemaVisitor extends SqlSchemaVisitor {
       ));
     }
 
-    if (entity.getPrimaryKey() != null) {
+    if (table.getPrimaryKey() != null) {
       createTable = createTable.concat(String.format(
           "\n\tPRIMARY KEY (\n\t\t%s\n\t)",
-          String.join(",\n\t\t", entity.getPrimaryKeyFieldNames())
+          String.join(",\n\t\t", table.getPrimaryKeyFieldNames())
       ));
     } else if (createTable.charAt(createTable.length() - 1) == ',') {
       createTable = createTable.substring(0, createTable.length() - 1);
@@ -47,7 +47,7 @@ public class MonetDbSchemaVisitor extends SqlSchemaVisitor {
 
     createTable = createTable.concat("\n);");
 
-    createQueries.put(entity.getName(), createTable);
+    createQueries.put(table.getName(), createTable);
     columnDefStack.clear();
   }
 }

@@ -1,10 +1,10 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.Field;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.Column;
 
 public class ExposedField {
 
-  private Field field;
+  private Column column;
   private String tableName;
   private String tableAlias;
   private String columnName;
@@ -20,16 +20,16 @@ public class ExposedField {
     }
   }
 
-  public ExposedField(Field field, String tableName, String columnName) {
+  public ExposedField(Column column, String tableName, String columnName) {
     this.tableName = tableName;
     this.columnName = columnName;
-    this.field = field;
+    this.column = column;
   }
 
-  public ExposedField(Field field, String tableName, String columnName, String tableAlias) {
+  public ExposedField(Column column, String tableName, String columnName, String tableAlias) {
     this.tableName = tableName;
     this.columnName = columnName;
-    this.field = field;
+    this.column = column;
     this.tableAlias = tableAlias;
   }
 
@@ -53,12 +53,12 @@ public class ExposedField {
     this.tableAlias = tableAlias;
   }
 
-  public Field getField() {
-    return field;
+  public Column getColumn() {
+    return column;
   }
 
-  public void setField(Field field) {
-    this.field = field;
+  public void setColumn(Column column) {
+    this.column = column;
   }
 
   public String toString() {
@@ -77,7 +77,7 @@ public class ExposedField {
   @Override
   protected ExposedField clone() {
     return new ExposedField(
-        this.field,
+        this.column,
         this.tableName,
         this.columnName,
         this.tableAlias

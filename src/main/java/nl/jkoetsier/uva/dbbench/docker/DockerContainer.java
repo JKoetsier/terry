@@ -42,9 +42,8 @@ public class DockerContainer {
   private String readyLogLine;
 
   public DockerContainer(String image) {
+    this();
     this.image = image;
-
-    createClient();
   }
 
   public DockerContainer() {

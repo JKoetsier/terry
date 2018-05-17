@@ -2,9 +2,9 @@ package nl.jkoetsier.uva.dbbench.connector.postgres.schema;
 
 import nl.jkoetsier.uva.dbbench.connector.ColumnDef;
 import nl.jkoetsier.uva.dbbench.connector.SqlSchemaVisitor;
-import nl.jkoetsier.uva.dbbench.internal.schema.Entity;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalField;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.DoubleField;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DoubleColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,20 +13,20 @@ public class PostgresSchemaVisitor extends SqlSchemaVisitor {
   private static Logger logger = LoggerFactory.getLogger(PostgresSchemaVisitor.class);
 
   @Override
-  public void visit(DecimalField decimalField) {
-    columnDefStack.add(createColumnDef(decimalField, "NUMERIC"));
+  public void visit(DecimalColumn decimalColumn) {
+    columnDefStack.add(createColumnDef(decimalColumn, "NUMERIC"));
   }
 
   @Override
-  public void visit(DoubleField doubleField) {
-    columnDefStack.add(createColumnDef(doubleField, "FLOAT8"));
+  public void visit(DoubleColumn doubleColumn) {
+    columnDefStack.add(createColumnDef(doubleColumn, "FLOAT8"));
   }
 
   @Override
-  public void visit(Entity entity) {
+  public void visit(Table table) {
 
     String createTable = String.format(
-        "CREATE TABLE %s (", entity.getName()
+        "CREATE TABLE %s (", table.getName()
     );
 
     for (ColumnDef columnDef : columnDefStack) {
@@ -48,10 +48,10 @@ public class PostgresSchemaVisitor extends SqlSchemaVisitor {
       ));
     }
 
-    if (entity.getPrimaryKey() != null) {
+    if (table.getPrimaryKey() != null) {
       createTable = createTable.concat(String.format(
           "\n\tPRIMARY KEY (\n\t\t%s\n\t)",
-          String.join(",\n\t\t", entity.getPrimaryKeyFieldNames())
+          String.join(",\n\t\t", table.getPrimaryKeyFieldNames())
       ));
     } else if (createTable.charAt(createTable.length() - 1) == ',') {
       createTable = createTable.substring(0, createTable.length() - 1);
@@ -59,7 +59,7 @@ public class PostgresSchemaVisitor extends SqlSchemaVisitor {
 
     createTable = createTable.concat("\n);");
 
-    createQueries.put(entity.getName(), createTable);
+    createQueries.put(table.getName(), createTable);
     columnDefStack.clear();
   }
 }
