@@ -12,8 +12,10 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.InExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.RelationExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
@@ -160,7 +162,8 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
     String rightExpr = currentStack.pop();
     String leftExpr = currentStack.pop();
 
-    currentStack.push(String.format("%s %s %s", leftExpr, operator, rightExpr));
+    currentStack.push(String.format("%s(%s %s %s)", binExpression.isNot() ? "NOT " : "",
+        leftExpr, operator, rightExpr));
   }
 
   @Override
@@ -284,6 +287,10 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
     String queryString = currentStack.pop();
 
+    if (queryString.charAt(0) == '(' && queryString.charAt(queryString.length() - 1) == ')') {
+      queryString = queryString.substring(1, queryString.length() - 1);
+    }
+
     result.put(query.getIdentifier(), queryString);
   }
 
@@ -335,5 +342,21 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
     } else {
       currentStack.push(String.format("%s", inputRelation.getTableName()));
     }
+  }
+
+  @Override
+  public void visit(RelationExpression relationExpression) {
+    logger.debug("Visit RelationExpression");
+    currentStack.push(String.format("(%s)", currentStack.pop()));
+  }
+
+  @Override
+  public void visit(InExpression inExpression) {
+    logger.debug("Visit InExpression");
+
+    String right = currentStack.pop();
+    String left = currentStack.pop();
+
+    currentStack.push(String.format("%s IN (%s)", left, right));
   }
 }

@@ -72,6 +72,7 @@ import net.sf.jsqlparser.statement.select.Pivot;
 import net.sf.jsqlparser.statement.select.PivotXml;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SubSelect;
+import nl.jkoetsier.uva.dbbench.input.util.StringUtil;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Case;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
@@ -79,6 +80,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.RelationExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
@@ -125,7 +127,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(Column column) {
-    expression = new FieldExpression(column.getFullyQualifiedName());
+    expression = new FieldExpression(StringUtil.unEscapeIdentifier(column.getFullyQualifiedName()));
   }
 
   @Override
@@ -226,6 +228,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(Between expr) {
+    System.out.println(expr.toString());
     throw new RuntimeException("Not Implemented");
   }
 
@@ -241,7 +244,21 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(InExpression expr) {
-    throw new RuntimeException("Not Implemented");
+    nl.jkoetsier.uva.dbbench.internal.workload.expression.InExpression inExpression
+        = new nl.jkoetsier.uva.dbbench.internal.workload.expression.InExpression();
+
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
+    expr.getLeftExpression().accept(expressionVisitor);
+    inExpression.setLeftExpression(expressionVisitor.getExpression());
+
+    ItemsListVisitor itemsListVisitor = new ItemsListVisitor();
+    expr.getRightItemsList().accept(itemsListVisitor);
+    inExpression.setRightExpression(itemsListVisitor.getExpression());
+
+    inExpression.setNot(expr.isNot());
+
+    expression = inExpression;
+    // Ignoring expr.getLeftItemsList(). What is it??
   }
 
   @Override
@@ -274,7 +291,10 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(SubSelect subSelect) {
-    throw new RuntimeException("Not Implemented");
+    SelectVisitor selectVisitor = new SelectVisitor();
+    subSelect.getSelectBody().accept(selectVisitor);
+
+    expression = new RelationExpression(selectVisitor.getRelation());
   }
 
   @Override

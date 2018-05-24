@@ -7,6 +7,7 @@ import net.sf.jsqlparser.statement.select.SubJoin;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.select.TableFunction;
 import net.sf.jsqlparser.statement.select.ValuesList;
+import nl.jkoetsier.uva.dbbench.input.util.StringUtil;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
@@ -25,9 +26,12 @@ public class FromVisitor extends FromItemVisitorAdapter {
   @Override
   public void visit(Table table) {
     if (table.getAlias() == null) {
-      this.relation = new InputRelation(table.getName());
+      this.relation = new InputRelation(StringUtil.unEscapeIdentifier(table.getName()));
     } else {
-      this.relation = new InputRelation(table.getName(), table.getAlias().getName());
+      this.relation = new InputRelation(
+          StringUtil.unEscapeIdentifier(table.getName()),
+          StringUtil.unEscapeIdentifier(table.getAlias().getName())
+      );
     }
   }
 
@@ -40,7 +44,7 @@ public class FromVisitor extends FromItemVisitorAdapter {
     this.relation = selectVisitor.getRelation();
 
     if (subSelect.getAlias() != null) {
-      Rename rename = new Rename(subSelect.getAlias().getName());
+      Rename rename = new Rename(StringUtil.unEscapeIdentifier(subSelect.getAlias().getName()));
       rename.setInput(this.relation);
       this.relation = rename;
     }

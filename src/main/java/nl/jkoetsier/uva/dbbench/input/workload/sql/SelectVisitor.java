@@ -10,12 +10,14 @@ import net.sf.jsqlparser.statement.select.SelectVisitorAdapter;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
 import nl.jkoetsier.uva.dbbench.internal.workload.element.OrderBy;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InnerJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.RAJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 import org.slf4j.Logger;
@@ -103,7 +105,16 @@ public class SelectVisitor extends SelectVisitorAdapter {
         plainSelect.getLimit().getRowCount().accept(expressionVisitor);
         projection.setLimit(expressionVisitor.getExpression());
       }
+    } else if (plainSelect.getFetch() != null) {
+      LongConstant fetchExpression = new LongConstant(plainSelect.getFetch().getRowCount());
+      projection.setLimit(fetchExpression);
     }
+
+    if (plainSelect.getOffset() != null) {
+      LongConstant offsetExpression = new LongConstant(plainSelect.getOffset().getOffset());
+      projection.setOffset(offsetExpression);
+    }
+
   }
 
   private RAJoin createJoin(Join join, Relation leftInput) {
@@ -122,8 +133,13 @@ public class SelectVisitor extends SelectVisitorAdapter {
       raJoin = new InnerJoin(leftInput, fromVisitor.getInputRelation());
     } else if (join.isFull()) {
       raJoin = new FullJoin(leftInput, fromVisitor.getInputRelation());
+    } else if (join.isCross() || join.isNatural() || join.isSimple() || join.isSemi()) {
+      throw new RuntimeException(
+          String.format("Could not determine join type. Not implemented (%s)", join.toString())
+      );
     } else {
-      throw new RuntimeException("Could not determine join type. Not implemented");
+      // no keyword. is Inner.
+      raJoin = new InnerJoin(leftInput, fromVisitor.getInputRelation());
     }
 
     ExpressionVisitor expressionVisitor = new ExpressionVisitor();
@@ -156,6 +172,8 @@ public class SelectVisitor extends SelectVisitorAdapter {
       throw new RuntimeException("Unimplemented operation");
     }
   }
+
+
 
   @Override
   public void visit(WithItem withItem) {

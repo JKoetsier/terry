@@ -6,11 +6,16 @@ import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItemVisitorAdapter;
+import nl.jkoetsier.uva.dbbench.input.util.StringUtil;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SelectItemVisitor extends SelectItemVisitorAdapter {
+
+  private static Logger logger = LoggerFactory.getLogger(SelectItemVisitor.class);
 
   private Selection selection;
   private List<SelectExpression> selectExpressions = new ArrayList<>();
@@ -50,7 +55,7 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
     SelectExpression selectExpression = new SelectExpression(expressionVisitor.getExpression());
 
     if (item.getAlias() != null) {
-      selectExpression.setAlias(item.getAlias().getName());
+      selectExpression.setAlias(StringUtil.unEscapeIdentifier(item.getAlias().getName()));
     }
 
     selectExpressions.add(selectExpression);

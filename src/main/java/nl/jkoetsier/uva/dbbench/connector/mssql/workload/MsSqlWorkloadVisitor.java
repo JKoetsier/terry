@@ -60,11 +60,11 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
 
     if (projection.getLimit() != null) {
       String topStack = currentStack.pop();
-      top = String.format(" TOP(%s)", topStack);
 
       if (projection.getOffset() != null) {
-        top = "";
-        offset = String.format(" OFFSET %s FETCH %s", top, currentStack.pop());
+        offset = String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", currentStack.pop(), topStack);
+      } else {
+        top = String.format(" TOP(%s)", topStack);
       }
     }
 
@@ -91,11 +91,6 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
     }
 
     String from = currentStack.pop();
-    boolean parentheses = from.startsWith("SELECT");
-
-    from = String.format("%s%s%s", parentheses ? "(" : "",
-        from,
-        parentheses ? ")" : "");
 
     String str = String.format(
         "SELECT%s %s FROM %s%s%s",
@@ -105,6 +100,8 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
         orderBy,
         offset
     );
+
+    str = String.format("(%s)", str);
 
     currentStack.push(str);
   }

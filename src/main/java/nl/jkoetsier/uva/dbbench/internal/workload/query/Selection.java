@@ -6,6 +6,8 @@ import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 public class Selection extends UnaryRelation {
 
   private Expression whereExpression;
+  private String offset;
+  private String fetch;
 
   public Expression getWhereExpression() {
     return whereExpression;
