@@ -5,5 +5,23 @@ import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadElement;
 
 public abstract class Expression implements WorkloadElement {
 
+  private boolean not;
+
+  public Expression(boolean not) {
+    this.not = not;
+  }
+
+  public Expression() {
+
+  }
+
+  public boolean isNot() {
+    return not;
+  }
+
+  public void setNot(boolean not) {
+    this.not = not;
+  }
+
   public abstract void validate(ExposedFields exposedFields);
 }

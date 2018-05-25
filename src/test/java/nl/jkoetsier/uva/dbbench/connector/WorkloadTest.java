@@ -27,4 +27,16 @@ public interface WorkloadTest {
 
   @Test
   void testCase();
+
+  @Test
+  void testDistinct();
+
+  @Test
+  void testWhereNot();
+
+  @Test
+  void testWhereAndNotList();
+
+  @Test
+  void testAllFromTable();
 }

@@ -11,7 +11,6 @@ public class InExpression extends Expression {
 
   private Expression leftExpression;
   private Expression rightExpression;
-  private boolean isNot;
 
   public Expression getLeftExpression() {
     return leftExpression;
@@ -29,14 +28,6 @@ public class InExpression extends Expression {
   public void setRightExpression(
       Expression rightExpression) {
     this.rightExpression = rightExpression;
-  }
-
-  public boolean isNot() {
-    return isNot;
-  }
-
-  public void setNot(boolean not) {
-    isNot = not;
   }
 
   @Override

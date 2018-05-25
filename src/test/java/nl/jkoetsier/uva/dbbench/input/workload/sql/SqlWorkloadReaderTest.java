@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class SqlWorkloadReaderTest {
 
   private static Logger logger = LoggerFactory.getLogger(SqlWorkloadReaderTest.class);
-  Schema dataModel = new Schema();
+  private Schema dataModel = new Schema();
   private TestDataHelper testDataHelper = new TestDataHelper();
 
   private Workload getWorkload(String filename) {
@@ -486,5 +486,26 @@ public class SqlWorkloadReaderTest {
     assertEquals(4, (long) longConstant2.getValue());
 
     cleanup();
+  }
+
+  @Test
+  public void testDistinct() {
+    loadDataModel();
+    Workload workload = getWorkload("select_distinct.sql");
+    validateWorkload(workload, dataModel);
+
+    assertEquals(2, workload.getQueries().size());
+
+    Query query1 = workload.getQueries().get(0);
+    Query query2 = workload.getQueries().get(1);
+
+    assertTrue(query1.getRelation() instanceof Projection);
+    assertTrue(query2.getRelation() instanceof Projection);
+
+    Projection projection1 = (Projection) query1.getRelation();
+    Projection projection2 = (Projection) query2.getRelation();
+
+    assertTrue(projection1.isDistinct());
+    assertFalse(projection2.isDistinct());
   }
 }

@@ -15,6 +15,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.InExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.RelationExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectAllColumnsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
@@ -271,6 +272,11 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InExpression inExpression) {
+
+  }
+
+  @Override
+  public void visit(SelectAllColumnsExpression selectAllColumnsExpression) {
 
   }
 }

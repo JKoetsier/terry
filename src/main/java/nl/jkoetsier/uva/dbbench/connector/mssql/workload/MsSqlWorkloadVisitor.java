@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectAllColumnsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
@@ -93,7 +94,8 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
     String from = currentStack.pop();
 
     String str = String.format(
-        "SELECT%s %s FROM %s%s%s",
+        "SELECT%s%s %s FROM %s%s%s",
+        projection.isDistinct() ? " DISTINCT" : "",
         top,
         select,
         from,
@@ -104,5 +106,12 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
     str = String.format("(%s)", str);
 
     currentStack.push(str);
+  }
+
+  @Override
+  public void visit(SelectAllColumnsExpression selectAllColumnsExpression) {
+    logger.debug("Visit SelectAllColumnsExpression");
+
+    currentStack.push(String.format("[%s].*", selectAllColumnsExpression.getTableName()));
   }
 }

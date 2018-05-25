@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.connector;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
@@ -16,6 +17,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.expression.InExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.RelationExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectAllColumnsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
@@ -248,6 +250,7 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
       fromStack.add(currentStack.pop());
     }
 
+    Collections.reverse(fromStack);
     currentStack.push(String.join(",", fromStack));
   }
 
@@ -287,8 +290,27 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
     String queryString = currentStack.pop();
 
-    if (queryString.charAt(0) == '(' && queryString.charAt(queryString.length() - 1) == ')') {
-      queryString = queryString.substring(1, queryString.length() - 1);
+    // All SELECT queries are wrapped in ( ) . Unwrap the first (or outer) query. In case of a
+    // UNION, first SELECT will be unwrapped, second will still be wrapped in parentheses.
+    if (queryString.charAt(0) == '(') {
+      int cnt = 1;
+
+      for (int i = 1; i < queryString.length(); i++) {
+        if (queryString.charAt(i) == '(') {
+          cnt++;
+        } else if (queryString.charAt(i) == ')') {
+          cnt--;
+        }
+
+        if (cnt == 0) {
+          String firstPart = queryString.substring(1, i);
+          String lastPart = queryString.substring(i + 1, queryString.length());
+
+          queryString = firstPart + lastPart;
+          break;
+        }
+
+      }
     }
 
     result.put(query.getIdentifier(), queryString);
@@ -358,5 +380,12 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
     String left = currentStack.pop();
 
     currentStack.push(String.format("%s IN (%s)", left, right));
+  }
+
+  @Override
+  public void visit(SelectAllColumnsExpression selectAllColumnsExpression) {
+    logger.debug("Visit SelectAllColumnsExpression");
+
+    currentStack.push(String.format("%s.*", selectAllColumnsExpression.getTableName()));
   }
 }

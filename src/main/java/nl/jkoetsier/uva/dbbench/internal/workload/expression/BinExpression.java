@@ -9,13 +9,12 @@ public class BinExpression extends Expression {
   private Expression leftExpr;
   private Expression rightExpr;
   private Operator operator;
-  private boolean not;
 
   public BinExpression(Expression leftExpr, Expression rightExpr, Operator operator, boolean not) {
+    super(not);
     this.leftExpr = leftExpr;
     this.rightExpr = rightExpr;
     this.operator = operator;
-    this.not = not;
   }
 
   public Expression getLeftExpr() {
@@ -41,15 +40,6 @@ public class BinExpression extends Expression {
   public void setOperator(Operator operator) {
     this.operator = operator;
   }
-
-  public boolean isNot() {
-    return not;
-  }
-
-  public void setNot(boolean not) {
-    this.not = not;
-  }
-
   @Override
   public void validate(ExposedFields exposedFields) {
     leftExpr.validate(exposedFields);

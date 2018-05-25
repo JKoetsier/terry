@@ -77,6 +77,10 @@ public class SelectVisitor extends SelectVisitorAdapter {
       projection.setOrderBy(orderByList);
     }
 
+    if (plainSelect.getDistinct() != null) {
+      projection.setDistinct(true);
+    }
+
     setLimitOffset(projection, plainSelect);
 
     relation = projection;

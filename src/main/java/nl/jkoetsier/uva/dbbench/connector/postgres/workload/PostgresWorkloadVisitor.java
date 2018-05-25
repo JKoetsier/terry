@@ -59,7 +59,8 @@ public class PostgresWorkloadVisitor extends SqlWorkloadVisitor {
         parentheses ? ")" : "");
 
     String str = String.format(
-        "SELECT %s FROM %s%s%s",
+        "SELECT%s %s FROM %s%s%s",
+        projection.isDistinct() ? " DISTINCT" : "",
         select,
         from,
         orderBy,

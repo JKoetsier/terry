@@ -7,6 +7,7 @@ import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItemVisitorAdapter;
 import nl.jkoetsier.uva.dbbench.input.util.StringUtil;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectAllColumnsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
@@ -43,8 +44,10 @@ public class SelectItemVisitor extends SelectItemVisitorAdapter {
 
   @Override
   public void visit(AllTableColumns columns) {
-    returnProjection.setInput(selection);
-    returnProjection.setTableName(columns.getTable().getName());
+    SelectAllColumnsExpression selectAllColumnsExpression = new SelectAllColumnsExpression(StringUtil.unEscapeIdentifier(columns.getTable().getName()));
+    SelectExpression selectExpression = new SelectExpression(selectAllColumnsExpression);
+
+    selectExpressions.add(selectExpression);
   }
 
   @Override

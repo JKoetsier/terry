@@ -193,7 +193,9 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
   public void visit(Parenthesis parenthesis) {
     ExpressionVisitor expressionVisitor = new ExpressionVisitor();
     parenthesis.getExpression().accept(expressionVisitor);
+
     expression = expressionVisitor.getExpression();
+    expression.setNot(parenthesis.isNot());
   }
 
   @Override
