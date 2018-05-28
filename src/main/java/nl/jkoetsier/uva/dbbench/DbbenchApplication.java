@@ -30,18 +30,25 @@ import org.springframework.context.annotation.ComponentScan;
 public class DbbenchApplication implements ApplicationRunner {
 
   private static Logger logger = LoggerFactory.getLogger(DbbenchApplication.class);
+
   @Autowired
   private CommandLineConfigProperties commandLineConfigProperties;
+
   @Autowired
   private GlobalConfigProperties globalConfigProperties;
+
   @Autowired
   private DbConfigProperties dbConfigProperties;
+
   @Autowired
   private SchemaReader schemaReader;
+
   @Autowired
   private WorkloadReader workloadReader;
+
   @Autowired
   private DatabaseConnector databaseConnector;
+
   private Boolean verifyWorkload = true;
   private Boolean skipDataModel = false;
 
@@ -163,6 +170,12 @@ public class DbbenchApplication implements ApplicationRunner {
       if (schema != null) {
         benchRunner.setSchema(schema);
       }
+
+      if (!commandLineConfigProperties.getDataDirectory().equals("")) {
+        logger.debug("Loading data from {}", commandLineConfigProperties.getDataDirectory());
+        benchRunner.loadData(commandLineConfigProperties.getDataDirectory());
+      }
+
 
       benchRunner.run();
 

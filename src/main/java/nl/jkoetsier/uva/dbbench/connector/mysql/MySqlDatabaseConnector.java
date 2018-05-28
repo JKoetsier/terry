@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.connector.mysql;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.mysql.schema.MySqlSchemaVisitor;
@@ -29,6 +30,13 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
     logger.debug("Connection string: {}", connectionString);
 
     return connectionString;
+  }
+
+  @Override
+  protected void importCsvFile(String tableName, String file) throws SQLException {
+    String query = String.format("LOAD DATA INFILE '%s' INTO TABLE '%s'", file, tableName);
+
+    executeQuery(query);
   }
 
   @Override

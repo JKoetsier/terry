@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.connector.postgres;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
@@ -46,5 +47,12 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
     workload.acceptVisitor(workloadVisitor);
 
     return workloadVisitor.getResult();
+  }
+
+  @Override
+  protected void importCsvFile(String tableName, String file) throws SQLException {
+    String query = String.format("COPY %s FROM '%s' WITH (FORMAT csv)", tableName, file);
+
+    executeQuery(query);
   }
 }

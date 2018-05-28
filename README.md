@@ -21,5 +21,4 @@ The test profiles are:
  in the right place)
 - ```mvn clean``` will also delete the generated parser files for the IDE, to avoid duplicate 
 classes during build.
-
 - ```SELECT ... FROM multiple, tablenames``` is not yet supported

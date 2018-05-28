@@ -156,4 +156,8 @@ public class BenchRunner {
 
     return end - start;
   }
+
+  public void loadData(String dataDirectory) throws SQLException {
+    databaseInterface.importCsvData(dataDirectory);
+  }
 }

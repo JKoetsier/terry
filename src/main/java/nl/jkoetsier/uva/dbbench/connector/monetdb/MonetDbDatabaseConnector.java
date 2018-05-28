@@ -64,4 +64,9 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
 
     return workloadVisitor.getResult();
   }
+
+  @Override
+  protected void importCsvFile(String tableName, String file) {
+    throw new RuntimeException("Not implemented yet");
+  }
 }

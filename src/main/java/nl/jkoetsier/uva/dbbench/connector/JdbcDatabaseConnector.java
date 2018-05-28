@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.connector;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
   protected Connection connection;
 
   protected abstract String getConnectionString();
+  protected abstract void importCsvFile(String tableName, String file) throws SQLException;
 
   @Override
   public void connect() throws SQLException {
@@ -71,6 +73,20 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
       logger.info(String.format("Creating table %s", queryEntrySet.getKey()));
 
       executeQuery(queryEntrySet.getValue());
+    }
+  }
+
+  @Override
+  public void importCsvData(String directory) throws SQLException {
+    File dir = new File(directory);
+    File[] files = dir.listFiles();
+
+    for (int i = 0; i < files.length; i++) {
+      if (files[i].isFile()) {
+        String[] fileNameParts = files[i].getName().split("\\.");
+
+        importCsvFile(fileNameParts[0], files[i].getAbsolutePath());
+      }
     }
   }
 }

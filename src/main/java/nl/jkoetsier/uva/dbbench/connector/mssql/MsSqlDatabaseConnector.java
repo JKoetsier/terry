@@ -51,4 +51,8 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
     return connectString;
   }
 
+  @Override
+  protected void importCsvFile(String tableName, String file) {
+    throw new RuntimeException("Not implemented yet");
+  }
 }

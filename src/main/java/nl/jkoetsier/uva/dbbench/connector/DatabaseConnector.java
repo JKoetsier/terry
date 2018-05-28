@@ -14,6 +14,8 @@ public abstract class DatabaseConnector {
 
   public abstract void importSchema(Schema schema) throws SQLException;
 
+  public abstract void importCsvData(String directory) throws SQLException;
+
   public abstract void closeConnection();
 
   public abstract HashMap<Integer, String> getWorkloadQueries(Workload workload);
