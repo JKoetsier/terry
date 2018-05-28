@@ -1,29 +1,31 @@
 package nl.jkoetsier.uva.dbbench.development;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
-import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
-import nl.jkoetsier.uva.dbbench.testclass.DevelopmentTest;
 import nl.jkoetsier.uva.dbbench.util.FileReader;
 import nl.jkoetsier.uva.dbbench.util.QueryFormatter;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MsSqlTransformTest {
+public abstract class BaseTransformTest {
 
-  private static Logger logger = LoggerFactory.getLogger(MsSqlTransformTest.class);
+  private static Logger logger = LoggerFactory.getLogger(BaseTransformTest.class);
 
   private String inputFile = "dev/biqh_workload.sql";
   private int start = 0;
   private int count = 100;
   private boolean printInfo = false;
+
+  @Test
+  public abstract void testWorkload();
+
+  protected abstract SqlWorkloadVisitor getWorkloadVisitor();
 
   private String[] getQueries(String filename) {
     String file = FileReader.readAsString(filename);
@@ -31,7 +33,18 @@ public class MsSqlTransformTest {
     return file.split(";");
   }
 
-  String getOutputQuery(String inputQuery) {
+  private String stripQuery(String query) {
+    String result = query;
+
+    result = result.replaceAll("(\\s|\\[|])", "");
+    result = result.replaceAll("(?i)(TOP\\(\\d+\\)|LIMIT\\d+)", "");
+    result = result.replaceAll("(?i)rowsfetchnext\\d+rowsonly", "");
+    result = result.toLowerCase();
+
+    return result;
+  }
+
+  protected String getOutputQuery(String inputQuery) {
     SqlWorkloadReader workloadReader = new SqlWorkloadReader();
     Workload workload = workloadReader.fromString(inputQuery);
 
@@ -39,7 +52,7 @@ public class MsSqlTransformTest {
 
     assertEquals(1, queries.size());
 
-    MsSqlWorkloadVisitor workloadVisitor = new MsSqlWorkloadVisitor();
+    SqlWorkloadVisitor workloadVisitor = getWorkloadVisitor();
     Query query = queries.iterator().next();
 
     query.acceptVisitor(workloadVisitor);
@@ -51,33 +64,24 @@ public class MsSqlTransformTest {
     return queriesAsString.iterator().next();
   }
 
-  private String stripQuery(String query) {
-    String result = query;
-    result = result.replaceAll("dbo", "");
-    result = result.replaceAll("ASC", "");
-    result = result.replaceAll("(?i)outer join", "join");
-    result = result.replaceAll("(?i)inner join", "join");
-    result = result.replaceAll("(?i) AS ", "");
-    result = result.replaceAll("\\W", "");
-    result = result.toLowerCase();
-
-    return result;
-  }
-
-  @Test
-  @Category(DevelopmentTest.class)
-  public void testWorkload() {
+  /*
+   * Compares MySQL output with MsSQL output. Assumes MsSQL output is correct (see
+   * MsSqlTransformTest). Omits TOP/LIMIT clauses. Need to be checked manually.
+   */
+  public void testWorkloadImpl() {
     String[] queries = getQueries(inputFile);
+    MsSqlTransformTest msSqlTransformTest = new MsSqlTransformTest();
 
     for (int i = start; i < queries.length && i < start + count; i++) {
       String inputQuery = queries[i];
       String outputQuery = getOutputQuery(inputQuery);
+      String msSqlOutput = msSqlTransformTest.getOutputQuery(inputQuery);
 
       if (printInfo) {
-        printInfo(inputQuery, outputQuery, i);
+        printInfo(inputQuery, outputQuery, msSqlOutput, i);
       }
 
-      assertEquals(stripQuery(inputQuery), stripQuery(outputQuery));
+      assertEquals(stripQuery(msSqlOutput), stripQuery(outputQuery));
 
       // Check reflexivity
       String output2Query = getOutputQuery(outputQuery);
@@ -85,11 +89,10 @@ public class MsSqlTransformTest {
     }
   }
 
-  private void printInfo(String inputQuery, String outputQuery, int i) {
-    System.out.println("INPUTQUERY RAW: " + inputQuery);
+  private void printInfo(String inputQuery, String outputQuery, String msSqlOutput, int i) {
     System.out.println("INPUT " + i + ": " + QueryFormatter.format(inputQuery));
     System.out.println();
     System.out.println("OUTPUT " + i + ": " + QueryFormatter.format(outputQuery));
-    System.out.println("==========================================================");
+    System.out.println("OUTPUT MsSQL " + i + ": " + QueryFormatter.format(msSqlOutput));
   }
 }

@@ -161,7 +161,10 @@
     <profile>
       <id>default</id>
       <properties>
-        <excludedTestGroups>nl.jkoetsier.uva.dbbench.testclass.IntegrationTest</excludedTestGroups>
+        <excludedTestGroups>
+          nl.jkoetsier.uva.dbbench.testclass.IntegrationTest,
+          nl.jkoetsier.uva.dbbench.testclass.DevelopmentTest
+        </excludedTestGroups>
         <includedTestGroups></includedTestGroups>
       </properties>
       <activation>
@@ -170,9 +173,25 @@
     </profile>
 
     <profile>
-      <id>integration</id>
+      <id>integration-tests</id>
       <properties>
         <includedTestGroups>nl.jkoetsier.uva.dbbench.testclass.IntegrationTest</includedTestGroups>
+        <excludedTestGroups></excludedTestGroups>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>development-tests</id>
+      <properties>
+        <includedTestGroups>nl.jkoetsier.uva.dbbench.testclass.DevelopmentTest</includedTestGroups>
+        <excludedTestGroups></excludedTestGroups>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>all-tests</id>
+      <properties>
+        <includedTestGroups></includedTestGroups>
         <excludedTestGroups></excludedTestGroups>
       </properties>
     </profile>

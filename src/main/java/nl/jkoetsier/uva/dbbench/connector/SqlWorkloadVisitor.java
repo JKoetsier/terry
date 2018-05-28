@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
+import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
@@ -40,6 +41,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InnerJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
@@ -387,5 +389,56 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
     logger.debug("Visit SelectAllColumnsExpression");
 
     currentStack.push(String.format("%s.*", selectAllColumnsExpression.getTableName()));
+  }
+
+  @Override
+  public void visit(Projection projection) {
+    logger.debug("Visit Projection");
+
+    String limit = "";
+    String orderBy = "";
+
+    if (projection.getLimit() != null) {
+      limit = String.format(" LIMIT %s", currentStack.pop());
+
+      if (projection.getOffset() != null) {
+        limit = limit.concat(String.format(" OFFSET %s", currentStack.pop()));
+      }
+    }
+
+    if (projection.getOrderBy() != null) {
+      List<String> orderByList = projection.getOrderByAsStrings();
+      orderBy = String.format(" ORDER BY %s", String.join(", ", orderByList));
+    }
+
+    List<String> selectFields = new ArrayList<>();
+    String select;
+
+    if (projection.getSelectExpressions() != null) {
+      for (SelectExpression selectExpression : projection.getSelectExpressions()) {
+        selectFields.add(currentStack.pop());
+      }
+    }
+
+    Collections.reverse(selectFields);
+
+    if (selectFields.size() > 0) {
+      select = String.join(", ", selectFields);
+    } else {
+      select = "*";
+    }
+
+    String from = currentStack.pop();
+
+    String str = String.format(
+        "(SELECT%s %s FROM %s%s%s)",
+        projection.isDistinct() ? " DISTINCT" : "",
+        select,
+        from,
+        orderBy,
+        limit
+    );
+
+    currentStack.push(str);
   }
 }

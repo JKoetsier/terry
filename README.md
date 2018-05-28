@@ -4,10 +4,16 @@
 To run the default test suite, use
     
     mvn test
-    
-To run the integration tests, use the 'integration' profile:
+   
+There are a couple of extra test profiles, run them as:
 
-    mvn test -P integration
+    mvn test -P <profile-name>
+    
+The test profiles are:
+- integration-tests (integration with Docker etc)
+- development-tests (tests with project-specific files that are not part of the repo)
+- all-tests (everything)
+ 
 
 
 ## Notes
@@ -15,7 +21,5 @@ To run the integration tests, use the 'integration' profile:
  in the right place)
 - ```mvn clean``` will also delete the generated parser files for the IDE, to avoid duplicate 
 classes during build.
-- At the moment - during development - JSQLParser's debug mode is set. Need to compile JSQLParser
- separately: In lib/jsqlparser run ```mvn install -DskipTests=true```
 
 - ```SELECT ... FROM multiple, tablenames``` is not yet supported

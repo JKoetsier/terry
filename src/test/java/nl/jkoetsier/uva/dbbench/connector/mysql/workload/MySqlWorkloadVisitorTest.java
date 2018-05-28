@@ -60,7 +60,7 @@ public class MySqlWorkloadVisitorTest implements WorkloadTest {
   @Test
   public void testUnionQuery() {
     String expected = "SELECT a, b FROM basetable WHERE (a = 4) UNION "
-        + "SELECT c, d FROM jointable WHERE (d = 5)";
+        + "(SELECT c, d FROM jointable WHERE (d = 5))";
 
     compareSingleQueryFromFile("select_union_simple.sql", expected);
   }
@@ -68,7 +68,7 @@ public class MySqlWorkloadVisitorTest implements WorkloadTest {
   @Test
   public void testUnionAllQuery() {
     String expected = "SELECT a, b FROM basetable WHERE (a = 4) UNION ALL "
-        + "SELECT c, d FROM jointable WHERE (d = 5)";
+        + "(SELECT c, d FROM jointable WHERE (d = 5))";
 
     compareSingleQueryFromFile("select_union_all_simple.sql", expected);
   }

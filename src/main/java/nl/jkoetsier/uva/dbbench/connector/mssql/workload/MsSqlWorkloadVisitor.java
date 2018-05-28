@@ -94,7 +94,7 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
     String from = currentStack.pop();
 
     String str = String.format(
-        "SELECT%s%s %s FROM %s%s%s",
+        "(SELECT%s%s %s FROM %s%s%s)",
         projection.isDistinct() ? " DISTINCT" : "",
         top,
         select,
@@ -102,8 +102,6 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
         orderBy,
         offset
     );
-
-    str = String.format("(%s)", str);
 
     currentStack.push(str);
   }
