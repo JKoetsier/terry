@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.expression;
 
+import nl.jkoetsier.uva.dbbench.internal.workload.query.ExposedField;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.ExposedFields;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
@@ -26,6 +27,15 @@ public class SelectExpression extends Expression {
 
   public void setAlias(String alias) {
     this.alias = alias;
+  }
+
+  @Override
+  public ExposedFields getExposedFields() {
+    if (alias != null) {
+      return new ExposedFields(new ExposedField(alias));
+    }
+
+    return expression.getExposedFields();
   }
 
   @Override

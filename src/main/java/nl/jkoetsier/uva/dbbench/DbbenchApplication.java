@@ -172,11 +172,11 @@ public class DbbenchApplication implements ApplicationRunner {
       }
 
       if (!commandLineConfigProperties.getDataDirectory().equals("")) {
-        logger.debug("Loading data from {}", commandLineConfigProperties.getDataDirectory());
-        benchRunner.loadData(commandLineConfigProperties.getDataDirectory());
+        benchRunner.setDataDirectory(commandLineConfigProperties.getDataDirectory());
       }
 
-
+      benchRunner.setup();
+      
       benchRunner.run();
 
     } catch (Exception e) {

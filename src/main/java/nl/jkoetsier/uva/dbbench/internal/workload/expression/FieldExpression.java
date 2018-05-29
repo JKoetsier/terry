@@ -20,6 +20,7 @@ public class FieldExpression extends Expression {
   @Override
   public void validate(ExposedFields exposedFields) {
     ExposedField existing = exposedFields.get(fieldName);
+    System.out.println(exposedFields);
 
     if (existing == null) {
       throw new InvalidQueryException(String.format("Not existing field '%s'", fieldName));

@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.Column;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExposedFields {
+
+  private static Logger logger = LoggerFactory.getLogger(ExposedFields.class);
 
   private List<ExposedField> exposedFields;
 
@@ -13,8 +17,13 @@ public class ExposedFields {
     exposedFields = new ArrayList<>();
   }
 
-  public ExposedFields(List<ExposedField> exposedField) {
-    this.exposedFields = exposedField;
+  public ExposedFields(List<ExposedField> exposedFields) {
+    this.exposedFields = exposedFields;
+  }
+
+  public ExposedFields(ExposedField exposedField) {
+    this();
+    exposedFields.add(exposedField);
   }
 
   public static ExposedFields create(Table table) {
@@ -48,6 +57,12 @@ public class ExposedFields {
     exposedFields.addAll(exposedFieldList);
   }
 
+  public void addAll(ExposedFields exposedFields) {
+    for (ExposedField exposedField : exposedFields.getAll()) {
+      add(exposedField);
+    }
+  }
+
   public int size() {
     return exposedFields.size();
   }
@@ -70,10 +85,10 @@ public class ExposedFields {
 
   public ExposedField get(String tableName, String fieldName) {
     for (ExposedField exposedField : exposedFields) {
-      if (exposedField.getColumnName().equals(fieldName) &&
-          (exposedField.getTableName().equals(tableName) ||
+      if (exposedField.getColumnName().toLowerCase().equals(fieldName.toLowerCase()) &&
+          (exposedField.getTableName().toLowerCase().equals(tableName.toLowerCase()) ||
               (exposedField.getTableAlias() != null &&
-                  exposedField.getTableAlias().equals(tableName)))) {
+                  exposedField.getTableAlias().toLowerCase().equals(tableName.toLowerCase())))) {
         return exposedField;
       }
     }
@@ -119,5 +134,11 @@ public class ExposedFields {
     }
 
     return merged;
+  }
+
+  public void setAlias(String tableAlias) {
+    for (ExposedField exposedField : exposedFields) {
+      exposedField.setTableAlias(tableAlias);
+    }
   }
 }

@@ -23,5 +23,9 @@ public abstract class Expression implements WorkloadElement {
     this.not = not;
   }
 
+  public ExposedFields getExposedFields() {
+    return new ExposedFields();
+  }
+
   public abstract void validate(ExposedFields exposedFields);
 }

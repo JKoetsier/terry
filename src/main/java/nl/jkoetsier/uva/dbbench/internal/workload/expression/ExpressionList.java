@@ -18,6 +18,17 @@ public class ExpressionList extends Expression {
   }
 
   @Override
+  public ExposedFields getExposedFields() {
+    ExposedFields exposedFields = new ExposedFields();
+
+    for (Expression expression : expressions) {
+      exposedFields.addAll(expression.getExposedFields());
+    }
+
+    return exposedFields;
+  }
+
+  @Override
   public void validate(ExposedFields exposedFields) {
     for (Expression expression : expressions) {
       expression.validate(exposedFields);

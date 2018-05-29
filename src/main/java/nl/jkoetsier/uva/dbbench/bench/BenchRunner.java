@@ -22,6 +22,7 @@ public class BenchRunner {
   private Schema schema;
   private Workload workload;
   private GlobalConfigProperties globalConfigProperties;
+  private String dataDirectory;
 
   public BenchRunner(DatabaseConnector databaseInterface,
       GlobalConfigProperties globalConfigProperties) {
@@ -37,11 +38,21 @@ public class BenchRunner {
     this.workload = workload;
   }
 
-  private void setup() throws SQLException {
-    databaseInterface.connect();
+  public void setup() throws DatabaseException {
+    try {
+      databaseInterface.connect();
 
-    if (schema != null) {
-      databaseInterface.importSchema(schema);
+      if (schema != null) {
+        logger.info("Importing Schema");
+        databaseInterface.importSchema(schema);
+      }
+
+      if (dataDirectory != null) {
+        logger.info("Importing CSV Data");
+        databaseInterface.importCsvData(dataDirectory);
+      }
+    } catch (SQLException e) {
+      throw new DatabaseException(e);
     }
   }
 
@@ -84,11 +95,7 @@ public class BenchRunner {
   }
 
   public void run() throws DatabaseException {
-    try {
-      setup();
-    } catch (SQLException e) {
-      throw new DatabaseException(e);
-    }
+    logger.info("Start running bench");
 
     int noRuns = globalConfigProperties.getNoRuns();
     int skipFirst = globalConfigProperties.getSkipFirst();
@@ -157,7 +164,7 @@ public class BenchRunner {
     return end - start;
   }
 
-  public void loadData(String dataDirectory) throws SQLException {
-    databaseInterface.importCsvData(dataDirectory);
+  public void setDataDirectory(String dataDirectory) {
+    this.dataDirectory = dataDirectory;
   }
 }

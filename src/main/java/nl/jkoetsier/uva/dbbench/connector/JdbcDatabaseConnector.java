@@ -82,7 +82,7 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
     File[] files = dir.listFiles();
 
     for (int i = 0; i < files.length; i++) {
-      if (files[i].isFile()) {
+      if (files[i].isFile() && files[i].getName().endsWith(".csv")) {
         String[] fileNameParts = files[i].getName().split("\\.");
 
         importCsvFile(fileNameParts[0], files[i].getAbsolutePath());

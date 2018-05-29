@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:db.${outputdb:mssql}.properties")
 public class DbConfigProperties {
 
-  private String type;
+  private String type = "";
   private String dockerImage;
   private Integer defaultPort;
   private String[] dockerEnvvars;

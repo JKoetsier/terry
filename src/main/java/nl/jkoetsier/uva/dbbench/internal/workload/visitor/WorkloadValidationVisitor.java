@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.visitor;
 
+import java.util.function.Function;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
@@ -199,13 +200,17 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
     ExposedFields inputExposedFields = projection.getInput().getExposedFields();
 
     // do some magic. check if exposedfields match with selectExpressions
+    ExposedFields outputExposedFields = new ExposedFields();
 
     if (projection.getSelectExpressions() != null) {
       for (SelectExpression selectExpression : projection.getSelectExpressions()) {
         selectExpression.validate(inputExposedFields);
+
+        outputExposedFields.addAll(selectExpression.getExposedFields());
       }
     }
-    // setExposedFields on projection
+
+    projection.setExposedFields(outputExposedFields);
   }
 
   @Override
@@ -222,7 +227,8 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Query query) {
-
+    System.out.println("DID QUERY");
+    System.out.println();
   }
 
   @Override
@@ -247,7 +253,7 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Rename rename) {
-
+    rename.getInput().getExposedFields();
   }
 
   @Override

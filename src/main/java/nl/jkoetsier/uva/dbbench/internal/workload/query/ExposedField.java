@@ -65,10 +65,18 @@ public class ExposedField {
 
     String columnPart;
 
-    if (tableName == null) {
+    String tablePart = null;
+
+    if (tableAlias != null) {
+      tablePart = tableAlias;
+    } else if (tableName != null) {
+      tablePart = tableName;
+    }
+
+    if (tablePart == null) {
       columnPart = String.format("%s", columnName);
     } else {
-      columnPart = String.format("%s.%s", tableName, columnName);
+      columnPart = String.format("%s.%s", tablePart, columnName);
     }
 
     return String.format("%s", columnPart);
