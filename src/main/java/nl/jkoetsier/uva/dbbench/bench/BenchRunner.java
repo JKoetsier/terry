@@ -49,12 +49,19 @@ public class BenchRunner {
 
       if (dataDirectory != null) {
         logger.info("Importing CSV Data");
+        long start = System.nanoTime();
+
         databaseInterface.importCsvData(dataDirectory);
+
+        long end = System.nanoTime();
+
+        logger.info("Importing CSV took {} seconds", nanoToSeconds(end - start));
       }
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
   }
+
 
   private void tearDown() {
     databaseInterface.closeConnection();
@@ -145,6 +152,10 @@ public class BenchRunner {
 
   private long nanoToMicro(long nano) {
     return nano / 1000;
+  }
+
+  private long nanoToSeconds(long nano) {
+    return nanoToMicro(nano) / 1000;
   }
 
   private String formatTimeMicro(long nanoTime) {

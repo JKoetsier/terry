@@ -11,8 +11,9 @@ public class StringUtilTest {
   private HashMap<String, String> results = new HashMap<>();
 
   public StringUtilTest() {
-    results.put("[testIdentifier]", "testIdentifier");
     results.put("testIdentifier", "testIdentifier");
+
+    results.put("[testIdentifier]", "testIdentifier");
     results.put("[testIdentifier", "[testIdentifier");
     results.put("testIdentifier]", "testIdentifier]");
     results.put("t[estIdentifier]", "t[estIdentifier]");
@@ -20,6 +21,24 @@ public class StringUtilTest {
     results.put("[bla].lala", "bla.lala");
     results.put("blaa.[lala]", "blaa.lala");
     results.put("[bla.lala]", "[bla.lala]");
+
+    results.put("`testIdentifier`", "testIdentifier");
+    results.put("`testIdentifier", "`testIdentifier");
+    results.put("testIdentifier`", "testIdentifier`");
+    results.put("t`estIdentifier`", "t`estIdentifier`");
+    results.put("`testIdentifie`r", "`testIdentifie`r");
+    results.put("`bla`.lala", "bla.lala");
+    results.put("blaa.`lala`", "blaa.lala");
+    results.put("`bla.lala`", "`bla.lala`");
+
+    results.put("\"testIdentifier\"", "testIdentifier");
+    results.put("\"testIdentifier", "\"testIdentifier");
+    results.put("testIdentifier\"", "testIdentifier\"");
+    results.put("t\"estIdentifier\"", "t\"estIdentifier\"");
+    results.put("\"testIdentifie\"r", "\"testIdentifie\"r");
+    results.put("\"bla\".lala", "bla.lala");
+    results.put("blaa.\"lala\"", "blaa.lala");
+    results.put("\"bla.lala\"", "\"bla.lala\"");
   }
 
   @Test

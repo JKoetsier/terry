@@ -37,7 +37,7 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
     String query = String.format("LOAD DATA INFILE '%s' INTO TABLE `%s` "
         + "FIELDS TERMINATED BY ',' "
         + "ENCLOSED BY '\"' "
-        + "LINES TERMINATED BY '\\n' "
+//        + "LINES TERMINATED BY '\\n' "
         + "IGNORE 1 LINES", file, tableName);
 
     executeQuery(query);

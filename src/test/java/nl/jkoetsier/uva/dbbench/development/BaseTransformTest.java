@@ -33,15 +33,26 @@ public abstract class BaseTransformTest {
     return file.split(";");
   }
 
+  /**
+   * Strips queries for comparison between MSSQL and Db X SQL
+   *
+   * @param query
+   * @return
+   */
   private String stripQuery(String query) {
     String result = query;
 
-    result = result.replaceAll("(\\s|\\[|])", "");
+    result = result.replaceAll("(\\s|\\[|]|\"|`)", "");
     result = result.replaceAll("(?i)(TOP\\(\\d+\\)|LIMIT\\d+)", "");
     result = result.replaceAll("(?i)rowsfetchnext\\d+rowsonly", "");
     result = result.toLowerCase();
 
-    return result;
+    return stripQueryExtra(result);
+  }
+
+  // To be overriden by child class
+  protected String stripQueryExtra(String query) {
+    return query;
   }
 
   protected String getOutputQuery(String inputQuery) {

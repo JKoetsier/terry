@@ -56,8 +56,15 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
   protected HashMap<Integer, String> result = new HashMap<>();
   protected Stack<String> currentStack = new Stack<>();
 
+  protected abstract char getQuoteCharOpen();
+  protected abstract char getQuoteCharClose();
+
   public HashMap<Integer, String> getResult() {
     return result;
+  }
+
+  public String quoteString(String input) {
+    return String.format("%c%s%c", getQuoteCharOpen(), input, getQuoteCharClose());
   }
 
   @Override
@@ -341,7 +348,7 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
     String alias = "";
 
     if (selectExpression.getAlias() != null) {
-      alias = String.format(" AS %s", selectExpression.getAlias());
+      alias = String.format(" AS %s", quoteString(selectExpression.getAlias()));
     }
 
     currentStack.push(String.format("%s%s", currentStack.pop(), alias));
@@ -353,6 +360,10 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
     String[] fieldName = fieldExpression.getFieldName().split("\\.");
 
+    for (int i = 0; i < fieldName.length; i++) {
+      fieldName[i] = quoteString(fieldName[i]);
+    }
+
     currentStack.push(String.format("%s", String.join(".", fieldName)));
   }
 
@@ -361,10 +372,10 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
     logger.debug("Visit InputRelation");
 
     if (inputRelation.getTableAlias() != null) {
-      currentStack.push(String.format("%s AS %s", inputRelation.getTableName(),
-          inputRelation.getTableAlias()));
+      currentStack.push(String.format("%s AS %s", quoteString(inputRelation.getTableName()),
+          quoteString(inputRelation.getTableAlias())));
     } else {
-      currentStack.push(String.format("%s", inputRelation.getTableName()));
+      currentStack.push(String.format("%s", quoteString(inputRelation.getTableName())));
     }
   }
 
@@ -388,7 +399,7 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
   public void visit(SelectAllColumnsExpression selectAllColumnsExpression) {
     logger.debug("Visit SelectAllColumnsExpression");
 
-    currentStack.push(String.format("%s.*", selectAllColumnsExpression.getTableName()));
+    currentStack.push(String.format("%s.*", quoteString(selectAllColumnsExpression.getTableName())));
   }
 
   @Override

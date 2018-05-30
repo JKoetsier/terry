@@ -8,9 +8,25 @@ public class StringUtil {
 
   private static Logger logger = LoggerFactory.getLogger(StringUtil.class);
 
+  private static char[][] quotePairs = new char[][]{
+      {'[', ']'},
+      {'"', '"'},
+      {'`', '`'}
+  };
+
+  /**
+   * Unquotes identifier based on quotation marks defined in quotePairs
+   *
+   * @param inputString
+   * @return
+   */
   private static String unEscapeSingleIdentifier(String inputString) {
-    if (inputString.charAt(0) == '[' && inputString.charAt(inputString.length() - 1) == ']') {
-      return inputString.substring(1, inputString.length() - 1);
+    for (int i = 0; i < quotePairs.length; i++) {
+      if (inputString.charAt(0) == quotePairs[i][0] &&
+          inputString.charAt(inputString.length() - 1) == quotePairs[i][1]) {
+
+        return inputString.substring(1, inputString.length() - 1);
+      }
     }
 
     return inputString;

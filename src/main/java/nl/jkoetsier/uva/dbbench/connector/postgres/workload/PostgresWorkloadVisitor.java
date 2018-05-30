@@ -7,4 +7,14 @@ import org.slf4j.LoggerFactory;
 public class PostgresWorkloadVisitor extends SqlWorkloadVisitor {
 
   private static Logger logger = LoggerFactory.getLogger(PostgresWorkloadVisitor.class);
+
+  @Override
+  protected char getQuoteCharOpen() {
+    return '"';
+  }
+
+  @Override
+  protected char getQuoteCharClose() {
+    return '"';
+  }
 }

@@ -16,6 +16,11 @@ public class MySqlTransformTest extends BaseTransformTest {
     return new MySqlWorkloadVisitor();
   }
 
+  @Override
+  protected String stripQueryExtra(String query) {
+    return query.replaceAll("ifnull", "isnull");
+  }
+
   @Test
   @Override
   @Category(DevelopmentTest.class)

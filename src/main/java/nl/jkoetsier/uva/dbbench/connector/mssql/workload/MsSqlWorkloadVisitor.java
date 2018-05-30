@@ -17,39 +17,15 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
   static Logger logger = LoggerFactory.getLogger(MsSqlWorkloadVisitor.class);
 
   @Override
-  public void visit(SelectExpression selectExpression) {
-    logger.debug("Visit SelectExpression");
-
-    String alias = "";
-
-    if (selectExpression.getAlias() != null) {
-      alias = String.format(" AS [%s]", selectExpression.getAlias());
-    }
-
-    currentStack.push(String.format("%s%s", currentStack.pop(), alias));
+  protected char getQuoteCharOpen() {
+    return '[';
   }
 
   @Override
-  public void visit(FieldExpression fieldExpression) {
-    logger.debug("Visit FieldExpression");
-
-    String[] fieldName = fieldExpression.getFieldName().split("\\.");
-
-    currentStack.push(String.format("[%s]", String.join("].[", fieldName)));
+  protected char getQuoteCharClose() {
+    return ']';
   }
 
-
-  @Override
-  public void visit(InputRelation inputRelation) {
-    logger.debug("Visit InputRelation");
-
-    if (inputRelation.getTableAlias() != null) {
-      currentStack.push(String.format("[%s] AS [%s]", inputRelation.getTableName(),
-          inputRelation.getTableAlias()));
-    } else {
-      currentStack.push(String.format("[%s]", inputRelation.getTableName()));
-    }
-  }
 
   @Override
   public void visit(Projection projection) {
@@ -104,12 +80,5 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
     );
 
     currentStack.push(str);
-  }
-
-  @Override
-  public void visit(SelectAllColumnsExpression selectAllColumnsExpression) {
-    logger.debug("Visit SelectAllColumnsExpression");
-
-    currentStack.push(String.format("[%s].*", selectAllColumnsExpression.getTableName()));
   }
 }

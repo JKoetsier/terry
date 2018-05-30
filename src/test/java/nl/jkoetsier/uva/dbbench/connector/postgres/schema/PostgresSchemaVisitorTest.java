@@ -52,11 +52,15 @@ public class PostgresSchemaVisitorTest implements SchemaTest {
 
   @Test
   public void testCreateTable() {
-    String expected = "CREATE TABLE TableName ( Id SERIAL NOT NULL, "
-        + "IntField int NULL, VarChar250Field varchar(250) NULL, "
-        + "DecimalField numeric(15, 6) NULL, DateTimeOffsetField timestamp NULL, "
-        + "VarCharMaxField varchar NULL, DateField date NULL, BitField boolean NULL, "
-        + "DecimalField2 numeric(38, 15) NULL, "
+    String expected = "CREATE TABLE \"TableName\" ( \"Id\" SERIAL NOT NULL, "
+        + "\"IntField\" int NULL, "
+        + "\"VarChar250Field\" varchar(250) NULL, "
+        + "\"DecimalField\" numeric(15, 6) NULL, "
+        + "\"DateTimeOffsetField\" timestamp NULL, "
+        + "\"VarCharMaxField\" varchar NULL, "
+        + "\"DateField\" date NULL, "
+        + "\"BitField\" boolean NULL, "
+        + "\"DecimalField2\" numeric(38, 15) NULL, "
         + "PRIMARY KEY ( Id ) );";
 
     compareSingleQueryFromFile("create_table.sql", expected);
@@ -64,19 +68,23 @@ public class PostgresSchemaVisitorTest implements SchemaTest {
 
   @Test
   public void testCreateTableArguments() {
-    String expected = "CREATE TABLE TableName ( A numeric(5, 2) NULL, "
-        + "B varchar(200) NOT NULL, C varchar(50) NOT NULL );";
+    String expected = "CREATE TABLE \"TableName\" ( \"A\" numeric(5, 2) NULL, "
+        + "\"B\" varchar(200) NOT NULL, \"C\" varchar(50) NOT NULL );";
 
     compareSingleQueryFromFile("create_table_arguments.sql", expected);
   }
 
   @Test
   public void testCreateTableCompositePrimaryKey() {
-    String expected = "CREATE TABLE TableName ( Id SERIAL NOT NULL, "
-        + "IntField int NULL, VarChar250Field varchar(250) NULL, "
-        + "DecimalField numeric(15, 6) NULL, DateTimeOffsetField timestamp NULL, "
-        + "VarCharMaxField varchar NULL, DateField date NULL, BitField boolean NULL, "
-        + "DecimalField2 numeric(38, 15) NULL, "
+    String expected = "CREATE TABLE \"TableName\" ( \"Id\" SERIAL NOT NULL, "
+        + "\"IntField\" int NULL, "
+        + "\"VarChar250Field\" varchar(250) NULL, "
+        + "\"DecimalField\" numeric(15, 6) NULL, "
+        + "\"DateTimeOffsetField\" timestamp NULL, "
+        + "\"VarCharMaxField\" varchar NULL, "
+        + "\"DateField\" date NULL, "
+        + "\"BitField\" boolean NULL, "
+        + "\"DecimalField2\" numeric(38, 15) NULL, "
         + "PRIMARY KEY ( Id, IntField ) );";
 
     compareSingleQueryFromFile("create_table_composite_primarykey.sql", expected);
@@ -84,8 +92,8 @@ public class PostgresSchemaVisitorTest implements SchemaTest {
 
   @Test
   public void testCreateTableNullNotNull() {
-    String expected = "CREATE TABLE TableName ( A int NOT NULL, B int NULL, "
-        + "C varchar NULL, D varchar NOT NULL );";
+    String expected = "CREATE TABLE \"TableName\" ( \"A\" int NOT NULL, \"B\" int NULL, "
+        + "\"C\" varchar NULL, \"D\" varchar NOT NULL );";
 
     compareSingleQueryFromFile("create_table_null_not_null.sql", expected);
   }
@@ -93,19 +101,19 @@ public class PostgresSchemaVisitorTest implements SchemaTest {
   @Test
   public void testCreateTables() {
     List<String> expected = new ArrayList<>();
-    expected.add("CREATE TABLE TableName ( Id SERIAL NOT NULL, "
-        + "IntField int NULL, VarChar250Field varchar(250) NULL, "
-        + "DecimalField numeric(15, 6) NULL, "
+    expected.add("CREATE TABLE \"TableName\" ( \"Id\" SERIAL NOT NULL, "
+        + "\"IntField\" int NULL, "
+        + "\"VarChar250Field\" varchar(250) NULL, "
+        + "\"DecimalField\" numeric(15, 6) NULL, "
         + "PRIMARY KEY ( Id ) );");
 
-    expected.add("CREATE TABLE Table2Name ( DateTimeOffsetField timestamp NULL, "
-        + "VarCharMaxField varchar NULL, "
-        + "DateField date NULL, "
-        + "BitField boolean NULL, "
-        + "DecimalField2 numeric(38, 15) NULL, "
+    expected.add("CREATE TABLE \"Table2Name\" ( \"DateTimeOffsetField\" timestamp NULL, "
+        + "\"VarCharMaxField\" varchar NULL, "
+        + "\"DateField\" date NULL, "
+        + "\"BitField\" boolean NULL, "
+        + "\"DecimalField2\" numeric(38, 15) NULL, "
         + "PRIMARY KEY ( BitField ) );");
 
     compareMultipleQueriesFromFile("create_tables.sql", expected);
   }
-
 }

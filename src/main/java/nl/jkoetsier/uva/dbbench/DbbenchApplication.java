@@ -185,7 +185,7 @@ public class DbbenchApplication implements ApplicationRunner {
     } finally {
       if (dockerContainer != null && commandLineConfigProperties.isStopContainer()) {
         dockerContainer.stop();
-      } else {
+      } else if (dockerContainer != null) {
         logger.info("Keeping container running");
       }
     }

@@ -11,6 +11,16 @@ public class MySqlWorkloadVisitor extends SqlWorkloadVisitor {
   private static Logger logger = LoggerFactory.getLogger(MySqlWorkloadVisitor.class);
 
   @Override
+  protected char getQuoteCharOpen() {
+    return '`';
+  }
+
+  @Override
+  protected char getQuoteCharClose() {
+    return '`';
+  }
+
+  @Override
   public void visit(FullJoin fullJoin) {
     throw new RuntimeException("Not supported in MySQL. Do something with this");
   }

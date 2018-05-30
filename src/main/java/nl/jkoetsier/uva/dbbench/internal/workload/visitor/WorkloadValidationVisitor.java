@@ -1,9 +1,8 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.visitor;
 
-import java.util.function.Function;
 import nl.jkoetsier.uva.dbbench.input.exception.NotMatchingWorkloadException;
-import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
@@ -227,8 +226,7 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Query query) {
-    System.out.println("DID QUERY");
-    System.out.println();
+
   }
 
   @Override

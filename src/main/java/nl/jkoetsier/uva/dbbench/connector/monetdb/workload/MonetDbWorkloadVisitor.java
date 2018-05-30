@@ -8,4 +8,13 @@ public class MonetDbWorkloadVisitor extends SqlWorkloadVisitor {
 
   static Logger logger = LoggerFactory.getLogger(MonetDbWorkloadVisitor.class);
 
+  @Override
+  protected char getQuoteCharOpen() {
+    return '"';
+  }
+
+  @Override
+  protected char getQuoteCharClose() {
+    return '"';
+  }
 }
