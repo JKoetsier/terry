@@ -3,7 +3,9 @@ package nl.jkoetsier.uva.dbbench.connector.mssql.workload;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.mssql.MsSqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectAllColumnsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
@@ -17,15 +19,9 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
   static Logger logger = LoggerFactory.getLogger(MsSqlWorkloadVisitor.class);
 
   @Override
-  protected char getQuoteCharOpen() {
-    return '[';
+  protected SqlIdentifierQuoter getIdentifierQuoter() {
+    return new MsSqlIdentifierQuoter();
   }
-
-  @Override
-  protected char getQuoteCharClose() {
-    return ']';
-  }
-
 
   @Override
   public void visit(Projection projection) {

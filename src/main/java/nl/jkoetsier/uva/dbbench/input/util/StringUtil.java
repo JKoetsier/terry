@@ -20,7 +20,7 @@ public class StringUtil {
    * @param inputString
    * @return
    */
-  private static String unEscapeSingleIdentifier(String inputString) {
+  private static String unEscapeIdentifierPart(String inputString) {
     for (int i = 0; i < quotePairs.length; i++) {
       if (inputString.charAt(0) == quotePairs[i][0] &&
           inputString.charAt(inputString.length() - 1) == quotePairs[i][1]) {
@@ -38,7 +38,7 @@ public class StringUtil {
     ArrayList<String> resultParts = new ArrayList<>();
 
     for (String part : splitted) {
-      resultParts.add(unEscapeSingleIdentifier(part));
+      resultParts.add(unEscapeIdentifierPart(part));
     }
 
     return String.join(".", resultParts);

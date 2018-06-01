@@ -7,6 +7,7 @@ import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
+import nl.jkoetsier.uva.dbbench.input.util.StringUtil;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.Column;
@@ -26,7 +27,7 @@ public class SqlSchemaStatementVisitor extends StatementVisitorAdapter {
 
     for (ColumnDefinition colDef : createTable.getColumnDefinitions()) {
       Column column = FieldFactory.create(colDef.getColDataType().getDataType());
-      column.setName(colDef.getColumnName());
+      column.setName(StringUtil.unEscapeIdentifier(colDef.getColumnName()));
 
       if (colDef.getColDataType().getArgumentsStringList() != null) {
         column.setArguments(colDef.getColDataType().getArgumentsStringList());

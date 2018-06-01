@@ -1,6 +1,8 @@
 package nl.jkoetsier.uva.dbbench.connector.mysql.workload;
 
+import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.mysql.MySqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.FullJoin;
 import org.slf4j.Logger;
@@ -11,13 +13,8 @@ public class MySqlWorkloadVisitor extends SqlWorkloadVisitor {
   private static Logger logger = LoggerFactory.getLogger(MySqlWorkloadVisitor.class);
 
   @Override
-  protected char getQuoteCharOpen() {
-    return '`';
-  }
-
-  @Override
-  protected char getQuoteCharClose() {
-    return '`';
+  protected SqlIdentifierQuoter getIdentifierQuoter() {
+    return new MySqlIdentifierQuoter();
   }
 
   @Override

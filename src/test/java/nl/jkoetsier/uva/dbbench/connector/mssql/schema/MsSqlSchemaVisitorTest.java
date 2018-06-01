@@ -57,7 +57,7 @@ public class MsSqlSchemaVisitorTest implements SchemaTest {
         + "[DecimalField] decimal(15, 6) NULL, [DateTimeOffsetField] datetimeoffset NULL, "
         + "[VarCharMaxField] varchar NULL, [DateField] date NULL, [BitField] bit NULL, "
         + "[DecimalField2] decimal(38, 15) NULL, CONSTRAINT PK_TableName "
-        + "PRIMARY KEY ( Id ) )";
+        + "PRIMARY KEY ( [Id] ) )";
 
     compareSingleQueryFromFile("create_table.sql", expected);
   }
@@ -77,7 +77,7 @@ public class MsSqlSchemaVisitorTest implements SchemaTest {
         + "[DecimalField] decimal(15, 6) NULL, [DateTimeOffsetField] datetimeoffset NULL, "
         + "[VarCharMaxField] varchar NULL, [DateField] date NULL, [BitField] bit NULL, "
         + "[DecimalField2] decimal(38, 15) NULL, CONSTRAINT PK_TableName "
-        + "PRIMARY KEY ( Id, IntField ) )";
+        + "PRIMARY KEY ( [Id], [IntField] ) )";
 
     compareSingleQueryFromFile("create_table_composite_primarykey.sql", expected);
   }
@@ -96,14 +96,14 @@ public class MsSqlSchemaVisitorTest implements SchemaTest {
     expected.add("CREATE TABLE [TableName] ( [Id] int IDENTITY(1,1) NOT NULL, "
         + "[IntField] int NULL, [VarChar250Field] varchar(250) NULL, "
         + "[DecimalField] decimal(15, 6) NULL, "
-        + "CONSTRAINT PK_TableName PRIMARY KEY ( Id ) )");
+        + "CONSTRAINT PK_TableName PRIMARY KEY ( [Id] ) )");
 
     expected.add("CREATE TABLE [Table2Name] ( [DateTimeOffsetField] datetimeoffset NULL, "
         + "[VarCharMaxField] varchar NULL, "
         + "[DateField] date NULL, "
         + "[BitField] bit NULL, "
         + "[DecimalField2] decimal(38, 15) NULL, "
-        + "CONSTRAINT PK_Table2Name PRIMARY KEY ( BitField ) )");
+        + "CONSTRAINT PK_Table2Name PRIMARY KEY ( [BitField] ) )");
 
     compareMultipleQueriesFromFile("create_tables.sql", expected);
   }

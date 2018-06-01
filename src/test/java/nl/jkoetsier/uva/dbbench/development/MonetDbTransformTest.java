@@ -17,6 +17,11 @@ public class MonetDbTransformTest extends BaseTransformTest {
     return new MonetDbWorkloadVisitor();
   }
 
+  @Override
+  protected String stripQueryExtra(String query) {
+    return query.replaceAll("(?i)isnull", "coalesce");
+  }
+
   @Test
   @Override
   @Category(DevelopmentTest.class)

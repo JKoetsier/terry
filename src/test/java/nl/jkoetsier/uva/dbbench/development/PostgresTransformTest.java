@@ -17,6 +17,11 @@ public class PostgresTransformTest extends BaseTransformTest {
     return new PostgresWorkloadVisitor();
   }
 
+  @Override
+  protected String stripQueryExtra(String query) {
+    return query.replaceAll("(?i)isnull", "coalesce");
+  }
+
   @Test
   @Override
   @Category(DevelopmentTest.class)

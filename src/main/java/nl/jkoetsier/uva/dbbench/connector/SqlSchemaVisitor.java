@@ -24,6 +24,8 @@ public abstract class SqlSchemaVisitor extends SchemaVisitor {
 
   private static Logger logger = LoggerFactory.getLogger(SqlSchemaVisitor.class);
 
+  protected abstract SqlIdentifierQuoter getIdentifierQuoter();
+
   protected HashMap<String, String> createQueries = new HashMap<>();
   protected List<ColumnDef> columnDefStack = new ArrayList<>();
 
@@ -40,6 +42,14 @@ public abstract class SqlSchemaVisitor extends SchemaVisitor {
     }
 
     return columnDef;
+  }
+
+  protected String quoteIdentifier(String input) {
+    return getIdentifierQuoter().quoteString(input);
+  }
+
+  protected List<String> quoteIdentifiers(List<String> input) {
+    return getIdentifierQuoter().quoteStrings(input);
   }
 
   @Override

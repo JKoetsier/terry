@@ -61,7 +61,7 @@ public class MySqlSchemaVisitorTest implements SchemaTest {
         + "`DateField` date NULL, "
         + "`BitField` boolean NULL, "
         + "`DecimalField2` decimal(38, 15) NULL, "
-        + "PRIMARY KEY ( Id ) );";
+        + "PRIMARY KEY ( `Id` ) );";
 
     compareSingleQueryFromFile("create_table.sql", expected);
   }
@@ -86,7 +86,7 @@ public class MySqlSchemaVisitorTest implements SchemaTest {
         + "`DateField` date NULL, "
         + "`BitField` boolean NULL, "
         + "`DecimalField2` decimal(38, 15) NULL, "
-        + "PRIMARY KEY ( Id, IntField ) );";
+        + "PRIMARY KEY ( `Id`, `IntField` ) );";
 
     compareSingleQueryFromFile("create_table_composite_primarykey.sql", expected);
   }
@@ -106,14 +106,14 @@ public class MySqlSchemaVisitorTest implements SchemaTest {
         + "`IntField` int NULL, "
         + "`VarChar250Field` varchar(250) NULL, "
         + "`DecimalField` decimal(15, 6) NULL, "
-        + "PRIMARY KEY ( Id ) );");
+        + "PRIMARY KEY ( `Id` ) );");
 
     expected.add("CREATE TABLE `Table2Name` ( `DateTimeOffsetField` timestamp NULL, "
         + "`VarCharMaxField` text NULL, "
         + "`DateField` date NULL, "
         + "`BitField` boolean NULL, "
         + "`DecimalField2` decimal(38, 15) NULL, "
-        + "PRIMARY KEY ( BitField ) );");
+        + "PRIMARY KEY ( `BitField` ) );");
 
     compareMultipleQueriesFromFile("create_tables.sql", expected);
   }

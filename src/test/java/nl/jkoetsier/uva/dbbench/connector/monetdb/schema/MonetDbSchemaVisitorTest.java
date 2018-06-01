@@ -53,12 +53,16 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
   @Override
   @Test
   public void testCreateTable() {
-    String expected = "CREATE TABLE TableName ( Id SERIAL NOT NULL, "
-        + "IntField int NULL, VarChar250Field varchar(250) NULL, "
-        + "DecimalField decimal(15, 6) NULL, DateTimeOffsetField timestamp NULL, "
-        + "VarCharMaxField varchar NULL, DateField date NULL, BitField boolean NULL, "
-        + "DecimalField2 decimal(38, 15) NULL, "
-        + "PRIMARY KEY ( Id ) );";
+    String expected = "CREATE TABLE \"TableName\" ( \"Id\" SERIAL NOT NULL, "
+        + "\"IntField\" int NULL, "
+        + "\"VarChar250Field\" varchar(250) NULL, "
+        + "\"DecimalField\" decimal(15, 6) NULL, "
+        + "\"DateTimeOffsetField\" timestamp NULL, "
+        + "\"VarCharMaxField\" varchar NULL, "
+        + "\"DateField\" date NULL, "
+        + "\"BitField\" boolean NULL, "
+        + "\"DecimalField2\" decimal(38, 15) NULL, "
+        + "PRIMARY KEY ( \"Id\" ) );";
 
     compareSingleQueryFromFile("create_table.sql", expected);
   }
@@ -66,8 +70,8 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
   @Override
   @Test
   public void testCreateTableArguments() {
-    String expected = "CREATE TABLE TableName ( A decimal(5, 2) NULL, "
-        + "B varchar(200) NOT NULL, C varchar(50) NOT NULL );";
+    String expected = "CREATE TABLE \"TableName\" ( \"A\" decimal(5, 2) NULL, "
+        + "\"B\" varchar(200) NOT NULL, \"C\" varchar(50) NOT NULL );";
 
     compareSingleQueryFromFile("create_table_arguments.sql", expected);
   }
@@ -75,12 +79,16 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
   @Override
   @Test
   public void testCreateTableCompositePrimaryKey() {
-    String expected = "CREATE TABLE TableName ( Id SERIAL NOT NULL, "
-        + "IntField int NULL, VarChar250Field varchar(250) NULL, "
-        + "DecimalField decimal(15, 6) NULL, DateTimeOffsetField timestamp NULL, "
-        + "VarCharMaxField varchar NULL, DateField date NULL, BitField boolean NULL, "
-        + "DecimalField2 decimal(38, 15) NULL, "
-        + "PRIMARY KEY ( Id, IntField ) );";
+    String expected = "CREATE TABLE \"TableName\" ( \"Id\" SERIAL NOT NULL, "
+        + "\"IntField\" int NULL, "
+        + "\"VarChar250Field\" varchar(250) NULL, "
+        + "\"DecimalField\" decimal(15, 6) NULL, "
+        + "\"DateTimeOffsetField\" timestamp NULL, "
+        + "\"VarCharMaxField\" varchar NULL, "
+        + "\"DateField\" date NULL, "
+        + "\"BitField\" boolean NULL, "
+        + "\"DecimalField2\" decimal(38, 15) NULL, "
+        + "PRIMARY KEY ( \"Id\", \"IntField\" ) );";
 
     compareSingleQueryFromFile("create_table_composite_primarykey.sql", expected);
   }
@@ -88,8 +96,8 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
   @Override
   @Test
   public void testCreateTableNullNotNull() {
-    String expected = "CREATE TABLE TableName ( A int NOT NULL, B int NULL, "
-        + "C varchar NULL, D varchar NOT NULL );";
+    String expected = "CREATE TABLE \"TableName\" ( \"A\" int NOT NULL, \"B\" int NULL, "
+        + "\"C\" varchar NULL, \"D\" varchar NOT NULL );";
 
     compareSingleQueryFromFile("create_table_null_not_null.sql", expected);
   }
@@ -98,17 +106,18 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
   @Test
   public void testCreateTables() {
     List<String> expected = new ArrayList<>();
-    expected.add("CREATE TABLE TableName ( Id SERIAL NOT NULL, "
-        + "IntField int NULL, VarChar250Field varchar(250) NULL, "
-        + "DecimalField decimal(15, 6) NULL, "
-        + "PRIMARY KEY ( Id ) );");
+    expected.add("CREATE TABLE \"TableName\" ( \"Id\" SERIAL NOT NULL, "
+        + "\"IntField\" int NULL, "
+        + "\"VarChar250Field\" varchar(250) NULL, "
+        + "\"DecimalField\" decimal(15, 6) NULL, "
+        + "PRIMARY KEY ( \"Id\" ) );");
 
-    expected.add("CREATE TABLE Table2Name ( DateTimeOffsetField timestamp NULL, "
-        + "VarCharMaxField varchar NULL, "
-        + "DateField date NULL, "
-        + "BitField boolean NULL, "
-        + "DecimalField2 decimal(38, 15) NULL, "
-        + "PRIMARY KEY ( BitField ) );");
+    expected.add("CREATE TABLE \"Table2Name\" ( \"DateTimeOffsetField\" timestamp NULL, "
+        + "\"VarCharMaxField\" varchar NULL, "
+        + "\"DateField\" date NULL, "
+        + "\"BitField\" boolean NULL, "
+        + "\"DecimalField2\" decimal(38, 15) NULL, "
+        + "PRIMARY KEY ( \"BitField\" ) );");
 
     compareMultipleQueriesFromFile("create_tables.sql", expected);
   }

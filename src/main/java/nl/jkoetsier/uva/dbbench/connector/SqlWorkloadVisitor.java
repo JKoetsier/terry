@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
-import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
@@ -56,15 +55,14 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
   protected HashMap<Integer, String> result = new HashMap<>();
   protected Stack<String> currentStack = new Stack<>();
 
-  protected abstract char getQuoteCharOpen();
-  protected abstract char getQuoteCharClose();
+  protected abstract SqlIdentifierQuoter getIdentifierQuoter();
 
   public HashMap<Integer, String> getResult() {
     return result;
   }
 
   public String quoteString(String input) {
-    return String.format("%c%s%c", getQuoteCharOpen(), input, getQuoteCharClose());
+    return getIdentifierQuoter().quoteString(input);
   }
 
   @Override
