@@ -43,6 +43,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
+import nl.jkoetsier.uva.dbbench.internal.workload.util.StringFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -230,11 +231,11 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Selection selection) {
-    logger.debug("Validating Selection");
+    logger.debug("Validating Selection {}", selection);
     logger.debug("Have input: {}", selection.getInput());
 
     if (selection.getWhereExpression() != null) {
-      selection.getWhereExpression().validate(selection.getExposedFields());
+     // selection.getWhereExpression().validate(selection.getExposedFields());
     }
 
     logger.debug("Selection ExposedFields: {}", selection.getExposedFields());
@@ -247,7 +248,7 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Query query) {
-    logger.debug("Validating Query");
+    logger.debug("Validating Query\n{}", StringFormatter.format(query.toString()));
   }
 
   @Override
