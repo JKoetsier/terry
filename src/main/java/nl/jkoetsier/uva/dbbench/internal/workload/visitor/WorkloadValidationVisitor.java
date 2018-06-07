@@ -58,106 +58,110 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(DateConstant dateConstant) {
+    logger.debug("Validating DateConstant");
 
   }
 
   @Override
   public void visit(DoubleConstant doubleConstant) {
+    logger.debug("Validating DoubleConstant");
 
   }
 
   @Override
   public void visit(LongConstant longConstant) {
+    logger.debug("Validating LongConstant");
 
   }
 
   @Override
   public void visit(NullValue nullConstant) {
-
+    logger.debug("Validating NullValue");
   }
 
   @Override
   public void visit(StringConstant stringConstant) {
-
+    logger.debug("Validating StringConstant");
   }
 
   @Override
   public void visit(AndOp andOp) {
-
+    logger.debug("Validating AndOp");
   }
 
   @Override
   public void visit(DivideOp divideOp) {
-
+    logger.debug("Validating DivideOp");
   }
 
   @Override
   public void visit(EqualsOp equalsOp) {
-
+    logger.debug("Validating EqualsOp");
   }
 
   @Override
   public void visit(GteOp gteOp) {
-
+    logger.debug("Validating GteOp");
   }
 
   @Override
   public void visit(GtOp gtOp) {
-
+    logger.debug("Validating GtOp");
   }
 
   @Override
   public void visit(LteOp lteOp) {
-
+    logger.debug("Validating LteOp");
   }
 
   @Override
   public void visit(LtOp ltOp) {
-
+    logger.debug("Validating LtOp");
   }
 
   @Override
   public void visit(MinusOp minusOp) {
-
+    logger.debug("Validating MinusOp");
   }
 
   @Override
   public void visit(ModuloOp moduloOp) {
-
+    logger.debug("Validating ModuloOp");
   }
 
   @Override
   public void visit(MultiplyOp multiplyOp) {
-
+    logger.debug("Validating MultiplyOp");
   }
 
   @Override
   public void visit(NeqOp neqOp) {
-
+    logger.debug("Validating NeqOp");
   }
 
   @Override
   public void visit(OrOp orOp) {
-
+    logger.debug("Validating OrOp");
   }
 
   @Override
   public void visit(PlusOp plusOp) {
-
+    logger.debug("Validating PlusOp");
   }
 
   @Override
   public void visit(BinExpression binExpression) {
-
+    logger.debug("Validating BinExpression");
   }
 
   @Override
   public void visit(FieldExpression fieldExpression) {
-
+    logger.debug("Validating FieldExpression");
   }
 
   @Override
   public void visit(FullJoin fullJoin) {
+    logger.debug("Validating FullJoin");
     if (fullJoin.getOnExpression() != null) {
       fullJoin.getOnExpression().validate(fullJoin.getExposedFields());
     }
@@ -165,6 +169,7 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InnerJoin innerJoin) {
+    logger.debug("Validating InnerJoin");
     if (innerJoin.getOnExpression() != null) {
       innerJoin.getOnExpression().validate(innerJoin.getExposedFields());
     }
@@ -194,6 +199,7 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(OuterJoin outerJoin) {
+    logger.debug("Validating OuterJoin");
     if (outerJoin.getOnExpression() != null) {
       outerJoin.getOnExpression().validate(outerJoin.getExposedFields());
     }
@@ -236,36 +242,37 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Union union) {
-
+    logger.debug("Validating Union");
   }
 
   @Override
   public void visit(Query query) {
-
+    logger.debug("Validating Query");
   }
 
   @Override
   public void visit(Workload workload) {
-
+    logger.debug("Validating Workload");
   }
 
   @Override
   public void visit(FunctionExpr functionExpr) {
-
+    logger.debug("Validating FunctionExpr");
   }
 
   @Override
   public void visit(ExpressionList expressionList) {
-
+    logger.debug("Validating ExpressionList");
   }
 
   @Override
   public void visit(IsNullExpr isNullExpr) {
-
+    logger.debug("Validating IsNullExpr");
   }
 
   @Override
   public void visit(Rename rename) {
+    logger.debug("Validating Rename");
     rename.getInput().getExposedFields();
   }
 
@@ -276,18 +283,17 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Case caseExpr) {
-
+    logger.debug("Validating Case");
   }
 
   @Override
   public void visit(Cast cast) {
-
+    logger.debug("Validating Cast");
   }
 
   @Override
   public void visit(RelationExpression relationExpression) {
     logger.debug("Validating RelationExpression");
-
   }
 
   @Override
@@ -300,6 +306,6 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(SelectAllColumnsExpression selectAllColumnsExpression) {
-
+    logger.debug("Validating SelectAllColumnsExpression");
   }
 }
