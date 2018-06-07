@@ -38,4 +38,11 @@ public class Workload implements WorkloadElement {
 
     this.acceptVisitor(workloadValidationVisitor);
   }
+
+  @Override
+  public String toString() {
+    return "Workload{" +
+        "queries=" + queries +
+        '}';
+  }
 }

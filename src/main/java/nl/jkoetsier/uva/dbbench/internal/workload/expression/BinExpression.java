@@ -54,4 +54,13 @@ public class BinExpression extends Expression {
 
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "BinExpression{" +
+        "leftExpr=" + leftExpr +
+        ", rightExpr=" + rightExpr +
+        ", operator=" + operator +
+        '}';
+  }
 }

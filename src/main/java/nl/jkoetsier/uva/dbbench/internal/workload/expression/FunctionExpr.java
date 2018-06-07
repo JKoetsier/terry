@@ -33,4 +33,12 @@ public class FunctionExpr extends Expression {
 
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "FunctionExpr{" +
+        "name='" + name + '\'' +
+        ", expressionList=" + expressionList +
+        '}';
+  }
 }

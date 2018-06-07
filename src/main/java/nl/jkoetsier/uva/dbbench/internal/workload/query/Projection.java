@@ -120,4 +120,18 @@ public class Projection extends UnaryRelation {
   public boolean isDistinct() {
     return distinct;
   }
+
+  @Override
+  public String toString() {
+    return "Projection{" +
+        "tableName='" + tableName + '\'' +
+        ", limit=" + limit +
+        ", offset=" + offset +
+        ", orderBy=" + orderBy +
+        ", selectExpressions=" + selectExpressions +
+        ", exposedFields=" + exposedFields +
+        ", distinct=" + distinct +
+        ", input=" + input +
+        '}';
+  }
 }

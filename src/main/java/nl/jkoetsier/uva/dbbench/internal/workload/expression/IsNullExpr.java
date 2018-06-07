@@ -27,4 +27,11 @@ public class IsNullExpr extends Expression {
 
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "IsNullExpr{" +
+        "leftExpression=" + leftExpression +
+        '}';
+  }
 }

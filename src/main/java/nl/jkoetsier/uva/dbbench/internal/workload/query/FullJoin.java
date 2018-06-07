@@ -24,4 +24,13 @@ public class FullJoin extends RAJoin {
 
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "FullJoin{" +
+        "onExpression=" + onExpression +
+        ", leftInput=" + leftInput +
+        ", rightInput=" + rightInput +
+        '}';
+  }
 }

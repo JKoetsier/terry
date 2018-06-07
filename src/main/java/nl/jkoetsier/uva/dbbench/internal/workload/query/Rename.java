@@ -48,4 +48,13 @@ public class Rename extends UnaryRelation {
 
     exposedFields = thisExposedFields;
   }
+
+  @Override
+  public String toString() {
+    return "Rename{" +
+        "name='" + name + '\'' +
+        ", exposedFields=" + exposedFields +
+        ", input=" + input +
+        '}';
+  }
 }

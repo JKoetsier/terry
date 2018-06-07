@@ -38,6 +38,16 @@ public class OuterJoin extends RAJoin {
     workloadVisitor.visit(this);
   }
 
+  @Override
+  public String toString() {
+    return "OuterJoin{" +
+        "direction=" + direction +
+        ", onExpression=" + onExpression +
+        ", leftInput=" + leftInput +
+        ", rightInput=" + rightInput +
+        '}';
+  }
+
   public enum Direction {
     LEFT,
     RIGHT

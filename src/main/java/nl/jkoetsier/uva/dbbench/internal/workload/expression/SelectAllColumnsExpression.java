@@ -32,4 +32,11 @@ public class SelectAllColumnsExpression extends Expression {
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "SelectAllColumnsExpression{" +
+        "tableName='" + tableName + '\'' +
+        '}';
+  }
 }

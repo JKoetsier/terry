@@ -6,10 +6,9 @@ import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RelationExpression extends Expression{
+public class RelationExpression extends Expression {
 
   private static Logger logger = LoggerFactory.getLogger(RelationExpression.class);
-
   private Relation relation;
 
   public RelationExpression(Relation relation) {
@@ -33,5 +32,12 @@ public class RelationExpression extends Expression{
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     relation.acceptVisitor(workloadVisitor);
     workloadVisitor.visit(this);
+  }
+
+  @Override
+  public String toString() {
+    return "RelationExpression{" +
+        "relation=" + relation +
+        '}';
   }
 }

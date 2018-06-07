@@ -24,4 +24,13 @@ public class InnerJoin extends RAJoin {
 
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "InnerJoin{" +
+        "onExpression=" + onExpression +
+        ", leftInput=" + leftInput +
+        ", rightInput=" + rightInput +
+        '}';
+  }
 }

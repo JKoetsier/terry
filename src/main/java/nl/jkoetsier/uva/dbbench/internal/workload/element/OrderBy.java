@@ -24,4 +24,12 @@ public class OrderBy {
     ASC,
     DESC
   }
+
+  @Override
+  public String toString() {
+    return "OrderBy{" +
+        "fieldExpression=" + fieldExpression +
+        ", direction=" + direction +
+        '}';
+  }
 }

@@ -6,8 +6,8 @@ import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
 public class Query implements WorkloadElement {
 
-  private Relation relation;
   private Integer identifier;
+  private Relation relation;
 
   public Query(Relation relation) {
     this.relation = relation;
@@ -34,5 +34,13 @@ public class Query implements WorkloadElement {
     relation.acceptVisitor(workloadVisitor);
 
     workloadVisitor.visit(this);
+  }
+
+  @Override
+  public String toString() {
+    return "Query{" +
+        "identifier=" + identifier +
+        ", relation=" + relation +
+        '}';
   }
 }

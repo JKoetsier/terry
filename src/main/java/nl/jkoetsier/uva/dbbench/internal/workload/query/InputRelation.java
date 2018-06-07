@@ -46,6 +46,16 @@ public class InputRelation extends Relation {
   }
 
   @Override
+  public String toString() {
+    return "InputRelation{" +
+        "table=" + table +
+        ", exposedFields=" + exposedFields +
+        ", tableAlias='" + tableAlias + '\'' +
+        ", tableName='" + tableName + '\'' +
+        '}';
+  }
+
+  @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);
   }

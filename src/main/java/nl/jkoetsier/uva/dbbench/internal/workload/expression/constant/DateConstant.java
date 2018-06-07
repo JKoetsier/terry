@@ -24,4 +24,10 @@ public class DateConstant extends Constant {
     workloadVisitor.visit(this);
   }
 
+  @Override
+  public String toString() {
+    return "DateConstant{" +
+        "value=" + value +
+        '}';
+  }
 }

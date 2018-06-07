@@ -49,4 +49,12 @@ public class SelectExpression extends Expression {
   public void validate(ExposedFields exposedFields) {
     expression.validate(exposedFields);
   }
+
+  @Override
+  public String toString() {
+    return "SelectExpression{" +
+        "expression=" + expression +
+        ", alias='" + alias + '\'' +
+        '}';
+  }
 }

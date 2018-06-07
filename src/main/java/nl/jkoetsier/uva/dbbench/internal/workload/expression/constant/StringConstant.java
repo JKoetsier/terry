@@ -22,4 +22,11 @@ public class StringConstant extends Constant {
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "StringConstant{" +
+        "value='" + value + '\'' +
+        '}';
+  }
 }

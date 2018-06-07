@@ -28,4 +28,13 @@ public class Union extends BinaryRelation {
 
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "Union{" +
+        "all=" + all +
+        ", leftInput=" + leftInput +
+        ", rightInput=" + rightInput +
+        '}';
+  }
 }

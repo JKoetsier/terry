@@ -62,7 +62,8 @@ public class FieldExpression extends Expression {
   @Override
   public String toString() {
     return "FieldExpression{" +
-        "fieldName='" + fieldName + '\'' +
+        "exposedField=" + exposedField +
+        ", fieldName='" + fieldName + '\'' +
         '}';
   }
 }

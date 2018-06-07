@@ -54,4 +54,13 @@ public class Case extends Expression {
 
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "Case{" +
+        "condition=" + condition +
+        ", trueExpression=" + trueExpression +
+        ", falseExpression=" + falseExpression +
+        '}';
+  }
 }

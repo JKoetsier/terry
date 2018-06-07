@@ -43,4 +43,11 @@ public class ExpressionList extends Expression {
 
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "ExpressionList{" +
+        "expressions=" + expressions +
+        '}';
+  }
 }

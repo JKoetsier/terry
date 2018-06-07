@@ -41,4 +41,12 @@ public class Cast extends Expression {
 
     workloadVisitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "Cast{" +
+        "expression=" + expression +
+        ", type='" + type + '\'' +
+        '}';
+  }
 }
