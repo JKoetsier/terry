@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import java.util.stream.LongStream;
 import nl.jkoetsier.uva.dbbench.bench.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.MonitoringThread;
-import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
+import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
@@ -21,13 +21,14 @@ public class BenchRunner {
   private DatabaseConnector databaseInterface;
   private Schema schema;
   private Workload workload;
-  private GlobalConfigProperties globalConfigProperties;
+  private ApplicationConfigProperties applicationConfigProperties;
   private String dataDirectory;
+  private boolean importDataModel;
 
   public BenchRunner(DatabaseConnector databaseInterface,
-      GlobalConfigProperties globalConfigProperties) {
+      ApplicationConfigProperties applicationConfigProperties) {
     this.databaseInterface = databaseInterface;
-    this.globalConfigProperties = globalConfigProperties;
+    this.applicationConfigProperties = applicationConfigProperties;
   }
 
   public void setSchema(Schema schema) {
@@ -42,7 +43,7 @@ public class BenchRunner {
     try {
       databaseInterface.connect();
 
-      if (schema != null) {
+      if (schema != null && importDataModel) {
         logger.info("Importing Schema");
         databaseInterface.importSchema(schema);
       }
@@ -104,8 +105,8 @@ public class BenchRunner {
   public void run() throws DatabaseException {
     logger.info("Start running bench");
 
-    int noRuns = globalConfigProperties.getNoRuns();
-    int skipFirst = globalConfigProperties.getSkipFirst();
+    int noRuns = applicationConfigProperties.getNoRuns();
+    int skipFirst = applicationConfigProperties.getSkipFirst();
 
     TreeMap<Integer, String> queries = new TreeMap<>(
         databaseInterface.getWorkloadQueries(workload));
@@ -177,5 +178,9 @@ public class BenchRunner {
 
   public void setDataDirectory(String dataDirectory) {
     this.dataDirectory = dataDirectory;
+  }
+
+  public void setImportDataModel(boolean importDataModel) {
+    this.importDataModel = importDataModel;
   }
 }

@@ -75,7 +75,7 @@ public class ExposedFields {
     }
 
     for (ExposedField exposedField : exposedFields) {
-      if (exposedField.getColumnName().equals(name)) {
+      if (exposedField.getColumnName().toLowerCase().equals(name.toLowerCase())) {
         return exposedField;
       }
     }

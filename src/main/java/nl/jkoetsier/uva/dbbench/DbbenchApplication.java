@@ -7,7 +7,7 @@ import java.util.Set;
 import nl.jkoetsier.uva.dbbench.bench.BenchRunner;
 import nl.jkoetsier.uva.dbbench.config.CommandLineConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
-import nl.jkoetsier.uva.dbbench.config.GlobalConfigProperties;
+import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.docker.DockerContainer;
 import nl.jkoetsier.uva.dbbench.input.SchemaReader;
@@ -35,7 +35,7 @@ public class DbbenchApplication implements ApplicationRunner {
   private CommandLineConfigProperties commandLineConfigProperties;
 
   @Autowired
-  private GlobalConfigProperties globalConfigProperties;
+  private ApplicationConfigProperties applicationConfigProperties;
 
   @Autowired
   private DbConfigProperties dbConfigProperties;
@@ -51,6 +51,7 @@ public class DbbenchApplication implements ApplicationRunner {
 
   private Boolean verifyWorkload = true;
   private Boolean skipDataModel = false;
+  private Boolean skipImportDataModel = false;
 
   public static void main(String[] args) {
     ApplicationContext applicationContext = SpringApplication.run(DbbenchApplication.class, args);
@@ -73,6 +74,7 @@ public class DbbenchApplication implements ApplicationRunner {
     options.add("--no-check-workload");
     options.add("--skip-datamodel");
     options.add("--stop-container=(true|false)");
+    options.add("--skip-import-datamodel");
 
     if (optionNames.contains("no-check-workload")) {
       verifyWorkload = false;
@@ -81,6 +83,10 @@ public class DbbenchApplication implements ApplicationRunner {
     if (optionNames.contains("skip-datamodel")) {
       verifyWorkload = false;
       skipDataModel = true;
+    }
+
+    if (optionNames.contains("skip-import-datamodel")) {
+      skipImportDataModel = true;
     }
 
     if (commandLineConfigProperties.getWorkload().trim().equals("")) {
@@ -94,7 +100,7 @@ public class DbbenchApplication implements ApplicationRunner {
     }
 
     if (commandLineConfigProperties.getOutputDb().trim().equals("") ||
-        !globalConfigProperties.getAcceptedDatabases()
+        !applicationConfigProperties.getAcceptedDatabases()
             .contains(commandLineConfigProperties.getOutputDb())) {
       System.err.println("No correct output database provided. Provide output database");
     }
@@ -103,7 +109,7 @@ public class DbbenchApplication implements ApplicationRunner {
       System.err.format(
           "\nRun program with parameters:\n --workload=workloadfile.sql\n --datamodel=datamodel.sql\n "
               + "--output_db=(%s)\nOptional:\n %s%n",
-          String.join("|", globalConfigProperties.getAcceptedDatabases()),
+          String.join("|", applicationConfigProperties.getAcceptedDatabases()),
           String.join("\n ", options)
       );
       System.exit(1);
@@ -126,17 +132,18 @@ public class DbbenchApplication implements ApplicationRunner {
       try {
         workload.validate(schema);
       } catch (NotMatchingWorkloadException e) {
-        System.err.format(
-            "Error in validating workload: %s%n", e.getMessage()
-        );
-
-        System.exit(1);
+        throw new RuntimeException(e);
+//        System.err.format(
+//            "Error in validating workload: %s%n", e.getMessage()
+//        );
+//
+//        System.exit(1);
       }
     }
 
     logger.info("Output database: {}", commandLineConfigProperties.getOutputDb());
 
-    BenchRunner benchRunner = new BenchRunner(databaseConnector, globalConfigProperties);
+    BenchRunner benchRunner = new BenchRunner(databaseConnector, applicationConfigProperties);
 
     logger.info("Is docker: {}", databaseConnector.isDocker());
 
@@ -151,7 +158,7 @@ public class DbbenchApplication implements ApplicationRunner {
           System.exit(1);
         }
 
-        Integer port = globalConfigProperties.getDefaultPort();
+        Integer port = applicationConfigProperties.getDefaultPort();
         dockerContainer = new DockerContainer(dbConfigProperties.getDockerImage());
         dockerContainer.addPortMapping(port, dbConfigProperties.getDefaultPort());
         dockerContainer.setReadyLogLine(dbConfigProperties.getDockerReadyLogLine());
@@ -174,6 +181,8 @@ public class DbbenchApplication implements ApplicationRunner {
       if (!commandLineConfigProperties.getDataDirectory().equals("")) {
         benchRunner.setDataDirectory(commandLineConfigProperties.getDataDirectory());
       }
+
+      benchRunner.setImportDataModel(!skipImportDataModel);
 
       benchRunner.setup();
       

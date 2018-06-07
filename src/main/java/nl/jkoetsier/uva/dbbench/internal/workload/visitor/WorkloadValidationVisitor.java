@@ -43,8 +43,12 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WorkloadValidationVisitor extends WorkloadVisitor {
+
+  private static Logger logger = LoggerFactory.getLogger(WorkloadValidationVisitor.class);
 
   private Schema schema;
 
@@ -168,6 +172,7 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InputRelation inputRelation) {
+    logger.debug("Validating InputRelation {}", inputRelation.getTableName());
     Table table = schema.getEntity(inputRelation.getTableName());
 
     if (table == null) {
@@ -184,7 +189,7 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
       inputRelation.setExposedFields(ExposedFields.create(table));
     }
 
-    inputRelation.setValidated(true);
+    logger.debug("ExposedFields: {}", inputRelation.getExposedFields());
   }
 
   @Override
@@ -196,6 +201,9 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Projection projection) {
+    logger.debug("Validating Projection");
+    logger.debug("Have input: {}", projection.getInput());
+
     ExposedFields inputExposedFields = projection.getInput().getExposedFields();
 
     // do some magic. check if exposedfields match with selectExpressions
@@ -210,13 +218,20 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
     }
 
     projection.setExposedFields(outputExposedFields);
+
+    logger.debug("ExposedFields: {}", projection.getExposedFields());
   }
 
   @Override
   public void visit(Selection selection) {
+    logger.debug("Validating Selection");
+    logger.debug("Have input: {}", selection.getInput());
+
     if (selection.getWhereExpression() != null) {
       selection.getWhereExpression().validate(selection.getExposedFields());
     }
+
+    logger.debug("Selection ExposedFields: {}", selection.getExposedFields());
   }
 
   @Override
@@ -256,7 +271,7 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(SelectExpression selectExpression) {
-
+    logger.debug("Validating SelectExpression");
   }
 
   @Override
@@ -271,12 +286,16 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(RelationExpression relationExpression) {
+    logger.debug("Validating RelationExpression");
 
   }
 
   @Override
   public void visit(InExpression inExpression) {
-
+    logger.debug("Validating InExpression");
+    logger.debug("ExposedFields: {}", inExpression.getExposedFields());
+    logger.debug("Left: {}", inExpression.getLeftExpression());
+    logger.debug("Right: {}", inExpression.getRightExpression());
   }
 
   @Override

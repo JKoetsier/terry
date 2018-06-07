@@ -5,6 +5,7 @@ import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.SqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.postgres.PostgresIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DoubleColumn;
 import org.slf4j.Logger;
@@ -27,6 +28,11 @@ public class PostgresSchemaVisitor extends SqlSchemaVisitor {
   @Override
   public void visit(DoubleColumn doubleColumn) {
     columnDefStack.add(createColumnDef(doubleColumn, "FLOAT8"));
+  }
+
+  @Override
+  public void visit(DateTimeColumn dateTimeColumn) {
+    columnDefStack.add(createColumnDef(dateTimeColumn, "TIMESTAMP"));
   }
 
   @Override

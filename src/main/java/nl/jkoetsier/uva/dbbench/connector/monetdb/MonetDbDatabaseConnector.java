@@ -66,7 +66,12 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) {
-    throw new RuntimeException("Not implemented yet");
+  protected void importCsvFile(String tableName, String file) throws SQLException {
+    String query = String.format("COPY OFFSET %d INTO \"%s\" FROM '%s' "
+        + "USING DELIMITERS ',', '\\n', '\"' NULL AS ''",
+        applicationConfigProperties.getCsvHeader() ? 2 : 1,
+        tableName, file);
+
+    executeQuery(query);
   }
 }

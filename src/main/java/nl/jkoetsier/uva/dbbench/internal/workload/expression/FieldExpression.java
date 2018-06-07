@@ -19,13 +19,22 @@ public class FieldExpression extends Expression {
 
   @Override
   public void validate(ExposedFields exposedFields) {
+    logger.debug("Validating field {}", fieldName);
+    logger.debug("Exposed fields: {}", exposedFields);
+
     ExposedField existing = exposedFields.get(fieldName);
+
+    logger.debug("Existing: {}", existing);
 
     if (existing == null) {
       throw new InvalidQueryException(String.format("Not existing field '%s'", fieldName));
     }
 
     exposedField = existing;
+
+    // Set this fieldName to the string value of the existing exposedField to prevent problems with
+    // capitalisation in (for example) Postgres.
+    fieldName = existing.toString();
   }
 
   public String getFieldName() {
@@ -41,7 +50,19 @@ public class FieldExpression extends Expression {
   }
 
   @Override
+  public ExposedFields getExposedFields() {
+    return new ExposedFields(getExposedField());
+  }
+
+  @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     workloadVisitor.visit(this);
+  }
+
+  @Override
+  public String toString() {
+    return "FieldExpression{" +
+        "fieldName='" + fieldName + '\'' +
+        '}';
   }
 }

@@ -8,14 +8,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties
-public class GlobalConfigProperties {
+public class ApplicationConfigProperties {
 
-  private static Logger logger = LoggerFactory.getLogger(GlobalConfigProperties.class);
+  private static Logger logger = LoggerFactory.getLogger(ApplicationConfigProperties.class);
 
   private List<String> acceptedDatabases;
   private int noRuns;
   private int skipFirst;
   private int defaultPort;
+  private boolean csvHeader = false;
 
   public List<String> getAcceptedDatabases() {
     return acceptedDatabases;
@@ -47,5 +48,13 @@ public class GlobalConfigProperties {
 
   public void setDefaultPort(Integer defaultPort) {
     this.defaultPort = defaultPort;
+  }
+
+  public boolean getCsvHeader() {
+    return csvHeader;
+  }
+
+  public void setCsvHeader(boolean csvHeader) {
+    this.csvHeader = csvHeader;
   }
 }

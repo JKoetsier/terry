@@ -38,7 +38,7 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
         + "FIELDS TERMINATED BY ',' "
         + "ENCLOSED BY '\"' "
         + "LINES TERMINATED BY '\\n' "
-        + "IGNORE 1 LINES", file, tableName);
+        + "IGNORE %d LINES", file, tableName, applicationConfigProperties.getCsvHeader() ? 1 : 0);
 
     executeQuery(query);
   }

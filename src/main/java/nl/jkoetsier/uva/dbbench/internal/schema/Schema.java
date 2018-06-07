@@ -26,7 +26,13 @@ public class Schema implements SchemaTreeElement {
   }
 
   public Table getEntity(String name) {
-    return this.entities.get(name);
+    for (Entry<String, Table> entry : entities.entrySet()) {
+      if (entry.getKey().toLowerCase().equals(name.toLowerCase())) {
+        return entry.getValue();
+      }
+    }
+
+    return null;
   }
 
   @Override

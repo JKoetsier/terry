@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.connector;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.HashMap;
+import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
@@ -31,34 +32,39 @@ public abstract class DatabaseConnector {
   @Autowired
   protected DbConfigProperties dbConfigProperties;
 
+  @Autowired
+  protected ApplicationConfigProperties applicationConfigProperties;
+
   /**
    * Imports CSV files from directory. Assumes the filename until the first dot is the table name.
    * Parts after the first dot will be ignored. Can be used as sequence number.
-   *
-   * @param directory
-   * @throws SQLException
    */
   public void importCsvData(String directory) throws SQLException {
     File dir = new File(directory);
     File[] files = dir.listFiles();
 
-    for (File file : files) {
-      if (file.isFile() && file.getName().endsWith(".csv")) {
-        String[] fileNameParts = file.getName().split("\\.");
+    if (files != null) {
 
-        importCsvFile(fileNameParts[0], file.getAbsolutePath());
+      for (File file : files) {
+        if (file.isFile() && file.getName().endsWith(".csv")) {
+          String[] fileNameParts = file.getName().split("\\.");
 
-        File renamedFile = new File(file.getAbsolutePath() + ".done");
+          importCsvFile(fileNameParts[0], file.getAbsolutePath());
 
-        if (file.renameTo(renamedFile)) {
-          logger.debug("Renamed file {} to {}",
-              file.getAbsolutePath(),
-              renamedFile.getAbsolutePath()
-          );
-        } else {
-          logger.debug("Could not rename file {}", file.getAbsolutePath());
+          File renamedFile = new File(file.getAbsolutePath() + ".done");
+
+          if (file.renameTo(renamedFile)) {
+            logger.debug("Renamed file {} to {}",
+                file.getAbsolutePath(),
+                renamedFile.getAbsolutePath()
+            );
+          } else {
+            logger.debug("Could not rename file {}", file.getAbsolutePath());
+          }
         }
       }
+    } else {
+      throw new RuntimeException(String.format("Could not read data from %s", directory));
     }
   }
 
