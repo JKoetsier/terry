@@ -17,7 +17,6 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.RAJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 import org.slf4j.Logger;
@@ -176,7 +175,6 @@ public class SelectVisitor extends SelectVisitorAdapter {
       throw new RuntimeException("Unimplemented operation");
     }
   }
-
 
 
   @Override

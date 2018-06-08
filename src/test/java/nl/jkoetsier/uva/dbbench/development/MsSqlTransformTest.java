@@ -1,6 +1,6 @@
 package nl.jkoetsier.uva.dbbench.development;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadVisitor;
@@ -10,7 +10,6 @@ import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.testclass.DevelopmentTest;
 import nl.jkoetsier.uva.dbbench.util.FileReader;
 import nl.jkoetsier.uva.dbbench.util.QueryFormatter;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;

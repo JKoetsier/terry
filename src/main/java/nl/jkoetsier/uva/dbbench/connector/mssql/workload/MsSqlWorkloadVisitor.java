@@ -6,10 +6,7 @@ import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.connector.mssql.MsSqlIdentifierQuoter;
-import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
-import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectAllColumnsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
-import nl.jkoetsier.uva.dbbench.internal.workload.query.InputRelation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +32,8 @@ public class MsSqlWorkloadVisitor extends SqlWorkloadVisitor {
       String topStack = currentStack.pop();
 
       if (projection.getOffset() != null) {
-        offset = String.format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", currentStack.pop(), topStack);
+        offset = String
+            .format(" OFFSET %s ROWS FETCH NEXT %s ROWS ONLY", currentStack.pop(), topStack);
       } else {
         top = String.format(" TOP(%s)", topStack);
       }

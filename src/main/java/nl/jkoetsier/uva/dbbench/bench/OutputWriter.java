@@ -1,24 +1,15 @@
 package nl.jkoetsier.uva.dbbench.bench;
 
-import com.panayotis.gnuplot.JavaPlot;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.stream.LongStream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -73,7 +64,6 @@ public class OutputWriter {
     writeQueries(queries, outputQueriesFilename);
   }
 
-
   private void writeResults(Map<Integer, long[]> results, String filePath) throws IOException {
     if (results.get(0) == null) {
       return;
@@ -98,7 +88,6 @@ public class OutputWriter {
       long avg = LongStream.of(entry.getValue()).sum() / entry.getValue().length;
       row[0] = Integer.toString(entry.getKey());
       row[1] = Long.toString(avg);
-
 
       for (int i = 0; i < entry.getValue().length; i++) {
         row[i + 2] = Long.toString(entry.getValue()[i]);

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 public class StringFormatter {
 
   private static Logger logger = LoggerFactory.getLogger(StringFormatter.class);
-  private enum breakLocation { SAMELINE, NEXTLINE }
 
   public static String format(String input) {
     StringBuilder stringBuilder = new StringBuilder();
@@ -87,4 +86,6 @@ public class StringFormatter {
     Arrays.fill(chars, '\t');
     return new String(chars);
   }
+
+  private enum breakLocation {SAMELINE, NEXTLINE}
 }

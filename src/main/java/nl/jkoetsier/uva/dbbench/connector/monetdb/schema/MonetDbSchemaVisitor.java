@@ -82,7 +82,7 @@ public class MonetDbSchemaVisitor extends SqlSchemaVisitor {
           "\n\tCONSTRAINT \"%sPrimaryKey\" PRIMARY KEY (\n\t\t%s\n\t)",
           table.getName(),
           String.join(",\n\t\t", quoteIdentifiers(table.getPrimaryKeyFieldNames())
-      )));
+          )));
     } else if (createTable.charAt(createTable.length() - 1) == ',') {
       createTable = createTable.substring(0, createTable.length() - 1);
     }

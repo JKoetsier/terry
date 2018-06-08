@@ -29,7 +29,8 @@ public class MySqlWorkloadVisitor extends SqlWorkloadVisitor {
     String arguments = currentStack.pop();
 
     // Replace SQL Server ISNULL with IFNULL
-    String functionName = functionExpr.getName().toLowerCase().equals("isnull") ? "IFNULL" : functionExpr.getName();
+    String functionName =
+        functionExpr.getName().toLowerCase().equals("isnull") ? "IFNULL" : functionExpr.getName();
 
     currentStack.push(String.format("%s(%s)", functionName, arguments));
   }

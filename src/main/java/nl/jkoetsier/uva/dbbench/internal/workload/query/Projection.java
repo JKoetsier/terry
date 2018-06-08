@@ -15,7 +15,7 @@ public class Projection extends UnaryRelation {
   private List<OrderBy> orderBy;
   private List<SelectExpression> selectExpressions;
   private ExposedFields exposedFields;
-  private boolean distinct  = false;
+  private boolean distinct = false;
 
   public Projection() {
   }
@@ -113,12 +113,12 @@ public class Projection extends UnaryRelation {
     this.orderBy = orderBy;
   }
 
-  public void setDistinct(boolean distinct) {
-    this.distinct = distinct;
-  }
-
   public boolean isDistinct() {
     return distinct;
+  }
+
+  public void setDistinct(boolean distinct) {
+    this.distinct = distinct;
   }
 
   @Override

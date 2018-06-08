@@ -19,14 +19,6 @@ public class InputRelation extends Relation {
     setTableName(tableName);
   }
 
-  private void setTableAlias(String tableAlias) {
-    this.tableAlias = tableAlias.toLowerCase();
-  }
-
-  private void setTableName(String tableName) {
-    this.tableName = tableName.toLowerCase();
-  }
-
   @Override
   public ExposedFields getExposedFields() {
     return exposedFields;
@@ -49,8 +41,16 @@ public class InputRelation extends Relation {
     return tableAlias;
   }
 
+  private void setTableAlias(String tableAlias) {
+    this.tableAlias = tableAlias.toLowerCase();
+  }
+
   public String getTableName() {
     return tableName;
+  }
+
+  private void setTableName(String tableName) {
+    this.tableName = tableName.toLowerCase();
   }
 
   @Override

@@ -15,12 +15,12 @@ public class Rename extends UnaryRelation {
     setName(name);
   }
 
-  private void setName(String name) {
-    this.name = name.toLowerCase();
-  }
-
   public String getName() {
     return name;
+  }
+
+  private void setName(String name) {
+    this.name = name.toLowerCase();
   }
 
   @Override

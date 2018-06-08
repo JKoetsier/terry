@@ -20,16 +20,16 @@ public class OrderBy {
     return direction;
   }
 
-  public enum Direction {
-    ASC,
-    DESC
-  }
-
   @Override
   public String toString() {
     return "OrderBy{" +
         "fieldExpression=" + fieldExpression +
         ", direction=" + direction +
         '}';
+  }
+
+  public enum Direction {
+    ASC,
+    DESC
   }
 }

@@ -1,10 +1,7 @@
 package nl.jkoetsier.uva.dbbench.bench;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;

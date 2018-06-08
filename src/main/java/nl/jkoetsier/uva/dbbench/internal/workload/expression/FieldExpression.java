@@ -17,10 +17,6 @@ public class FieldExpression extends Expression {
     setFieldName(fieldName);
   }
 
-  private void setFieldName(String fieldName) {
-    this.fieldName = fieldName.toLowerCase();
-  }
-
   @Override
   public void validate(ExposedFields exposedFields) {
     logger.debug("Validating field {}", fieldName);
@@ -43,6 +39,10 @@ public class FieldExpression extends Expression {
 
   public String getFieldName() {
     return fieldName;
+  }
+
+  private void setFieldName(String fieldName) {
+    this.fieldName = fieldName.toLowerCase();
   }
 
   public ExposedField getExposedField() {

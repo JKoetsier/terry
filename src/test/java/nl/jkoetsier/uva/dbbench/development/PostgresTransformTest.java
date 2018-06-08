@@ -1,7 +1,6 @@
 package nl.jkoetsier.uva.dbbench.development;
 
 import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
-import nl.jkoetsier.uva.dbbench.connector.mysql.workload.MySqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.testclass.DevelopmentTest;
 import org.junit.Test;

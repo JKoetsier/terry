@@ -57,7 +57,7 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
   @Override
   protected void importCsvFile(String tableName, String file) throws SQLException {
     String query = String.format("COPY \"%s\" FROM '%s' "
-        + "WITH (FORMAT csv, %sDELIMITER ',', NULL 'NULL')", tableName, file,
+            + "WITH (FORMAT csv, %sDELIMITER ',', NULL 'NULL')", tableName, file,
         applicationConfigProperties.getCsvHeader() ? "HEADER true, " : "");
 
     executeQuery(query);

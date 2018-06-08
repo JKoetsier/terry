@@ -8,8 +8,8 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 import nl.jkoetsier.uva.dbbench.input.exception.InvalidQueryException;
 import nl.jkoetsier.uva.dbbench.input.util.StringUtil;
-import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.Column;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.FieldFactory;
 

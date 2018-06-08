@@ -77,26 +77,28 @@ public class PostgresWorkloadVisitorTest implements WorkloadTest {
 
   @Test
   public void testJoinSimpleQuery() {
-    String expected = "SELECT \"basetable\".\"a\", \"basetable\".\"b\", \"jointable\".\"d\" FROM \"basetable\" "
-        + "LEFT OUTER JOIN \"jointable\" ON (\"basetable\".\"b\" = \"jointable\".\"c\")";
+    String expected =
+        "SELECT \"basetable\".\"a\", \"basetable\".\"b\", \"jointable\".\"d\" FROM \"basetable\" "
+            + "LEFT OUTER JOIN \"jointable\" ON (\"basetable\".\"b\" = \"jointable\".\"c\")";
 
     compareSingleQueryFromFile("select_join_simple.sql", expected);
   }
 
   @Test
   public void testJoinMultipleQuery() {
-    String expected = "SELECT \"basetable\".\"a\", \"basetable\".\"b\", \"jointable\".\"d\", \"jointable2\".\"e\", "
-        + "\"jointable3\".\"g\" "
-        + "FROM \"basetable\" "
-        + "LEFT OUTER JOIN \"jointable\" "
-        + "ON (\"basetable\".\"b\" = \"jointable\".\"c\") "
-        + "RIGHT OUTER JOIN \"jointable2\" "
-        + "ON (\"basetable\".\"b\" = \"jointable2\".\"e\") "
-        + "INNER JOIN \"jointable3\" "
-        + "ON (\"basetable\".\"b\" = \"jointable3\".\"f\") "
-        + "FULL JOIN \"jointable4\" "
-        + "ON (\"basetable\".\"b\" = \"jointable4\".\"h\") "
-        + "WHERE (\"basetable\".\"b\" = 34)";
+    String expected =
+        "SELECT \"basetable\".\"a\", \"basetable\".\"b\", \"jointable\".\"d\", \"jointable2\".\"e\", "
+            + "\"jointable3\".\"g\" "
+            + "FROM \"basetable\" "
+            + "LEFT OUTER JOIN \"jointable\" "
+            + "ON (\"basetable\".\"b\" = \"jointable\".\"c\") "
+            + "RIGHT OUTER JOIN \"jointable2\" "
+            + "ON (\"basetable\".\"b\" = \"jointable2\".\"e\") "
+            + "INNER JOIN \"jointable3\" "
+            + "ON (\"basetable\".\"b\" = \"jointable3\".\"f\") "
+            + "FULL JOIN \"jointable4\" "
+            + "ON (\"basetable\".\"b\" = \"jointable4\".\"h\") "
+            + "WHERE (\"basetable\".\"b\" = 34)";
 
     compareSingleQueryFromFile("select_join_multiple.sql", expected);
   }
@@ -121,8 +123,9 @@ public class PostgresWorkloadVisitorTest implements WorkloadTest {
 
   @Test
   public void testCase() {
-    String expected = "SELECT \"a\", \"b\", CASE WHEN \"c\" IS NULL THEN CAST(NULL AS int) ELSE 1 END AS \"c\""
-        + " FROM \"tablename\"";
+    String expected =
+        "SELECT \"a\", \"b\", CASE WHEN \"c\" IS NULL THEN CAST(NULL AS int) ELSE 1 END AS \"c\""
+            + " FROM \"tablename\"";
 
     compareSingleQueryFromFile("select_case.sql", expected);
   }

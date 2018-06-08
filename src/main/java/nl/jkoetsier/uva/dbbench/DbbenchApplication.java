@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import nl.jkoetsier.uva.dbbench.bench.BenchRunner;
+import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.CommandLineConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
-import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.docker.DockerContainer;
 import nl.jkoetsier.uva.dbbench.input.SchemaReader;
@@ -185,7 +185,7 @@ public class DbbenchApplication implements ApplicationRunner {
       benchRunner.setImportDataModel(!skipImportDataModel);
 
       benchRunner.setup();
-      
+
       benchRunner.run();
 
     } catch (Exception e) {

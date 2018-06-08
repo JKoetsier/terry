@@ -23,7 +23,8 @@ public class MonetDbWorkloadVisitor extends SqlWorkloadVisitor {
     String arguments = currentStack.pop();
 
     // Replace SQL Server ISNULL with COALESCE
-    String functionName = functionExpr.getName().toLowerCase().equals("isnull") ? "COALESCE" : functionExpr.getName();
+    String functionName =
+        functionExpr.getName().toLowerCase().equals("isnull") ? "COALESCE" : functionExpr.getName();
 
     currentStack.push(String.format("%s(%s)", functionName, arguments));
   }

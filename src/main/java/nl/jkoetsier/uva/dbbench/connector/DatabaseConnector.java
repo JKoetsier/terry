@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class DatabaseConnector {
 
   private static Logger logger = LoggerFactory.getLogger(DatabaseConnector.class);
+  @Autowired
+  protected DbConfigProperties dbConfigProperties;
+  @Autowired
+  protected ApplicationConfigProperties applicationConfigProperties;
 
   public abstract void connect() throws SQLException;
 
@@ -30,12 +34,6 @@ public abstract class DatabaseConnector {
   public abstract HashMap<String, String> getCreateQueries(Schema schema);
 
   public abstract String getSimpleName();
-
-  @Autowired
-  protected DbConfigProperties dbConfigProperties;
-
-  @Autowired
-  protected ApplicationConfigProperties applicationConfigProperties;
 
   /**
    * Imports CSV files from directory. Assumes the filename until the first dot is the table name.

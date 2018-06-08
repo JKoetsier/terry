@@ -16,9 +16,6 @@ public class StringUtil {
 
   /**
    * Unquotes identifier based on quotation marks defined in quotePairs
-   *
-   * @param inputString
-   * @return
    */
   private static String unEscapeIdentifierPart(String inputString) {
     for (int i = 0; i < quotePairs.length; i++) {

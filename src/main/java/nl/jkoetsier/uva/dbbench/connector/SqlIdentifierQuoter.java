@@ -10,6 +10,7 @@ public abstract class SqlIdentifierQuoter {
   private static Logger logger = LoggerFactory.getLogger(SqlIdentifierQuoter.class);
 
   public abstract char getOpenChar();
+
   public abstract char getCloseChar();
 
   public String quoteString(String input) {

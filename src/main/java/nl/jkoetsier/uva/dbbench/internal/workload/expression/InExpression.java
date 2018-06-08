@@ -7,6 +7,10 @@ import org.slf4j.LoggerFactory;
 
 public class InExpression extends Expression {
 
+  private static Logger logger = LoggerFactory.getLogger(InExpression.class);
+  private Expression leftExpression;
+  private Expression rightExpression;
+
   @Override
   public String toString() {
     return "InExpression{" +
@@ -14,11 +18,6 @@ public class InExpression extends Expression {
         ", rightExpression=" + rightExpression +
         '}';
   }
-
-  private static Logger logger = LoggerFactory.getLogger(InExpression.class);
-
-  private Expression leftExpression;
-  private Expression rightExpression;
 
   public Expression getLeftExpression() {
     return leftExpression;

@@ -7,12 +7,12 @@ import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BigIntegerColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.CharColumn;
+import nl.jkoetsier.uva.dbbench.internal.schema.fields.Column;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeTimezoneColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DoubleColumn;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.Column;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.FloatColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.VarCharColumn;
@@ -23,11 +23,10 @@ import org.slf4j.LoggerFactory;
 public abstract class SqlSchemaVisitor extends SchemaVisitor {
 
   private static Logger logger = LoggerFactory.getLogger(SqlSchemaVisitor.class);
-
-  protected abstract SqlIdentifierQuoter getIdentifierQuoter();
-
   protected HashMap<String, String> createQueries = new HashMap<>();
   protected List<ColumnDef> columnDefStack = new ArrayList<>();
+
+  protected abstract SqlIdentifierQuoter getIdentifierQuoter();
 
   protected ColumnDef createColumnDef(Column column, String type) {
     ColumnDef columnDef = new ColumnDef(type.toLowerCase(), column.getName(),

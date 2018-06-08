@@ -6,13 +6,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.LinkedHashMap;
-import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalColumn;
-import nl.jkoetsier.uva.dbbench.internal.schema.fields.Column;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.IntegerColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.VarCharColumn;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;

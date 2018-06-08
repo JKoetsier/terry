@@ -55,6 +55,10 @@ public class ApplicationConfigProperties {
     return csvHeader;
   }
 
+  public void setCsvHeader(boolean csvHeader) {
+    this.csvHeader = csvHeader;
+  }
+
   public String getOutputDirectory() {
     return outputDirectory;
   }
@@ -65,9 +69,5 @@ public class ApplicationConfigProperties {
     } else {
       this.outputDirectory = outputDirectory;
     }
-  }
-
-  public void setCsvHeader(boolean csvHeader) {
-    this.csvHeader = csvHeader;
   }
 }

@@ -35,9 +35,6 @@ public abstract class BaseTransformTest {
 
   /**
    * Strips queries for comparison between MSSQL and Db X SQL
-   *
-   * @param query
-   * @return
    */
   private String stripQuery(String query) {
     String result = query;

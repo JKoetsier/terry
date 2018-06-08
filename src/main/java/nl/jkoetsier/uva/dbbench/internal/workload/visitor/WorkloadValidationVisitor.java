@@ -235,7 +235,7 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
     logger.debug("Have input: {}", selection.getInput());
 
     if (selection.getWhereExpression() != null) {
-     // selection.getWhereExpression().validate(selection.getExposedFields());
+      // selection.getWhereExpression().validate(selection.getExposedFields());
     }
 
     logger.debug("Selection ExposedFields: {}", selection.getExposedFields());

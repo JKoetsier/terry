@@ -1,8 +1,6 @@
 package nl.jkoetsier.uva.dbbench.connector.monetdb.schema;
 
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,16 +59,17 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
   @Override
   @Test
   public void testCreateTable() {
-    String expected = "CREATE TABLE \"TableName\" ( \"Id\" int GENERATED ALWAYS AS IDENTITY NOT NULL, "
-        + "\"IntField\" int NULL, "
-        + "\"VarChar250Field\" varchar(250) NULL, "
-        + "\"DecimalField\" decimal(15, 6) NULL, "
-        + "\"DateTimeOffsetField\" timestamp with time zone NULL, "
-        + "\"VarCharMaxField\" text NULL, "
-        + "\"DateField\" timestamp NULL, "
-        + "\"BitField\" boolean NULL, "
-        + "\"DecimalField2\" decimal(38, 15) NULL, "
-        + "CONSTRAINT \"TableNamePrimaryKey\" PRIMARY KEY ( \"Id\" ) );";
+    String expected =
+        "CREATE TABLE \"TableName\" ( \"Id\" int GENERATED ALWAYS AS IDENTITY NOT NULL, "
+            + "\"IntField\" int NULL, "
+            + "\"VarChar250Field\" varchar(250) NULL, "
+            + "\"DecimalField\" decimal(15, 6) NULL, "
+            + "\"DateTimeOffsetField\" timestamp with time zone NULL, "
+            + "\"VarCharMaxField\" text NULL, "
+            + "\"DateField\" timestamp NULL, "
+            + "\"BitField\" boolean NULL, "
+            + "\"DecimalField2\" decimal(38, 15) NULL, "
+            + "CONSTRAINT \"TableNamePrimaryKey\" PRIMARY KEY ( \"Id\" ) );";
 
     compareSingleQueryFromFile("create_table.sql", expected);
   }
@@ -87,16 +86,17 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
   @Override
   @Test
   public void testCreateTableCompositePrimaryKey() {
-    String expected = "CREATE TABLE \"TableName\" ( \"Id\" int GENERATED ALWAYS AS IDENTITY NOT NULL, "
-        + "\"IntField\" int NULL, "
-        + "\"VarChar250Field\" varchar(250) NULL, "
-        + "\"DecimalField\" decimal(15, 6) NULL, "
-        + "\"DateTimeOffsetField\" timestamp with time zone NULL, "
-        + "\"VarCharMaxField\" text NULL, "
-        + "\"DateField\" timestamp NULL, "
-        + "\"BitField\" boolean NULL, "
-        + "\"DecimalField2\" decimal(38, 15) NULL, "
-        + "CONSTRAINT \"TableNamePrimaryKey\" PRIMARY KEY ( \"Id\", \"IntField\" ) );";
+    String expected =
+        "CREATE TABLE \"TableName\" ( \"Id\" int GENERATED ALWAYS AS IDENTITY NOT NULL, "
+            + "\"IntField\" int NULL, "
+            + "\"VarChar250Field\" varchar(250) NULL, "
+            + "\"DecimalField\" decimal(15, 6) NULL, "
+            + "\"DateTimeOffsetField\" timestamp with time zone NULL, "
+            + "\"VarCharMaxField\" text NULL, "
+            + "\"DateField\" timestamp NULL, "
+            + "\"BitField\" boolean NULL, "
+            + "\"DecimalField2\" decimal(38, 15) NULL, "
+            + "CONSTRAINT \"TableNamePrimaryKey\" PRIMARY KEY ( \"Id\", \"IntField\" ) );";
 
     compareSingleQueryFromFile("create_table_composite_primarykey.sql", expected);
   }
@@ -120,13 +120,13 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
         + "\"DecimalField\" decimal(15, 6) NULL, "
         + "CONSTRAINT \"TableNamePrimaryKey\" PRIMARY KEY ( \"Id\" ) );");
 
-    expected.add("CREATE TABLE \"Table2Name\" ( \"DateTimeOffsetField\" timestamp with time zone NULL, "
-        + "\"VarCharMaxField\" text NULL, "
-        + "\"DateField\" timestamp NULL, "
-        + "\"BitField\" boolean NULL, "
-        + "\"DecimalField2\" decimal(38, 15) NULL, "
-        + "CONSTRAINT \"Table2NamePrimaryKey\" PRIMARY KEY ( \"BitField\" ) );");
-
+    expected
+        .add("CREATE TABLE \"Table2Name\" ( \"DateTimeOffsetField\" timestamp with time zone NULL, "
+            + "\"VarCharMaxField\" text NULL, "
+            + "\"DateField\" timestamp NULL, "
+            + "\"BitField\" boolean NULL, "
+            + "\"DecimalField2\" decimal(38, 15) NULL, "
+            + "CONSTRAINT \"Table2NamePrimaryKey\" PRIMARY KEY ( \"BitField\" ) );");
 
     compareMultipleQueriesFromFile("create_tables.sql", expected);
   }

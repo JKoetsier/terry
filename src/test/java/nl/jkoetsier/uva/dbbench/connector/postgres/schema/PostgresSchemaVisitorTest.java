@@ -1,9 +1,7 @@
 package nl.jkoetsier.uva.dbbench.connector.postgres.schema;
 
 import static nl.jkoetsier.uva.dbbench.util.Assertions.assertQueryEquals;
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;

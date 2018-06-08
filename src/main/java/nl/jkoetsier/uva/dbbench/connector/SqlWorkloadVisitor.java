@@ -397,7 +397,8 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
   public void visit(SelectAllColumnsExpression selectAllColumnsExpression) {
     logger.debug("Visit SelectAllColumnsExpression");
 
-    currentStack.push(String.format("%s.*", quoteString(selectAllColumnsExpression.getTableName())));
+    currentStack
+        .push(String.format("%s.*", quoteString(selectAllColumnsExpression.getTableName())));
   }
 
   @Override

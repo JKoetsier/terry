@@ -9,7 +9,8 @@ public class QueryFormatter {
 
   public static String format(String query) {
     // Prepend newlines
-    String result = query.replaceAll("(?i)(SELECT|FROM|ORDER|WHERE|OFFSET|AND|LEFT|INNER|ON )", "\n$1");
+    String result = query
+        .replaceAll("(?i)(SELECT|FROM|ORDER|WHERE|OFFSET|AND|LEFT|INNER|ON )", "\n$1");
 
     // Append newlines
     result = result.replaceAll("(?i)(SELECT|,)", "$1\n");

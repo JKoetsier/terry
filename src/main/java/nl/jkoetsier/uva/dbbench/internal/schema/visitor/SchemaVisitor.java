@@ -1,8 +1,8 @@
 package nl.jkoetsier.uva.dbbench.internal.schema.visitor;
 
 import java.util.HashMap;
-import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BigIntegerColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.CharColumn;

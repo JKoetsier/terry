@@ -40,6 +40,7 @@ public class BinExpression extends Expression {
   public void setOperator(Operator operator) {
     this.operator = operator;
   }
+
   @Override
   public void validate(ExposedFields exposedFields) {
     leftExpr.validate(exposedFields);
