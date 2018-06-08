@@ -70,27 +70,24 @@ public class OutputWriter {
     }
 
     long[] firstRow = results.get(0);
-    String[] headers = new String[firstRow.length + 2];
+    String[] headers = new String[firstRow.length + 1];
     headers[0] = "query";
-    headers[1] = "avg";
 
-    for (int i = 2; i <= firstRow.length; i++) {
-      headers[i] = Integer.toString(i - 2);
+    for (int i = 1; i <= firstRow.length; i++) {
+      headers[i] = Integer.toString(i - 1);
     }
 
-    String[][] rows = new String[results.size()][firstRow.length + 2];
+    String[][] rows = new String[results.size()][firstRow.length + 1];
 
     int ri = 0;
 
     for (Entry<Integer, long[]> entry : results.entrySet()) {
-      String[] row = new String[firstRow.length + 2];
+      String[] row = new String[firstRow.length + 1];
 
-      long avg = LongStream.of(entry.getValue()).sum() / entry.getValue().length;
       row[0] = Integer.toString(entry.getKey());
-      row[1] = Long.toString(avg);
 
       for (int i = 0; i < entry.getValue().length; i++) {
-        row[i + 2] = Long.toString(entry.getValue()[i]);
+        row[i + 1] = Long.toString(entry.getValue()[i]);
       }
 
       rows[ri++] = row;
