@@ -1,6 +1,10 @@
 package nl.jkoetsier.uva.dbbench.bench;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -76,15 +80,15 @@ public class BenchRunner {
 
   private void printResults(HashMap<Integer, long[]> results) {
     long[] firstRow = results.get(0);
-    String runs = String.format("%6s", "all");
+    String runs = "";
 
     if (firstRow != null) {
-      for (int i = 1; i < firstRow.length; i++) {
-        runs = runs.concat(String.format("%6s", i));
+      for (int i = 0; i < firstRow.length; i++) {
+        runs = runs.concat(String.format("%10s", i));
       }
     }
 
-    String header = String.format("%3s | %7s | %s", "Q", "avg", runs);
+    String header = String.format("%3s | %10s | %s", "Q", "avg", runs);
     logger.info(header);
 
     for (Entry<Integer, long[]> entry : results.entrySet()) {
@@ -92,11 +96,11 @@ public class BenchRunner {
 
       String values = "";
       for (long time : entry.getValue()) {
-        values = values.concat(String.format("%6s", time));
+        values = values.concat(String.format("%10s", time));
       }
 
       String row = String
-          .format("%3s | %7s | %s", entry.getKey(), String.format("%s\u00B5s", avg), values);
+          .format("%3s | %10s | %s", entry.getKey(), String.format("%s\u00B5s", avg), values);
 
       logger.info(row);
     }
@@ -140,16 +144,27 @@ public class BenchRunner {
         }
       }
     }
-    try {
-      monitoringThread.join();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
+
+    monitoringThread.end();
 
     printResults(results);
 
+    if (applicationConfigProperties.getOutputDirectory() != null) {
+      OutputWriter outputWriter = new OutputWriter(
+          applicationConfigProperties.getOutputDirectory(),
+          databaseInterface.getSimpleName()
+      );
+
+      try {
+        outputWriter.writeResults(queries, results);
+      } catch (IOException e) {
+        logger.error("Error occurred while trying to write results to file: {}", e.getMessage());
+      }
+    }
+
     tearDown();
   }
+
 
   private long nanoToMicro(long nano) {
     return nano / 1000;

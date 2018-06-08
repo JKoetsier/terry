@@ -66,6 +66,11 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
+  public String getSimpleName() {
+    return "monetdb";
+  }
+
+  @Override
   protected void importCsvFile(String tableName, String file) throws SQLException {
     String query = String.format("COPY OFFSET %d INTO \"%s\" FROM '%s' "
         + "USING DELIMITERS ',', '\\n', '\"' NULL AS ''",

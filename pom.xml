@@ -103,6 +103,18 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>1.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.panayotis</groupId>
+      <artifactId>javaplot</artifactId>
+      <version>0.5.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.github.oshi</groupId>
       <artifactId>oshi-core</artifactId>
       <version>3.5.0</version>

@@ -42,6 +42,11 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
+  public String getSimpleName() {
+    return "postgres";
+  }
+
+  @Override
   public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
     PostgresWorkloadVisitor workloadVisitor = new PostgresWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);

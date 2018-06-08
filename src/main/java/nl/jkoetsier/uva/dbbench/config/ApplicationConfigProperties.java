@@ -17,6 +17,7 @@ public class ApplicationConfigProperties {
   private int skipFirst;
   private int defaultPort;
   private boolean csvHeader = false;
+  private String outputDirectory;
 
   public List<String> getAcceptedDatabases() {
     return acceptedDatabases;
@@ -52,6 +53,18 @@ public class ApplicationConfigProperties {
 
   public boolean getCsvHeader() {
     return csvHeader;
+  }
+
+  public String getOutputDirectory() {
+    return outputDirectory;
+  }
+
+  public void setOutputDirectory(String outputDirectory) {
+    if (outputDirectory.charAt(outputDirectory.length() - 1) == '/') {
+      this.outputDirectory = outputDirectory.substring(0, outputDirectory.length() - 1);
+    } else {
+      this.outputDirectory = outputDirectory;
+    }
   }
 
   public void setCsvHeader(boolean csvHeader) {

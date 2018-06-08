@@ -29,6 +29,8 @@ public abstract class DatabaseConnector {
 
   public abstract HashMap<String, String> getCreateQueries(Schema schema);
 
+  public abstract String getSimpleName();
+
   @Autowired
   protected DbConfigProperties dbConfigProperties;
 
@@ -49,7 +51,7 @@ public abstract class DatabaseConnector {
         if (file.isFile() && file.getName().endsWith(".csv")) {
           String[] fileNameParts = file.getName().split("\\.");
 
-          importCsvFile(fileNameParts[0], file.getAbsolutePath());
+          importCsvFile(fileNameParts[0].toLowerCase(), file.getAbsolutePath());
 
           File renamedFile = new File(file.getAbsolutePath() + ".done");
 

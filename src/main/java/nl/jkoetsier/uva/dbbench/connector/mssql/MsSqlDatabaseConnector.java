@@ -30,6 +30,11 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
+  public String getSimpleName() {
+    return "mssql";
+  }
+
+  @Override
   protected String getConnectionString() {
     String connectString = String.format("jdbc:sqlserver://%s:%s;"
             + "database=%s;"

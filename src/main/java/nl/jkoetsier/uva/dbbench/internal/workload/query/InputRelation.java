@@ -11,7 +11,7 @@ public class InputRelation extends Relation {
   private String tableName;
 
   public InputRelation(String tableName) {
-    this.tableName = tableName;
+    setTableName(tableName);
   }
 
   public InputRelation(String tableName, String tableAlias) {

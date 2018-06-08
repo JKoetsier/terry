@@ -70,14 +70,7 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
     for (Entry<String, String> queryEntrySet : createQueries.entrySet()) {
       logger.info(String.format("Creating table %s", queryEntrySet.getKey()));
 
-      try {
-        executeQuery(queryEntrySet.getValue());
-      } catch (Exception e) {
-        // TODO Temporary. Delete try/catch later
-        if (!e.getMessage().contains("already in use")) {
-          throw e;
-        }
-      }
+      executeQuery(queryEntrySet.getValue());
     }
   }
 

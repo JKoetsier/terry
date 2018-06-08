@@ -52,6 +52,11 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
+  public String getSimpleName() {
+    return "mysql";
+  }
+
+  @Override
   public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
     MySqlWorkloadVisitor workloadVisitor = new MySqlWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
