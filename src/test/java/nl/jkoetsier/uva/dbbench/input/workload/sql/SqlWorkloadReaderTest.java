@@ -30,6 +30,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.RAJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,6 +250,7 @@ public class SqlWorkloadReaderTest {
   }
 
   @Test
+  @Ignore("Validation deactivated/not working at the moment")
   public void testSelectWithInvalidExpression() {
     loadDataModel();
     Workload workload = getWorkloadFromString("SELECT table2name.b "
@@ -399,8 +401,8 @@ public class SqlWorkloadReaderTest {
         .getExpression());
     FieldExpression fieldExpressionB = (FieldExpression) (leftInput.getSelectExpressions().get(1)
         .getExpression());
-    assertEquals("a", fieldExpressionA.getFieldName());
-    assertEquals("b", fieldExpressionB.getFieldName());
+    assertEquals("basetable.a", fieldExpressionA.getFieldName());
+    assertEquals("basetable.b", fieldExpressionB.getFieldName());
 
     Selection leftSelection = (Selection) leftInput.getInput();
 

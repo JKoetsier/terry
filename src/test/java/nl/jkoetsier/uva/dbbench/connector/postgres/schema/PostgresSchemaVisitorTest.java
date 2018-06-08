@@ -1,8 +1,12 @@
 package nl.jkoetsier.uva.dbbench.connector.postgres.schema;
 
+import static nl.jkoetsier.uva.dbbench.util.Assertions.assertQueryEquals;
+import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.SchemaTest;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
@@ -37,16 +41,17 @@ public class PostgresSchemaVisitorTest implements SchemaTest {
     List<String> result = getCreateQueries(filename);
 
     assertEquals(1, result.size());
-    assertEquals(expected, normalise(result.get(0)));
+    assertQueryEquals(expected, normalise(result.get(0)));
   }
 
   private void compareMultipleQueriesFromFile(String filename, List<String> expected) {
+    Collections.reverse(expected);
     List<String> result = getCreateQueries(filename);
 
     assertEquals(expected.size(), result.size());
 
     for (int i = 0; i < expected.size(); i++) {
-      assertEquals(expected.get(i), normalise(result.get(i)));
+      assertQueryEquals(expected.get(i), normalise(result.get(i)));
     }
   }
 

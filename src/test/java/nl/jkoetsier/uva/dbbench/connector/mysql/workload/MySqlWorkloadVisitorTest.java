@@ -1,8 +1,12 @@
 package nl.jkoetsier.uva.dbbench.connector.mysql.workload;
 
+import static nl.jkoetsier.uva.dbbench.util.Assertions.assertQueryEquals;
+import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.WorkloadTest;
@@ -36,7 +40,7 @@ public class MySqlWorkloadVisitorTest implements WorkloadTest {
     List<String> result = getGeneratedWorkload(filename);
 
     assertEquals(1, result.size());
-    assertEquals(expected, result.get(0));
+    assertQueryEquals(expected, result.get(0));
   }
 
   private void compareMultipleQueriesFromFile(String filename, List<String> expected) {
@@ -45,7 +49,7 @@ public class MySqlWorkloadVisitorTest implements WorkloadTest {
     assertEquals(expected.size(), result.size());
 
     for (int i = 0; i < expected.size(); i++) {
-      assertEquals(expected.get(i), result.get(i));
+      assertQueryEquals(expected.get(i), result.get(i));
     }
   }
 

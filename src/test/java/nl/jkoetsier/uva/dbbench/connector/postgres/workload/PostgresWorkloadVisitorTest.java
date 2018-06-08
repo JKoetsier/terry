@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.connector.postgres.workload;
 
+import static nl.jkoetsier.uva.dbbench.util.Assertions.assertQueryEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class PostgresWorkloadVisitorTest implements WorkloadTest {
     List<String> result = getGeneratedWorkload(filename);
 
     assertEquals(1, result.size());
-    assertEquals(expected, result.get(0));
+    assertQueryEquals(expected, result.get(0));
   }
 
   private void compareMultipleQueriesFromFile(String filename, List<String> expected) {
@@ -44,7 +45,7 @@ public class PostgresWorkloadVisitorTest implements WorkloadTest {
     assertEquals(expected.size(), result.size());
 
     for (int i = 0; i < expected.size(); i++) {
-      assertEquals(expected.get(i), result.get(i));
+      assertQueryEquals(expected.get(i), result.get(i));
     }
   }
 

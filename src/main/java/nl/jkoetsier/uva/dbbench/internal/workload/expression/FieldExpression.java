@@ -14,7 +14,11 @@ public class FieldExpression extends Expression {
   private String fieldName;
 
   public FieldExpression(String fieldName) {
-    this.fieldName = fieldName;
+    setFieldName(fieldName);
+  }
+
+  private void setFieldName(String fieldName) {
+    this.fieldName = fieldName.toLowerCase();
   }
 
   @Override

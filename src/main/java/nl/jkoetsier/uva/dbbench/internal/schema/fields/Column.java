@@ -13,7 +13,7 @@ public abstract class Column implements SchemaTreeElement {
   }
 
   public Column(String name) {
-    this.name = name;
+    setName(name);
   }
 
   public String getName() {
@@ -21,7 +21,7 @@ public abstract class Column implements SchemaTreeElement {
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name = name.toLowerCase();
   }
 
   public Boolean isAllowedEmpty() {

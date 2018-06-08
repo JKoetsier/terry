@@ -1,6 +1,8 @@
 package nl.jkoetsier.uva.dbbench.connector.monetdb.workload;
 
+import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +37,7 @@ public class MonetDbWorkloadVisitorTest implements WorkloadTest {
     List<String> result = getGeneratedWorkload(filename);
 
     assertEquals(1, result.size());
-    assertEquals(expected, result.get(0));
+    assertEqual(expected, result.get(0));
   }
 
   private void compareMultipleQueriesFromFile(String filename, List<String> expected) {
@@ -44,8 +46,12 @@ public class MonetDbWorkloadVisitorTest implements WorkloadTest {
     assertEquals(expected.size(), result.size());
 
     for (int i = 0; i < expected.size(); i++) {
-      assertEquals(expected.get(i), result.get(i));
+      assertEqual(expected.get(i), result.get(i));
     }
+  }
+
+  private void assertEqual(String expected, String real) {
+    assertThat(expected, equalToIgnoringCase(real));
   }
 
   @Override

@@ -12,7 +12,11 @@ public class Rename extends UnaryRelation {
   private ExposedFields exposedFields;
 
   public Rename(String name) {
-    this.name = name;
+    setName(name);
+  }
+
+  private void setName(String name) {
+    this.name = name.toLowerCase();
   }
 
   public String getName() {

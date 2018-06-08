@@ -15,7 +15,7 @@ public class Table implements SchemaTreeElement {
   private List<Column> primaryKey;
 
   public Table(String name) {
-    this.name = name;
+    setName(name);
     columns = new LinkedHashMap<>();
   }
 
@@ -32,15 +32,15 @@ public class Table implements SchemaTreeElement {
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name = name.toLowerCase();
   }
 
   public void addColumn(Column column) {
-    columns.put(column.getName(), column);
+    columns.put(column.getName().toLowerCase(), column);
   }
 
   public Column getColumn(String name) {
-    return columns.get(name);
+    return columns.get(name.toLowerCase());
   }
 
   public List<Column> getPrimaryKey() {

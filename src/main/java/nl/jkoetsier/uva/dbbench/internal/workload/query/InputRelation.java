@@ -15,8 +15,16 @@ public class InputRelation extends Relation {
   }
 
   public InputRelation(String tableName, String tableAlias) {
-    this.tableName = tableName;
-    this.tableAlias = tableAlias;
+    setTableAlias(tableAlias);
+    setTableName(tableName);
+  }
+
+  private void setTableAlias(String tableAlias) {
+    this.tableAlias = tableAlias.toLowerCase();
+  }
+
+  private void setTableName(String tableName) {
+    this.tableName = tableName.toLowerCase();
   }
 
   @Override
