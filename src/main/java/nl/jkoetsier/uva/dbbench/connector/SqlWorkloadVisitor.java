@@ -52,12 +52,12 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   protected Logger logger = LoggerFactory.getLogger(SqlWorkloadVisitor.class);
 
-  protected HashMap<Integer, String> result = new HashMap<>();
+  protected HashMap<String, String> result = new HashMap<String, String>();
   protected Stack<String> currentStack = new Stack<>();
 
   protected abstract SqlIdentifierQuoter getIdentifierQuoter();
 
-  public HashMap<Integer, String> getResult() {
+  public HashMap<String, String> getResult() {
     return result;
   }
 
@@ -82,8 +82,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(NullValue nullConstant) {
-    logger.debug("Visit NullValue");
-
     currentStack.push("NULL");
   }
 
@@ -159,14 +157,11 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Cast cast) {
-    logger.debug("Visit Cast");
-
     currentStack.push(String.format("CAST(%s AS %s)", currentStack.pop(), cast.getType()));
   }
 
   @Override
   public void visit(BinExpression binExpression) {
-    logger.debug("Visit BinExpression");
     String operator = currentStack.pop();
     String rightExpr = currentStack.pop();
     String leftExpr = currentStack.pop();
@@ -177,8 +172,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(OuterJoin outerJoin) {
-    logger.debug("Visit OUTER JOIN");
-
     String onExpr = "";
 
     if (outerJoin.getOnExpression() != null) {
@@ -194,8 +187,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(FullJoin fullJoin) {
-    logger.debug("Visit FullJoin");
-
     String onExpr = "";
 
     if (fullJoin.getOnExpression() != null) {
@@ -210,8 +201,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Selection selection) {
-    logger.debug("Visit Selection");
-
     String where = "";
 
     if (selection.getWhereExpression() != null) {
@@ -225,8 +214,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Union union) {
-    logger.debug("Visit Union");
-
     String right = currentStack.pop();
     String left = currentStack.pop();
 
@@ -235,13 +222,10 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Workload workload) {
-    logger.debug("Visit Workload");
   }
 
   @Override
   public void visit(FunctionExpr functionExpr) {
-    logger.debug("Visit FunctionExpr");
-
     String arguments = currentStack.pop();
 
     currentStack.push(String.format("%s(%s)", functionExpr.getName(), arguments));
@@ -249,8 +233,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(ExpressionList expressionList) {
-    logger.debug("Visit ExpressionList");
-
     List<String> fromStack = new ArrayList<>();
 
     for (int i = 0; i < expressionList.getExpressions().size(); i++) {
@@ -263,8 +245,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(IsNullExpr isNullExpr) {
-    logger.debug("Visit IsNull");
-
     String leftExpr = currentStack.pop();
 
     currentStack.push(String.format("%s IS%s NULL", leftExpr, isNullExpr.isNot() ? " NOT" : ""));
@@ -272,15 +252,11 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Rename rename) {
-    logger.debug("Visit Rename");
-
     currentStack.push(String.format("%s AS %s", currentStack.pop(), rename.getName()));
   }
 
   @Override
   public void visit(Case caseExpr) {
-    logger.debug("Visit Case");
-
     String falseExpr = currentStack.pop();
     String trueExpr = currentStack.pop();
     String condition = currentStack.pop();
@@ -291,8 +267,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Query query) {
-    logger.debug("Visit Query");
-
     assert currentStack.size() == 1;
 
     String queryString = currentStack.pop();
@@ -325,8 +299,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InnerJoin innerJoin) {
-    logger.debug("Visit InnerJoin");
-
     String onExpr = "";
 
     if (innerJoin.getOnExpression() != null) {
@@ -341,8 +313,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(SelectExpression selectExpression) {
-    logger.debug("Visit SelectExpression");
-
     String alias = "";
 
     if (selectExpression.getAlias() != null) {
@@ -354,8 +324,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(FieldExpression fieldExpression) {
-    logger.debug("Visit FieldExpression");
-
     String[] fieldName = fieldExpression.getFieldName().split("\\.");
 
     for (int i = 0; i < fieldName.length; i++) {
@@ -367,8 +335,6 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(InputRelation inputRelation) {
-    logger.debug("Visit InputRelation");
-
     if (inputRelation.getTableAlias() != null) {
       currentStack.push(String.format("%s AS %s", quoteString(inputRelation.getTableName()),
           quoteString(inputRelation.getTableAlias())));
@@ -379,14 +345,11 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(RelationExpression relationExpression) {
-    logger.debug("Visit RelationExpression");
     currentStack.push(String.format("(%s)", currentStack.pop()));
   }
 
   @Override
   public void visit(InExpression inExpression) {
-    logger.debug("Visit InExpression");
-
     String right = currentStack.pop();
     String left = currentStack.pop();
 
@@ -395,16 +358,12 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(SelectAllColumnsExpression selectAllColumnsExpression) {
-    logger.debug("Visit SelectAllColumnsExpression");
-
     currentStack
         .push(String.format("%s.*", quoteString(selectAllColumnsExpression.getTableName())));
   }
 
   @Override
   public void visit(Projection projection) {
-    logger.debug("Visit Projection");
-
     String limit = "";
     String orderBy = "";
 

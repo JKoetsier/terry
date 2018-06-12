@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.connector.mssql;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.mssql.schema.MsSqlSchemaVisitor;
@@ -22,7 +23,7 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
+  public HashMap<String, String> getWorkloadQueries(Workload workload) {
     MsSqlWorkloadVisitor workloadVisitor = new MsSqlWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 
@@ -57,7 +58,10 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) {
-    throw new RuntimeException("Not implemented yet");
+  protected void importCsvFile(String tableName, String file) throws SQLException {
+    String query = String.format("BULK INSERT [%s] FROM '%s' WITH (FIRSTROW = %d)", tableName, file,
+        applicationConfigProperties.getCsvHeader() ? 2 : 1);
+
+    executeQuery(query);
   }
 }

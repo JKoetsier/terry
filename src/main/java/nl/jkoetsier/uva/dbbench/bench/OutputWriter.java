@@ -8,9 +8,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.LongStream;
+import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollection;
+import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollectionWriter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
@@ -22,10 +26,15 @@ public class OutputWriter {
 
   private String outputDirectory;
   private String dbIdentifier;
+  private String dateTimeStr;
 
   public OutputWriter(String outputDirectory, String dbIdentifier) {
     this.outputDirectory = outputDirectory;
     this.dbIdentifier = dbIdentifier;
+
+    LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    dateTimeStr = now.format(dateTimeFormatter);
   }
 
   private void createDirectory() throws IOException {
@@ -40,13 +49,10 @@ public class OutputWriter {
     }
   }
 
-  public void writeResults(Map<Integer, String> queries, Map<Integer, long[]> results)
+  public void writeResults(Map<String, String> queries, Map<String, long[]> results)
       throws IOException {
-    LocalDateTime now = LocalDateTime.now();
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-    String dateTimeStr = now.format(dateTimeFormatter);
 
-    String outputCsvFilename = String.format("%s/%s_%s.csv",
+    String outputCsvFilename = String.format("%s/%s_%s_timings.csv",
         outputDirectory,
         dateTimeStr,
         dbIdentifier
@@ -64,12 +70,26 @@ public class OutputWriter {
     writeQueries(queries, outputQueriesFilename);
   }
 
-  private void writeResults(Map<Integer, long[]> results, String filePath) throws IOException {
-    if (results.get(0) == null) {
+  public void writeSystemStats(SystemStatsCollection systemStatsCollection) throws IOException {
+    SystemStatsCollectionWriter writer = new SystemStatsCollectionWriter();
+
+    String outputFilename = String.format("%s/%s_%s_systemstats.csv",
+        outputDirectory,
+        dateTimeStr,
+        dbIdentifier
+    );
+
+    writer.writeCsv(systemStatsCollection, outputFilename);
+  }
+
+  private void writeResults(Map<String, long[]> results, String filePath) throws IOException {
+    if (results.size() == 0) {
       return;
     }
 
-    long[] firstRow = results.get(0);
+    List<String> keys = new ArrayList<>(results.keySet());
+    long[] firstRow = results.get(keys.get(0));
+
     String[] headers = new String[firstRow.length + 1];
     headers[0] = "query";
 
@@ -81,10 +101,10 @@ public class OutputWriter {
 
     int ri = 0;
 
-    for (Entry<Integer, long[]> entry : results.entrySet()) {
+    for (Entry<String, long[]> entry : results.entrySet()) {
       String[] row = new String[firstRow.length + 1];
 
-      row[0] = Integer.toString(entry.getKey());
+      row[0] = entry.getKey();
 
       for (int i = 0; i < entry.getValue().length; i++) {
         row[i + 1] = Long.toString(entry.getValue()[i]);
@@ -106,11 +126,11 @@ public class OutputWriter {
   }
 
 
-  private void writeQueries(Map<Integer, String> queries, String filePath) throws IOException {
+  private void writeQueries(Map<String, String> queries, String filePath) throws IOException {
     PrintWriter printWriter = new PrintWriter(filePath);
 
-    for (Entry<Integer, String> entry : queries.entrySet()) {
-      printWriter.printf("%3d - %s%n", entry.getKey(), entry.getValue());
+    for (Entry<String, String> entry : queries.entrySet()) {
+      printWriter.printf("%3s - %s%n", entry.getKey(), entry.getValue());
     }
 
     printWriter.close();

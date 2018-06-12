@@ -58,7 +58,7 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<Integer, String> getWorkloadQueries(Workload workload) {
+  public HashMap<String, String> getWorkloadQueries(Workload workload) {
     MonetDbWorkloadVisitor workloadVisitor = new MonetDbWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 

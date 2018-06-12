@@ -26,7 +26,7 @@ public class PostgresWorkloadVisitorTest implements WorkloadTest {
 
     PostgresWorkloadVisitor workloadVisitor = new PostgresWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
-    HashMap<Integer, String> result = workloadVisitor.getResult();
+    HashMap<String, String> result = workloadVisitor.getResult();
 
     return new ArrayList<>(result.values());
   }

@@ -3,7 +3,7 @@ package nl.jkoetsier.uva.dbbench.bench.monitoring.stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DiskStats {
+public class DiskStats implements WritableStats {
 
   private static Logger logger = LoggerFactory.getLogger(DiskStats.class);
 
@@ -19,6 +19,26 @@ public class DiskStats {
 
   public long getTotalWrites() {
     return totalWrites;
+  }
+
+  public DiskStats normalise(DiskStats diskStats) {
+    return diskStats;
+  }
+
+  @Override
+  public String[] getHeaders() {
+    return new String[]{
+        "totalReads",
+        "totalWrites"
+    };
+  }
+
+  @Override
+  public String[] getValues() {
+    return new String[]{
+        Long.toString(totalReads),
+        Long.toString(totalWrites)
+    };
   }
 
   public static final class DiskStatsBuilder {

@@ -1,23 +1,25 @@
 package nl.jkoetsier.uva.dbbench.internal.workload;
 
+import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadElement;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
 public class Query implements WorkloadElement {
 
-  private Integer identifier;
+  private String identifier;
   private Relation relation;
+  private QueryResult expectedResult;
 
   public Query(Relation relation) {
     this.relation = relation;
   }
 
-  public Integer getIdentifier() {
+  public String getIdentifier() {
     return identifier;
   }
 
-  public void setIdentifier(Integer identifier) {
+  public void setIdentifier(String identifier) {
     this.identifier = identifier;
   }
 
@@ -27,6 +29,14 @@ public class Query implements WorkloadElement {
 
   public void setRelation(Relation relation) {
     this.relation = relation;
+  }
+
+  public QueryResult getExpectedResult() {
+    return expectedResult;
+  }
+
+  public void setExpectedResult(QueryResult expectedResult) {
+    this.expectedResult = expectedResult;
   }
 
   @Override

@@ -12,7 +12,7 @@ public class DbConfigProperties {
 
   private String type = "";
   private String dockerImage;
-  private Integer defaultPort;
+  private Integer defaultDbPort;
   private String[] dockerEnvvars;
   private String dockerReadyLogLine = "";
   private String connector;
@@ -87,12 +87,12 @@ public class DbConfigProperties {
     this.dockerImage = dockerImage;
   }
 
-  public Integer getDefaultPort() {
-    return defaultPort;
+  public Integer getDefaultDbPort() {
+    return defaultDbPort;
   }
 
-  public void setDefaultPort(Integer defaultPort) {
-    this.defaultPort = defaultPort;
+  public void setDefaultDbPort(Integer defaultDbPort) {
+    this.defaultDbPort = defaultDbPort;
   }
 
   public String getType() {

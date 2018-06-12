@@ -3,7 +3,7 @@ package nl.jkoetsier.uva.dbbench.bench.monitoring.stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MemoryStats {
+public class MemoryStats implements WritableStats {
 
   private static Logger logger = LoggerFactory.getLogger(MemoryStats.class);
 
@@ -11,7 +11,6 @@ public class MemoryStats {
   private long totalMemory;
   private long usedSwap;
   private long totalSwap;
-  private long timestamp;
 
   public long getUsedMemory() {
     return usedMemory;
@@ -29,8 +28,28 @@ public class MemoryStats {
     return totalSwap;
   }
 
-  public long getTimestamp() {
-    return timestamp;
+  public MemoryStats normalise(MemoryStats memoryStats) {
+    return memoryStats;
+  }
+
+  @Override
+  public String[] getHeaders() {
+    return new String[]{
+        "usedMemory",
+        "totalMemory",
+        "usedSwap",
+        "totalSwap"
+    };
+  }
+
+  @Override
+  public String[] getValues() {
+    return new String[]{
+        Long.toString(usedMemory),
+        Long.toString(totalMemory),
+        Long.toString(usedSwap),
+        Long.toString(totalSwap)
+    };
   }
 
   public static final class MemoryStatsBuilder {
@@ -39,7 +58,6 @@ public class MemoryStats {
     private long totalMemory;
     private long usedSwap;
     private long totalSwap;
-    private long timestamp;
 
     private MemoryStatsBuilder() {
     }
@@ -68,14 +86,8 @@ public class MemoryStats {
       return this;
     }
 
-    public MemoryStatsBuilder withTimestamp(long timestamp) {
-      this.timestamp = timestamp;
-      return this;
-    }
-
     public MemoryStats build() {
       MemoryStats memoryStats = new MemoryStats();
-      memoryStats.timestamp = this.timestamp;
       memoryStats.usedMemory = this.usedMemory;
       memoryStats.totalSwap = this.totalSwap;
       memoryStats.totalMemory = this.totalMemory;

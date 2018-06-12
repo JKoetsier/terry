@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.internal.workload;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadElement;
@@ -9,24 +10,35 @@ import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
 public class Workload implements WorkloadElement {
 
-  private HashMap<Integer, Query> queries;
+  private HashMap<String, Query> queries;
 
   public Workload() {
     queries = new HashMap<>();
   }
 
-  public HashMap<Integer, Query> getQueries() {
+  public Workload(List<Query> queryList) {
+    this();
+
+    for (Query query : queryList) {
+      addQuery(query);
+    }
+  }
+
+  public HashMap<String, Query> getQueries() {
     return queries;
   }
 
   public void addQuery(Query query) {
-    query.setIdentifier(queries.size());
+    if (query.getIdentifier() == null) {
+      query.setIdentifier(Integer.toString(queries.size()));
+    }
+
     queries.put(query.getIdentifier(), query);
   }
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
-    for (Entry<Integer, Query> entry : queries.entrySet()) {
+    for (Entry<String, Query> entry : queries.entrySet()) {
       entry.getValue().acceptVisitor(workloadVisitor);
     }
 
@@ -44,5 +56,13 @@ public class Workload implements WorkloadElement {
     return "Workload{" +
         "queries=" + queries +
         '}';
+  }
+
+  public Query getQuery(String key) {
+    return queries.get(key);
+  }
+
+  public Query getQuery(int key) {
+    return queries.get(Integer.toString(key));
   }
 }

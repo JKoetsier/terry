@@ -128,10 +128,10 @@ public class SqlWorkloadReaderTest {
     Workload workload = getWorkload("select_simple.sql");
     assertEquals(workload.getQueries().size(), 2);
 
-    Query queryOne = workload.getQueries().get(0);
+    Query queryOne = workload.getQuery(0);
     assertTrue(queryOne.getRelation() instanceof Projection);
 
-    Query queryTwo = workload.getQueries().get(1);
+    Query queryTwo = workload.getQuery(1);
     assertTrue(queryTwo.getRelation() instanceof Projection);
     assertTrue(((Projection) queryTwo.getRelation()).getInput() instanceof Selection);
 
@@ -174,7 +174,7 @@ public class SqlWorkloadReaderTest {
     Workload workload = getWorkloadFromString("SELECT a FROM table2name");
 
     assertEquals(1, workload.getQueries().size());
-    Query query = workload.getQueries().get(0);
+    Query query = workload.getQuery(0);
     assertTrue(query.getRelation() instanceof Projection);
     assertTrue(((Projection) query.getRelation()).getInput() instanceof Selection);
 
@@ -217,7 +217,7 @@ public class SqlWorkloadReaderTest {
 
     assertEquals(1, workload.getQueries().size());
 
-    Query query = workload.getQueries().get(0);
+    Query query = workload.getQuery(0);
     assertTrue(query.getRelation() instanceof Projection);
     assertTrue(((Projection) query.getRelation()).getInput() instanceof Selection);
 
@@ -275,7 +275,7 @@ public class SqlWorkloadReaderTest {
 
     assertEquals(1, workload.getQueries().size());
 
-    Query query = workload.getQueries().get(0);
+    Query query = workload.getQuery(0);
     assertTrue(query.getRelation() instanceof Projection);
 
     Projection projection = (Projection) query.getRelation();
@@ -341,7 +341,7 @@ public class SqlWorkloadReaderTest {
 
     assertEquals(1, workload.getQueries().size());
 
-    Query query = workload.getQueries().get(0);
+    Query query = workload.getQuery(0);
     assertTrue(query.getRelation() instanceof Projection);
 
     Projection projection = (Projection) query.getRelation();
@@ -379,7 +379,7 @@ public class SqlWorkloadReaderTest {
 
     assertEquals(1, workload.getQueries().size());
 
-    Query query = workload.getQueries().get(0);
+    Query query = workload.getQuery(0);
     assertTrue(query.getRelation() instanceof Union);
     Union union = (Union) query.getRelation();
     assertFalse(union.isAll());
@@ -424,7 +424,7 @@ public class SqlWorkloadReaderTest {
     validateWorkload(workload, dataModel);
     assertEquals(1, workload.getQueries().size());
 
-    Query query = workload.getQueries().get(0);
+    Query query = workload.getQuery(0);
     assertTrue(query.getRelation() instanceof Union);
     Union union = (Union) query.getRelation();
     assertTrue(union.isAll());
@@ -440,7 +440,7 @@ public class SqlWorkloadReaderTest {
 
     assertEquals(2, workload.getQueries().size());
 
-    Query query1 = workload.getQueries().get(0);
+    Query query1 = workload.getQuery(0);
     assertTrue(query1.getRelation() instanceof Projection);
 
     Projection projection1 = (Projection) query1.getRelation();
@@ -449,7 +449,7 @@ public class SqlWorkloadReaderTest {
     LongConstant longConstant1 = (LongConstant) projection1.getLimit();
     assertEquals(1, (long) longConstant1.getValue());
 
-    Query query2 = workload.getQueries().get(1);
+    Query query2 = workload.getQuery(1);
     assertTrue(query2.getRelation() instanceof Projection);
 
     Projection projection2 = (Projection) query2.getRelation();
@@ -469,7 +469,7 @@ public class SqlWorkloadReaderTest {
 
     assertEquals(2, workload.getQueries().size());
 
-    Query query1 = workload.getQueries().get(0);
+    Query query1 = workload.getQuery(0);
     assertTrue(query1.getRelation() instanceof Projection);
 
     Projection projection1 = (Projection) query1.getRelation();
@@ -478,7 +478,7 @@ public class SqlWorkloadReaderTest {
     LongConstant longConstant1 = (LongConstant) projection1.getLimit();
     assertEquals(3, (long) longConstant1.getValue());
 
-    Query query2 = workload.getQueries().get(1);
+    Query query2 = workload.getQuery(1);
     assertTrue(query2.getRelation() instanceof Projection);
 
     Projection projection2 = (Projection) query2.getRelation();
@@ -498,8 +498,8 @@ public class SqlWorkloadReaderTest {
 
     assertEquals(2, workload.getQueries().size());
 
-    Query query1 = workload.getQueries().get(0);
-    Query query2 = workload.getQueries().get(1);
+    Query query1 = workload.getQuery(0);
+    Query query2 = workload.getQuery(1);
 
     assertTrue(query1.getRelation() instanceof Projection);
     assertTrue(query2.getRelation() instanceof Projection);

@@ -23,6 +23,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
+    <jackson.version>2.9.5</jackson.version>
   </properties>
 
   <repositories>
@@ -87,8 +88,19 @@
     </dependency>
 
 
-
     <!-- END JDBC DRIVERS -->
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.hibernate.validator</groupId>
@@ -108,7 +120,6 @@
       <version>1.5</version>
     </dependency>
 
-
     <dependency>
       <groupId>com.github.oshi</groupId>
       <artifactId>oshi-core</artifactId>
@@ -120,7 +131,6 @@
       <artifactId>docker-java</artifactId>
       <version>3.1.0-rc-3</version>
     </dependency>
-
 
   </dependencies>
 

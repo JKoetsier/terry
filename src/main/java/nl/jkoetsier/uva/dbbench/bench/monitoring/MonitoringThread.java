@@ -2,6 +2,7 @@ package nl.jkoetsier.uva.dbbench.bench.monitoring;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStats;
+import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ public class MonitoringThread extends Thread {
 
   private Monitoring monitoring = new Monitoring();
   private AtomicBoolean running = new AtomicBoolean(true);
+  private SystemStatsCollection systemStatsCollection = new SystemStatsCollection();
   private int millis = 500;
 
   public void interrupt() {
@@ -25,7 +27,7 @@ public class MonitoringThread extends Thread {
   @Override
   public void run() {
     while (running.get()) {
-      printStats(monitoring.getStats());
+      collectStats();
 
       try {
         sleep(millis);
@@ -36,13 +38,12 @@ public class MonitoringThread extends Thread {
     }
   }
 
-  public void printStats(SystemStats systemStats) {
-    StringBuilder stringBuilder = new StringBuilder("CPU Loads: ");
+  private void collectStats() {
+    SystemStats systemStats = monitoring.getStats();
+    systemStatsCollection.add(systemStats);
+  }
 
-    for (float f : systemStats.getCpuStats().getCpuCoreLoads()) {
-      stringBuilder.append(String.format("%.1f%% ", f * 100));
-    }
-
-    System.out.println(stringBuilder.toString());
+  public SystemStatsCollection getSystemStatsCollection() {
+    return systemStatsCollection;
   }
 }

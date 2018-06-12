@@ -2,9 +2,11 @@ package nl.jkoetsier.uva.dbbench.connector;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
+import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ public abstract class DatabaseConnector {
   public abstract void connect() throws SQLException;
 
   public abstract void executeQuery(String query) throws SQLException;
+  public abstract QueryResult getLastResults() throws SQLException;
 
   public abstract void importSchema(Schema schema) throws SQLException;
 
@@ -29,7 +32,7 @@ public abstract class DatabaseConnector {
 
   public abstract void closeConnection();
 
-  public abstract HashMap<Integer, String> getWorkloadQueries(Workload workload);
+  public abstract HashMap<String, String> getWorkloadQueries(Workload workload);
 
   public abstract HashMap<String, String> getCreateQueries(Schema schema);
 

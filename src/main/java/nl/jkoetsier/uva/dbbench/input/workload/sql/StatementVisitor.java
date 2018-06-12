@@ -1,5 +1,7 @@
 package nl.jkoetsier.uva.dbbench.input.workload.sql;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.select.Select;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
@@ -7,10 +9,10 @@ import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 
 public class StatementVisitor extends StatementVisitorAdapter {
 
-  private Workload workload = new Workload();
+  private List<Query> queries = new ArrayList<>();
 
-  public Workload getWorkload() {
-    return workload;
+  public List<Query> getQueries() {
+    return queries;
   }
 
   @Override
@@ -18,6 +20,6 @@ public class StatementVisitor extends StatementVisitorAdapter {
     SelectVisitor selectVisitor = new SelectVisitor();
     select.getSelectBody().accept(selectVisitor);
 
-    workload.addQuery(new Query(selectVisitor.getRelation()));
+    queries.add(new Query(selectVisitor.getRelation()));
   }
 }

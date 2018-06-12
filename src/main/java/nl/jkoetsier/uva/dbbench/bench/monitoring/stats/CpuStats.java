@@ -1,9 +1,11 @@
 package nl.jkoetsier.uva.dbbench.bench.monitoring.stats;
 
+import java.util.Arrays;
+import nl.jkoetsier.uva.dbbench.bench.monitoring.util.StringArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CpuStats {
+public class CpuStats implements WritableStats {
 
   private static Logger logger = LoggerFactory.getLogger(CpuStats.class);
 
@@ -16,7 +18,6 @@ public class CpuStats {
   private long softIrqTicks;
   private long stealTicks;
   private long totalTicks;
-  private long timestamp;
 
   private float[] cpuCoreLoads;
   private float cpuLoad;
@@ -90,8 +91,68 @@ public class CpuStats {
     return totalTicks;
   }
 
-  public long getTimestamp() {
-    return timestamp;
+  public CpuStats normalise(CpuStats cpuStats) {
+    return cpuStats;
+  }
+
+  @Override
+  public String[] getHeaders() {
+    String[] beforeLoadsFields = new String[]{
+        "userTicks",
+        "niceTicks",
+        "sysTicks",
+        "idleTicks",
+        "ioWaitTicks",
+        "irqTicks",
+        "softIrqTicks",
+        "stealTicks",
+        "totalTicks",
+        "cpuLoad"
+    };
+
+    String[] afterLoadsFields = new String[]{
+        "loadAvg1",
+        "loadAvg5",
+        "loadAvg15"
+    };
+
+    String[] cpuLoads = new String[cpuCoreLoads.length];
+
+    for (int i = 0; i < cpuCoreLoads.length; i++) {
+      cpuLoads[i] = String.format("cpuLoad%d", i);
+    }
+
+    return StringArray.concatArrays(beforeLoadsFields, cpuLoads, afterLoadsFields);
+  }
+
+  @Override
+  public String[] getValues() {
+    String[] beforeLoads = new String[]{
+        Long.toString(userTicks),
+        Long.toString(niceTicks),
+        Long.toString(sysTicks),
+        Long.toString(idleTicks),
+        Long.toString(ioWaitTicks),
+        Long.toString(irqTicks),
+        Long.toString(softIrqTicks),
+        Long.toString(stealTicks),
+        Long.toString(getTotalTicks()),
+        Float.toString(cpuLoad)
+    };
+
+    String[] afterLoads = new String[]{
+        Float.toString(loadAvg1),
+        Float.toString(loadAvg5),
+        Float.toString(loadAvg15)
+    };
+
+    String[] cpuLoads = new String[cpuCoreLoads.length];
+
+    for (int i = 0; i < cpuCoreLoads.length; i++) {
+      cpuLoads[i] = Float.toString(cpuCoreLoads[i]);
+    }
+
+    return StringArray.concatArrays(beforeLoads, cpuLoads, afterLoads);
   }
 
   public static final class CpuStatsBuilder {
@@ -104,7 +165,6 @@ public class CpuStats {
     private long irqTicks;
     private long softIrqTicks;
     private long stealTicks;
-    private long timestamp;
     private float[] cpuCoreLoads;
     private float cpuLoad;
     private float loadAvg1;
@@ -158,11 +218,6 @@ public class CpuStats {
       return this;
     }
 
-    public CpuStatsBuilder withTimestamp(long timestamp) {
-      this.timestamp = timestamp;
-      return this;
-    }
-
     public CpuStatsBuilder withCpuCoreLoads(float[] cpuCoreLoads) {
       this.cpuCoreLoads = cpuCoreLoads;
       return this;
@@ -200,7 +255,6 @@ public class CpuStats {
       cpuStats.sysTicks = this.sysTicks;
       cpuStats.loadAvg5 = this.loadAvg5;
       cpuStats.cpuLoad = this.cpuLoad;
-      cpuStats.timestamp = this.timestamp;
       cpuStats.softIrqTicks = this.softIrqTicks;
       cpuStats.irqTicks = this.irqTicks;
       cpuStats.stealTicks = this.stealTicks;
