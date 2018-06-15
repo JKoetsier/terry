@@ -7,6 +7,7 @@ import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.schema.MonetDbSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -78,5 +79,10 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
         tableName, file);
 
     executeQuery(query);
+  }
+
+  @Override
+  public void translateQueryResults(QueryResult queryResult, QueryResult expectedResult) {
+
   }
 }

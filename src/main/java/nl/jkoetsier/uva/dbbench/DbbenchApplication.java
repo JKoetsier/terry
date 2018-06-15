@@ -133,11 +133,6 @@ public class DbbenchApplication implements ApplicationRunner {
         workload.validate(schema);
       } catch (NotMatchingWorkloadException e) {
         throw new RuntimeException(e);
-//        System.err.format(
-//            "Error in validating workload: %s%n", e.getMessage()
-//        );
-//
-//        System.exit(1);
       }
     }
 
@@ -165,6 +160,19 @@ public class DbbenchApplication implements ApplicationRunner {
 
         if (dbConfigProperties.getDockerEnvvars() != null) {
           dockerContainer.addEnvironmentVariables(dbConfigProperties.getDockerEnvvars());
+        }
+
+        if (dbConfigProperties.getDockerVolumes() != null) {
+          for (String volumeMapping : dbConfigProperties.getDockerVolumes()) {
+            String[] mapping = volumeMapping.split(":");
+
+            if (mapping.length != 2) {
+              throw new RuntimeException("Invalid value for Docker volume mapping");
+            }
+
+            dockerContainer.addVolumeMapping(mapping[0], mapping[1]);
+          }
+
         }
 
         dockerContainer.run();

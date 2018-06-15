@@ -129,5 +129,4 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
       executeQuery(queryEntrySet.getValue());
     }
   }
-
 }

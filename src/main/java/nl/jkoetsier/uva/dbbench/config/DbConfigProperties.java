@@ -14,6 +14,7 @@ public class DbConfigProperties {
   private String dockerImage;
   private Integer defaultDbPort;
   private String[] dockerEnvvars;
+  private String[] dockerVolumes;
   private String dockerReadyLogLine = "";
   private String connector;
 
@@ -29,6 +30,14 @@ public class DbConfigProperties {
 
   public void setDockerReadyLogLine(String dockerReadyLogLine) {
     this.dockerReadyLogLine = dockerReadyLogLine;
+  }
+
+  public String[] getDockerVolumes() {
+    return dockerVolumes;
+  }
+
+  public void setDockerVolumes(String[] dockerVolumes) {
+    this.dockerVolumes = dockerVolumes;
   }
 
   public String getUsername() {

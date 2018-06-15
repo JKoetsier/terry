@@ -6,11 +6,13 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.command.LogContainerCmd;
 import com.github.dockerjava.api.exception.NotModifiedException;
+import com.github.dockerjava.api.model.Bind;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.Ports.Binding;
+import com.github.dockerjava.api.model.Volume;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.LogContainerResultCallback;
 import java.io.IOException;
@@ -29,13 +31,14 @@ public class DockerContainer {
   private static Logger logger = LoggerFactory.getLogger(DockerContainer.class);
 
   // Max wait time in seconds
-  private static Integer MAX_WAIT_FOR_INIT = 10;
+  private static Integer MAX_WAIT_FOR_INIT = 30;
 
   private String image;
   private String name;
   private String host;
   private HashMap<String, String> environmentVariables = new HashMap<>();
   private HashMap<Integer, Integer> portMapping = new HashMap<>();
+  private HashMap<String, String> volumeMapping = new HashMap<>();
 
   private DockerClient dockerClient;
   private String containerId;
@@ -114,6 +117,10 @@ public class DockerContainer {
 
     if (environmentVariables.size() > 0) {
       cmd = setEnvs(cmd);
+    }
+
+    if (volumeMapping.size() > 0) {
+      cmd = setVolumes(cmd);
     }
 
     CreateContainerResponse containerResponse = cmd.exec();
@@ -195,6 +202,26 @@ public class DockerContainer {
     return cmd.withEnv(envs);
   }
 
+  private CreateContainerCmd setVolumes(CreateContainerCmd cmd) {
+    List<Volume> volumes = new ArrayList<>();
+    List<Bind> binds = new ArrayList<>();
+
+    for (Entry<String, String> entry : volumeMapping.entrySet()) {
+      Volume volume = new Volume(entry.getValue());
+      Bind bind = new Bind(entry.getKey(), volume);
+
+      volumes.add(volume);
+      binds.add(bind);
+
+      logger.debug("Mapping host directory {} to container directory {}",
+          entry.getKey(), entry.getValue()
+      );
+    }
+
+
+    return cmd.withVolumes(volumes).withBinds(binds);
+  }
+
   InspectContainerResponse getInspectContainer() {
     return dockerClient.inspectContainerCmd(containerId).exec();
   }
@@ -237,6 +264,10 @@ public class DockerContainer {
 
   public void addEnvironmentVariable(String key, String value) {
     this.environmentVariables.put(key, value);
+  }
+
+  public void addVolumeMapping(String hostLocation, String containerLocation) {
+    this.volumeMapping.put(hostLocation, containerLocation);
   }
 
   /**

@@ -39,6 +39,17 @@ public abstract class DatabaseConnector {
   public abstract String getSimpleName();
 
   /**
+   * Transforms the given QueryResults to match the actual database output. May be
+   * an empty function.
+   *
+   * Example; Postgres returns false values as 0. Comparing false and 0 will fail.
+   * This method provides the possibility to change the result or expected result.
+   * QueryResult.replaceValues() could come in handy.
+   * @param queryResult
+   */
+  public abstract void translateQueryResults(QueryResult queryResult, QueryResult expectedResult);
+
+  /**
    * Imports CSV files from directory. Assumes the filename until the first dot is the table name.
    * Parts after the first dot will be ignored. Can be used as sequence number.
    */
@@ -74,4 +85,5 @@ public abstract class DatabaseConnector {
   public boolean isDocker() {
     return dbConfigProperties.isDocker();
   }
+
 }

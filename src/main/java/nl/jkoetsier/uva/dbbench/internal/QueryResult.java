@@ -1,8 +1,10 @@
 package nl.jkoetsier.uva.dbbench.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import nl.jkoetsier.uva.dbbench.connector.ValueTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,5 +59,21 @@ public class QueryResult {
     }
 
     return stringBuilder.toString();
+  }
+
+  public void order() {
+    Collections.sort(rows);
+  }
+
+  public void replaceValues(String value, String with) {
+    for (QueryResultRow row : rows) {
+      row.replaceValues(value, with);
+    }
+  }
+
+  public void replaceValues(ValueTranslator translator) {
+    for (QueryResultRow row : rows) {
+      row.replaceValues(translator);
+    }
   }
 }

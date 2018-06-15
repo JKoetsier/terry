@@ -5,6 +5,7 @@ import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.mssql.schema.MsSqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -55,6 +56,11 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
     logger.debug("Connection String: {}", connectString);
 
     return connectString;
+  }
+
+  @Override
+  public void translateQueryResults(QueryResult queryResult, QueryResult expectedResult) {
+
   }
 
   @Override

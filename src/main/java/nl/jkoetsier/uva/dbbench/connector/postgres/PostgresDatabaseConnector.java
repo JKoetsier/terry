@@ -5,6 +5,9 @@ import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
+import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
+import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -44,6 +47,15 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
   @Override
   public String getSimpleName() {
     return "postgres";
+  }
+
+
+  @Override
+  public void translateQueryResults(QueryResult queryResult, QueryResult expectedResult) {
+    queryResult.replaceValues("false", "0");
+    queryResult.replaceValues("true", "1");
+    queryResult.replaceValues(new RemoveLineBreaksValueTranslator());
+    expectedResult.replaceValues(new DateTimeValueTranslator());
   }
 
   @Override

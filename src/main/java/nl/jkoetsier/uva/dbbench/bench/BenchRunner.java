@@ -2,7 +2,6 @@ package nl.jkoetsier.uva.dbbench.bench;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -113,13 +112,10 @@ public class BenchRunner {
 
           results.get(entry.getKey())[i - skipFirst] = nanoToMicro(time);
 
+          lastResult = databaseInterface.getLastResults();
+
           logger.debug("Query {} Execution time: {}", entry.getKey(), formatTimeMicro(time));
-
-          logger.debug("Results ({}):", lastResult.size());
-
-          for (QueryResultRow resultRow : lastResult.getRows()) {
-            logger.debug("{}", resultRow);
-          }
+          logger.debug("Have {} results", lastResult.size());
 
           Query query = workload.getQuery(entry.getKey());
           validateQueryResult(lastResult, query.getExpectedResult());
@@ -155,13 +151,41 @@ public class BenchRunner {
   }
 
   private void validateQueryResult(QueryResult lastResult, QueryResult expectedResult) {
+    lastResult.order();
+    databaseInterface.translateQueryResults(lastResult, expectedResult);
+    expectedResult.order();
+
     // do something here
     if (lastResult.equals(expectedResult)) {
       logger.debug("Valid query result");
     } else {
       logger.error("Query result does not match expected result:");
-      logger.error("Actual result: {}", lastResult);
-      logger.error("Expected result: {}", expectedResult);
+
+      if (lastResult.size() != expectedResult.size()) {
+        logger.error("Sizes do not match. Have {} results, but expected {}", lastResult.size(), expectedResult.size());
+
+        if (expectedResult.size() > lastResult.size()) {
+          for (QueryResultRow row : expectedResult.getRows()) {
+            if (!lastResult.getRows().contains(row)) {
+              logger.error("Missing row in expected results: {}", row);
+            }
+          }
+        } else {
+          for (QueryResultRow row : lastResult.getRows()) {
+            if (!expectedResult.getRows().contains(row)) {
+              logger.error("Did not expect to see this row in results: {}", row);
+            }
+          }
+        }
+      }
+
+      for (int i = 0; i < lastResult.size(); i++) {
+        if (!lastResult.getRows().get(i).equals(expectedResult.getRows().get(i))) {
+          logger.error("Row {} does not match:", i);
+          logger.error("Actual    ({}): {}", lastResult.getRows().get(i).size(), lastResult.getRows().get(i));
+          logger.error("Expected: ({}): {}", expectedResult.getRows().get(i).size(), expectedResult.getRows().get(i));
+        }
+      }
     }
   }
 
@@ -189,7 +213,11 @@ public class BenchRunner {
   }
 
   /**
-   * Returns time in nanoseconds
+   * Returns execution time of query in nanoseconds.
+   *
+   * @param query
+   * @return
+   * @throws SQLException
    */
   private long timeQuery(String query) throws SQLException {
     long start = System.nanoTime();
@@ -198,7 +226,6 @@ public class BenchRunner {
 
     long end = System.nanoTime();
 
-    lastResult = databaseInterface.getLastResults();
 
     return end - start;
   }

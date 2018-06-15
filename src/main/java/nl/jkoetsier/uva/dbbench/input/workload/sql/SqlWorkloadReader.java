@@ -19,6 +19,10 @@ import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.QueryResultRow;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -46,7 +50,6 @@ public class SqlWorkloadReader implements WorkloadReader {
   public Workload fromFile(String fileName) {
     if (fileName.endsWith(".yml")) {
       logger.debug("Reading YAML file");
-      System.out.println("Reading YAML file");
       return fromYamlFile(fileName);
     }
 
@@ -87,7 +90,25 @@ public class SqlWorkloadReader implements WorkloadReader {
       if (yamlQuery.getResults() != null) {
         for (String resultRow : yamlQuery.getResults()) {
           QueryResultRow queryResultRow = new QueryResultRow();
-          queryResultRow.setValues(resultRow.split(","));
+
+          try {
+
+            // Use CSV Parser to parse each line as a csv record (thereby supporting comma's in
+            // records)
+            CSVParser csvParser = CSVParser.parse(resultRow, CSVFormat.DEFAULT);
+            CSVRecord record = csvParser.getRecords().get(0);
+
+            String[] values = new String[record.size()];
+
+            for (int i = 0; i < values.length; i++) {
+              values[i] = record.get(i);
+            }
+
+            queryResultRow.setValues(values);
+
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
           resultRows.add(queryResultRow);
         }
       }
