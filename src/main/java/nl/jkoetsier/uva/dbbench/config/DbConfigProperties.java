@@ -14,7 +14,7 @@ public class DbConfigProperties {
   private String dockerImage;
   private Integer defaultDbPort;
   private String[] dockerEnvvars;
-  private String[] dockerVolumes;
+  private String dockerDataDirectory = "/opt/data";
   private String dockerReadyLogLine = "";
   private String connector;
 
@@ -32,12 +32,12 @@ public class DbConfigProperties {
     this.dockerReadyLogLine = dockerReadyLogLine;
   }
 
-  public String[] getDockerVolumes() {
-    return dockerVolumes;
+  public String getDockerDataDirectory() {
+    return dockerDataDirectory;
   }
 
-  public void setDockerVolumes(String[] dockerVolumes) {
-    this.dockerVolumes = dockerVolumes;
+  public void setDockerDataDirectory(String dockerDataDirectory) {
+    this.dockerDataDirectory = dockerDataDirectory;
   }
 
   public String getUsername() {

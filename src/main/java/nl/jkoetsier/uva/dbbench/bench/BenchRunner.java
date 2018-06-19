@@ -103,6 +103,7 @@ public class BenchRunner {
     for (int i = 0; i < noRuns + skipFirst; i++) {
       for (Entry<String, String> entry : queries.entrySet()) {
         try {
+          logger.debug("Running query {}", entry.getKey());
 
           long time = timeQuery(entry.getValue());
 

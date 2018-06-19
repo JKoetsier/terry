@@ -162,17 +162,12 @@ public class DbbenchApplication implements ApplicationRunner {
           dockerContainer.addEnvironmentVariables(dbConfigProperties.getDockerEnvvars());
         }
 
-        if (dbConfigProperties.getDockerVolumes() != null) {
-          for (String volumeMapping : dbConfigProperties.getDockerVolumes()) {
-            String[] mapping = volumeMapping.split(":");
-
-            if (mapping.length != 2) {
-              throw new RuntimeException("Invalid value for Docker volume mapping");
-            }
-
-            dockerContainer.addVolumeMapping(mapping[0], mapping[1]);
-          }
-
+        if (!commandLineConfigProperties.getDataDirectory().equals("")) {
+          // Map data directory to docker Volume
+          dockerContainer.addVolumeMapping(
+              commandLineConfigProperties.getDataDirectory(),
+              dbConfigProperties.getDockerDataDirectory()
+          );
         }
 
         dockerContainer.run();

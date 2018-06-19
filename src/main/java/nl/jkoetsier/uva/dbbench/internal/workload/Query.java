@@ -39,6 +39,7 @@ public class Query implements WorkloadElement {
     this.expectedResult = expectedResult;
   }
 
+
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     relation.acceptVisitor(workloadVisitor);
