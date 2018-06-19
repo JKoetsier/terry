@@ -145,10 +145,6 @@ public class BenchRunner {
 
             // TODO Tmp dirty hack for failing subqueries (that don't have all necessary fields included etc)
           } catch (SQLException e) {
-            logger.debug("Caught Exception");
-            logger.debug("Entry key: " + entry.getKey());
-            logger.debug("Have dash: " + entry.getKey().contains("-"));
-
             if (entry.getKey().contains("-")) {
               time = 0;
             } else {
