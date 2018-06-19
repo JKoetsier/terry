@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
+import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.schema.MonetDbSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
@@ -38,6 +39,11 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
     logger.debug("Connection string: {}", connectionString);
 
     return connectionString;
+  }
+
+  @Override
+  protected SqlIdentifierQuoter getIdentifierQuoter() {
+    return new MonetDbIdentifierQuoter();
   }
 
   @Override

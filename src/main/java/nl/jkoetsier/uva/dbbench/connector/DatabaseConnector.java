@@ -29,6 +29,7 @@ public abstract class DatabaseConnector {
   public abstract void importSchema(Schema schema) throws SQLException;
 
   protected abstract void importCsvFile(String tableName, String file) throws SQLException;
+  public abstract int getTableSize(String tableName) throws SQLException;
 
   public abstract void closeConnection();
 

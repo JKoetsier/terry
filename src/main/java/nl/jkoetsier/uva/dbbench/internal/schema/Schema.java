@@ -7,26 +7,26 @@ import nl.jkoetsier.uva.dbbench.internal.schema.visitor.SchemaVisitor;
 
 public class Schema implements SchemaTreeElement {
 
-  private HashMap<String, Table> entities;
+  private HashMap<String, Table> tables;
 
   public Schema() {
-    entities = new HashMap<>();
+    tables = new HashMap<>();
   }
 
-  public HashMap<String, Table> getEntities() {
-    return entities;
+  public HashMap<String, Table> getTables() {
+    return tables;
   }
 
-  public void setEntities(HashMap<String, Table> entities) {
-    this.entities = entities;
+  public void setTables(HashMap<String, Table> tables) {
+    this.tables = tables;
   }
 
-  public void addEntity(Table table) {
-    this.entities.put(table.getName(), table);
+  public void addTable(Table table) {
+    this.tables.put(table.getName(), table);
   }
 
-  public Table getEntity(String name) {
-    for (Entry<String, Table> entry : entities.entrySet()) {
+  public Table getTable(String name) {
+    for (Entry<String, Table> entry : tables.entrySet()) {
       if (entry.getKey().toLowerCase().equals(name.toLowerCase())) {
         return entry.getValue();
       }
@@ -38,7 +38,7 @@ public class Schema implements SchemaTreeElement {
   @Override
   public void acceptVisitor(SchemaVisitor v) {
 
-    for (Entry<String, Table> entityEntry : entities.entrySet()) {
+    for (Entry<String, Table> entityEntry : tables.entrySet()) {
       entityEntry.getValue().acceptVisitor(v);
     }
     v.visit(this);

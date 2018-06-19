@@ -13,6 +13,7 @@ public class Table implements SchemaTreeElement {
   private LinkedHashMap<String, Column> columns;
   private String name;
   private List<Column> primaryKey;
+  private int rowCnt;
 
   public Table(String name) {
     setName(name);
@@ -21,6 +22,18 @@ public class Table implements SchemaTreeElement {
 
   public LinkedHashMap<String, Column> getColumns() {
     return columns;
+  }
+
+  public int getColumnCnt() {
+    return columns.size();
+  }
+
+  public int getRowCnt() {
+    return rowCnt;
+  }
+
+  public void setRowCnt(int rowCnt) {
+    this.rowCnt = rowCnt;
   }
 
   public void setColumns(LinkedHashMap<String, Column> columns) {

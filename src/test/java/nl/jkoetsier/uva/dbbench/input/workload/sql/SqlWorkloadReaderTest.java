@@ -57,7 +57,7 @@ public class SqlWorkloadReaderTest {
     IntegerColumn fieldB = new IntegerColumn("b");
     table.addColumn(fieldA);
     table.addColumn(fieldB);
-    dataModel.addEntity(table);
+    dataModel.addTable(table);
   }
 
   private void loadJoinDataModel() {
@@ -84,11 +84,11 @@ public class SqlWorkloadReaderTest {
     joinTable3.addColumn(fieldF);
     joinTable3.addColumn(fieldG);
     joinTable4.addColumn(fieldH);
-    dataModel.addEntity(table);
-    dataModel.addEntity(joinTable);
-    dataModel.addEntity(joinTable2);
-    dataModel.addEntity(joinTable3);
-    dataModel.addEntity(joinTable4);
+    dataModel.addTable(table);
+    dataModel.addTable(joinTable);
+    dataModel.addTable(joinTable2);
+    dataModel.addTable(joinTable3);
+    dataModel.addTable(joinTable4);
   }
 
   private void cleanup() {
@@ -96,7 +96,7 @@ public class SqlWorkloadReaderTest {
   }
 
   private void clearDataModel() {
-    dataModel.setEntities(new HashMap<>());
+    dataModel.setTables(new HashMap<>());
   }
 
   private void validateWorkload(Workload workload, Schema schema) {

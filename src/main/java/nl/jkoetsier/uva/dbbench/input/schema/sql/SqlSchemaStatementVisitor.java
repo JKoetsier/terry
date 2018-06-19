@@ -45,7 +45,7 @@ public class SqlSchemaStatementVisitor extends StatementVisitorAdapter {
       setPrimaryKey(createTable, table);
     }
 
-    schema.addEntity(table);
+    schema.addTable(table);
   }
 
   private void setPrimaryKey(CreateTable createTable, Table table) {

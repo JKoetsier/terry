@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
+import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
@@ -22,6 +23,14 @@ public class InputRelation extends Relation {
   @Override
   public ExposedFields getExposedFields() {
     return exposedFields;
+  }
+
+  @Override
+  public HashMap<Table, Integer> getTouchedTables() {
+    HashMap<Table, Integer> result = new HashMap<>();
+    result.put(table, 1);
+
+    return result;
   }
 
   public void setExposedFields(

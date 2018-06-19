@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.connector.mssql;
 import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
+import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.mssql.schema.MsSqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
@@ -56,6 +57,11 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
     logger.debug("Connection String: {}", connectString);
 
     return connectString;
+  }
+
+  @Override
+  protected SqlIdentifierQuoter getIdentifierQuoter() {
+    return new MsSqlIdentifierQuoter();
   }
 
   @Override

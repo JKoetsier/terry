@@ -19,12 +19,7 @@ public class FieldExpression extends Expression {
 
   @Override
   public void validate(ExposedFields exposedFields) {
-    logger.debug("Validating field {}", fieldName);
-    logger.debug("Exposed fields: {}", exposedFields);
-
     ExposedField existing = exposedFields.get(fieldName);
-
-    logger.debug("Existing: {}", existing);
 
     if (existing == null) {
       throw new InvalidQueryException(String.format("Not existing field '%s'", fieldName));

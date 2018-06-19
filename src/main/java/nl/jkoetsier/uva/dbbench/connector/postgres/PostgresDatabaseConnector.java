@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.connector.postgres;
 import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
+import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
@@ -34,6 +35,11 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
     logger.debug("Connection string: {}", connectionString);
 
     return connectionString;
+  }
+
+  @Override
+  protected SqlIdentifierQuoter getIdentifierQuoter() {
+    return new PostgresIdentifierQuoter();
   }
 
   @Override

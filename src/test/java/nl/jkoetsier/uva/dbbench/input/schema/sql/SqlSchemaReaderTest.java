@@ -28,9 +28,9 @@ public class SqlSchemaReaderTest {
   @Test
   public void testCreateTable() {
     Schema dataModel = getDataModel("create_table.sql");
-    assertEquals(dataModel.getEntities().size(), 1);
+    assertEquals(dataModel.getTables().size(), 1);
 
-    Table table = dataModel.getEntity("TableName");
+    Table table = dataModel.getTable("TableName");
     assertEquals(table.getColumns().size(), 9);
     assertIdentifierEquals("TableName", table.getName());
 
@@ -49,10 +49,10 @@ public class SqlSchemaReaderTest {
   @Test
   public void testCreateTables() {
     Schema dataModel = getDataModel("create_tables.sql");
-    assertEquals(dataModel.getEntities().size(), 2);
+    assertEquals(dataModel.getTables().size(), 2);
 
-    Table table1 = dataModel.getEntity("TableName");
-    Table table2 = dataModel.getEntity("Table2Name");
+    Table table1 = dataModel.getTable("TableName");
+    Table table2 = dataModel.getTable("Table2Name");
     assertEquals(table1.getColumns().size(), 4);
     assertEquals(table2.getColumns().size(), 5);
     assertIdentifierEquals("TableName", table1.getName());
@@ -71,9 +71,9 @@ public class SqlSchemaReaderTest {
   @Test
   public void testArguments() {
     Schema dataModel = getDataModel("create_table_arguments.sql");
-    assertEquals(dataModel.getEntities().size(), 1);
+    assertEquals(dataModel.getTables().size(), 1);
 
-    Table table = dataModel.getEntity("TableName");
+    Table table = dataModel.getTable("TableName");
 
     assertTrue(5 == ((DecimalColumn) (table.getColumn("A"))).getPrecision());
     assertTrue(2 == ((DecimalColumn) (table.getColumn("A"))).getScale());
@@ -84,9 +84,9 @@ public class SqlSchemaReaderTest {
   @Test
   public void testNullNotNull() {
     Schema dataModel = getDataModel("create_table_null_not_null.sql");
-    assertEquals(dataModel.getEntities().size(), 1);
+    assertEquals(dataModel.getTables().size(), 1);
 
-    Table table = dataModel.getEntity("TableName");
+    Table table = dataModel.getTable("TableName");
 
     assertEquals(false, table.getColumn("A").isAllowedEmpty());
     assertEquals(true, table.getColumn("B").isAllowedEmpty());
@@ -97,7 +97,7 @@ public class SqlSchemaReaderTest {
   @Test
   public void testCompositePrimaryKey() {
     Schema dataModel = getDataModel("create_table_composite_primarykey.sql");
-    Table table = dataModel.getEntity("TableName");
+    Table table = dataModel.getTable("TableName");
 
     assertTrue(table.getPrimaryKey().contains(table.getColumn("Id")));
     assertTrue(table.getPrimaryKey().contains(table.getColumn("IntField")));

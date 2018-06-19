@@ -2,17 +2,21 @@ package nl.jkoetsier.uva.dbbench.bench;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import nl.jkoetsier.uva.dbbench.bench.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.MonitoringThread;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollection;
+import nl.jkoetsier.uva.dbbench.bench.querystripper.QueryStripper;
 import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.QueryResultRow;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
+import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -42,6 +46,22 @@ public class BenchRunner {
 
   public void setWorkload(Workload workload) {
     this.workload = workload;
+
+    List<Query> subQueries = new ArrayList<>();
+
+    for (Query query : workload.getQueries().values()) {
+      List<Query> stripped = QueryStripper.stripQuery(query);
+
+      for (int i = 0; i < stripped.size(); i++) {
+        Query subQuery = stripped.get(i);
+        subQuery.setIdentifier(query.getIdentifier() + "-" + i);
+        subQueries.add(subQuery);
+      }
+    }
+
+    for (Query subQuery : subQueries) {
+      workload.addQuery(subQuery);
+    }
   }
 
   public void setup() throws DatabaseException {
@@ -51,6 +71,10 @@ public class BenchRunner {
       if (schema != null && importDataModel) {
         logger.info("Importing Schema");
         databaseInterface.importSchema(schema);
+      }
+
+      if (schema != null) {
+        readTableSizes();
       }
 
       if (dataDirectory != null) {
@@ -65,6 +89,15 @@ public class BenchRunner {
       }
     } catch (SQLException e) {
       throw new DatabaseException(e);
+    }
+  }
+
+  private void readTableSizes() throws SQLException {
+    for (Table table : schema.getTables().values()) {
+      int tableSize = databaseInterface.getTableSize(table.getName());
+      table.setRowCnt(tableSize);
+
+      logger.debug("Table {} size: {}", table.getName(), tableSize);
     }
   }
 
@@ -98,14 +131,30 @@ public class BenchRunner {
     MonitoringThread monitoringThread = new MonitoringThread();
     monitoringThread.start();
 
-    waitMilliseconds(1000);
+    waitMilliseconds(3000);
 
     for (int i = 0; i < noRuns + skipFirst; i++) {
       for (Entry<String, String> entry : queries.entrySet()) {
         try {
           logger.debug("Running query {}", entry.getKey());
 
-          long time = timeQuery(entry.getValue());
+          long time;
+          try {
+            time = timeQuery(entry.getValue());
+
+
+            // TODO Tmp dirty hack for failing subqueries (that don't have all necessary fields included etc)
+          } catch (SQLException e) {
+            logger.debug("Caught Exception");
+            logger.debug("Entry key: " + entry.getKey());
+            logger.debug("Have dash: " + entry.getKey().contains("-"));
+
+            if (entry.getKey().contains("-")) {
+              time = 0;
+            } else {
+              throw e;
+            }
+          }
 
           if (i < skipFirst) {
             continue;
@@ -113,13 +162,18 @@ public class BenchRunner {
 
           results.get(entry.getKey())[i - skipFirst] = nanoToMicro(time);
 
-          lastResult = databaseInterface.getLastResults();
-
           logger.debug("Query {} Execution time: {}", entry.getKey(), formatTimeMicro(time));
-          logger.debug("Have {} results", lastResult.size());
+
+          if (time != 0) {
+            lastResult = databaseInterface.getLastResults();
+            logger.debug("Have {} results", lastResult.size());
+          }
 
           Query query = workload.getQuery(entry.getKey());
-          validateQueryResult(lastResult, query.getExpectedResult());
+
+          if (query.getExpectedResult() != null) {
+            validateQueryResult(lastResult, query.getExpectedResult());
+          }
 
         } catch (SQLException e) {
           throw new DatabaseException(e);
@@ -131,9 +185,8 @@ public class BenchRunner {
 
     monitoringThread.end();
 
-
     if (applicationConfigProperties.getOutputDirectory() != null) {
-      OutputWriter outputWriter = new OutputWriter(
+      ResultsWriter resultsWriter = new ResultsWriter(
           applicationConfigProperties.getOutputDirectory(),
           databaseInterface.getSimpleName()
       );
@@ -141,8 +194,8 @@ public class BenchRunner {
       SystemStatsCollection stats = monitoringThread.getSystemStatsCollection();
 
       try {
-        outputWriter.writeResults(queries, results);
-        outputWriter.writeSystemStats(stats);
+        resultsWriter.writeResults(workload, schema, queries, results);
+        resultsWriter.writeSystemStats(stats);
       } catch (IOException e) {
         logger.error("Error occurred while trying to write results to file: {}", e.getMessage());
       }
@@ -163,7 +216,8 @@ public class BenchRunner {
       logger.error("Query result does not match expected result:");
 
       if (lastResult.size() != expectedResult.size()) {
-        logger.error("Sizes do not match. Have {} results, but expected {}", lastResult.size(), expectedResult.size());
+        logger.error("Sizes do not match. Have {} results, but expected {}", lastResult.size(),
+            expectedResult.size());
 
         if (expectedResult.size() > lastResult.size()) {
           for (QueryResultRow row : expectedResult.getRows()) {
@@ -183,8 +237,10 @@ public class BenchRunner {
       for (int i = 0; i < lastResult.size(); i++) {
         if (!lastResult.getRows().get(i).equals(expectedResult.getRows().get(i))) {
           logger.error("Row {} does not match:", i);
-          logger.error("Actual    ({}): {}", lastResult.getRows().get(i).size(), lastResult.getRows().get(i));
-          logger.error("Expected: ({}): {}", expectedResult.getRows().get(i).size(), expectedResult.getRows().get(i));
+          logger.error("Actual    ({}): {}", lastResult.getRows().get(i).size(),
+              lastResult.getRows().get(i));
+          logger.error("Expected: ({}): {}", expectedResult.getRows().get(i).size(),
+              expectedResult.getRows().get(i));
         }
       }
     }
@@ -215,10 +271,6 @@ public class BenchRunner {
 
   /**
    * Returns execution time of query in nanoseconds.
-   *
-   * @param query
-   * @return
-   * @throws SQLException
    */
   private long timeQuery(String query) throws SQLException {
     long start = System.nanoTime();
@@ -226,7 +278,6 @@ public class BenchRunner {
     databaseInterface.executeQuery(query);
 
     long end = System.nanoTime();
-
 
     return end - start;
   }

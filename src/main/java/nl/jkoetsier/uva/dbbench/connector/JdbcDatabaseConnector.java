@@ -27,6 +27,8 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
 
   protected abstract String getConnectionString();
 
+  protected abstract SqlIdentifierQuoter getIdentifierQuoter();
+
   @Override
   public void connect() throws SQLException {
     getConnection();
@@ -57,15 +59,10 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
   public void executeQuery(String query) throws SQLException {
     Connection connection = getConnection();
 
-    try {
-      logger.debug("Query: {}", query);
+    logger.debug("Query: {}", query);
 
-      lastStatement = connection.createStatement();
-      lastStatement.execute(query);
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
+    lastStatement = connection.createStatement();
+    lastStatement.execute(query);
   }
 
   @Override
@@ -128,5 +125,16 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
 
       executeQuery(queryEntrySet.getValue());
     }
+  }
+
+  @Override
+  public int getTableSize(String tableName) throws SQLException {
+    String query = String
+        .format("SELECT COUNT(*) FROM %s", getIdentifierQuoter().quoteString(tableName));
+
+    executeQuery(query);
+
+    QueryResult queryResult = getLastResults();
+    return Integer.valueOf(queryResult.getRows().get(0).getValues()[0]);
   }
 }
