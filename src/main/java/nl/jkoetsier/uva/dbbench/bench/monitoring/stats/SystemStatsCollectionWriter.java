@@ -1,11 +1,9 @@
 package nl.jkoetsier.uva.dbbench.bench.monitoring.stats;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;

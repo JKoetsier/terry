@@ -1,11 +1,11 @@
 package nl.jkoetsier.uva.dbbench.connector.postgres;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
@@ -73,7 +73,7 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) throws SQLException {
+  protected void importCsvFile(String tableName, String file) throws DatabaseException {
     String query = String.format("COPY \"%s\" FROM '%s' "
             + "WITH (FORMAT csv, %sDELIMITER ',', NULL 'NULL')", tableName, file,
         applicationConfigProperties.getCsvHeader() ? "HEADER true, " : "");

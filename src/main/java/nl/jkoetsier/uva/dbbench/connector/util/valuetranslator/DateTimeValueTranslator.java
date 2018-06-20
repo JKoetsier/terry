@@ -11,12 +11,10 @@ public class DateTimeValueTranslator implements ValueTranslator {
   /**
    * Translates dates of the form '2018-04-28 13:08:22.8550420 +02:00' to dates of the form
    * '2018-04-28 13:08:22.0'
-   *
-   * @param input
-   * @return
    */
   public String translate(String input) {
-    return input.replaceAll("(?<date>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})\\.\\d+ \\+\\d{2}:\\d{2}",
-        "${date}.0");
+    return input
+        .replaceAll("(?<date>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})\\.\\d+ \\+\\d{2}:\\d{2}",
+            "${date}.0");
   }
 }

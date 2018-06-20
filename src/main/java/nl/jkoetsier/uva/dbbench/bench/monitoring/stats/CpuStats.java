@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.dbbench.bench.monitoring.stats;
 
-import java.util.Arrays;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.util.StringArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

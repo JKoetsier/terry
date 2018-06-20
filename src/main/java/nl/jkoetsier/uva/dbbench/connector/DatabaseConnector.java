@@ -1,11 +1,10 @@
 package nl.jkoetsier.uva.dbbench.connector;
 
 import java.io.File;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
+import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
@@ -21,15 +20,17 @@ public abstract class DatabaseConnector {
   @Autowired
   protected ApplicationConfigProperties applicationConfigProperties;
 
-  public abstract void connect() throws SQLException;
+  public abstract void connect() throws DatabaseException;
 
-  public abstract void executeQuery(String query) throws SQLException;
-  public abstract QueryResult getLastResults() throws SQLException;
+  public abstract void executeQuery(String query) throws DatabaseException;
 
-  public abstract void importSchema(Schema schema) throws SQLException;
+  public abstract QueryResult getLastResults() throws DatabaseException;
 
-  protected abstract void importCsvFile(String tableName, String file) throws SQLException;
-  public abstract int getTableSize(String tableName) throws SQLException;
+  public abstract void importSchema(Schema schema) throws DatabaseException;
+
+  protected abstract void importCsvFile(String tableName, String file) throws DatabaseException;
+
+  public abstract int getTableSize(String tableName) throws DatabaseException;
 
   public abstract void closeConnection();
 
@@ -40,13 +41,12 @@ public abstract class DatabaseConnector {
   public abstract String getSimpleName();
 
   /**
-   * Transforms the given QueryResults to match the actual database output. May be
-   * an empty function.
+   * Transforms the given QueryResults to match the actual database output. May be an empty
+   * function.
    *
-   * Example; Postgres returns false values as 0. Comparing false and 0 will fail.
-   * This method provides the possibility to change the result or expected result.
-   * QueryResult.replaceValues() could come in handy.
-   * @param queryResult
+   * Example; Postgres returns false values as 0. Comparing false and 0 will fail. This method
+   * provides the possibility to change the result or expected result. QueryResult.replaceValues()
+   * could come in handy.
    */
   public abstract void translateQueryResults(QueryResult queryResult, QueryResult expectedResult);
 
@@ -54,7 +54,7 @@ public abstract class DatabaseConnector {
    * Imports CSV files from directory. Assumes the filename until the first dot is the table name.
    * Parts after the first dot will be ignored. Can be used as sequence number.
    */
-  public void importCsvData(String directory) throws SQLException {
+  public void importCsvData(String directory) throws DatabaseException {
     File dir = new File(directory);
     File[] files = dir.listFiles();
 

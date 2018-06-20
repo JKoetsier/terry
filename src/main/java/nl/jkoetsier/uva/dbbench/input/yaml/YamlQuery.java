@@ -2,7 +2,6 @@ package nl.jkoetsier.uva.dbbench.input.yaml;
 
 import java.util.ArrayList;
 import java.util.List;
-import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

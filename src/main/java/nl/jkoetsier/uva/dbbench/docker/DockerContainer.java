@@ -218,7 +218,6 @@ public class DockerContainer {
       );
     }
 
-
     return cmd.withVolumes(volumes).withBinds(binds);
   }
 

@@ -5,7 +5,6 @@ import java.util.List;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.select.Select;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
-import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 
 public class StatementVisitor extends StatementVisitorAdapter {
 

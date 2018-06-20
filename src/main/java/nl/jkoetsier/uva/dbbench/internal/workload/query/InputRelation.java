@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.dbbench.internal.workload.query;
 
-import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 

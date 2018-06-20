@@ -24,6 +24,10 @@ public class Table implements SchemaTreeElement {
     return columns;
   }
 
+  public void setColumns(LinkedHashMap<String, Column> columns) {
+    this.columns = columns;
+  }
+
   public int getColumnCnt() {
     return columns.size();
   }
@@ -34,10 +38,6 @@ public class Table implements SchemaTreeElement {
 
   public void setRowCnt(int rowCnt) {
     this.rowCnt = rowCnt;
-  }
-
-  public void setColumns(LinkedHashMap<String, Column> columns) {
-    this.columns = columns;
   }
 
   public String getName() {

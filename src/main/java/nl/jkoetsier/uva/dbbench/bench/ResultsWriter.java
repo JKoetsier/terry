@@ -136,7 +136,6 @@ public class ResultsWriter {
       Map<String,
           long[]> results, String filePath) throws IOException {
 
-
     String[] headers = new String[]{
         "query",
         "avg",
@@ -171,13 +170,17 @@ public class ResultsWriter {
       QueryStatistics queryStatistics = new QueryStatistics(query);
 
       // TODO move this logic to QueryStatistics
-      for (Entry<Table, Integer> touchedTableEntry : queryStatistics.getTouchedTables().getAsMap().entrySet()) {
+      for (Entry<Table, Integer> touchedTableEntry : queryStatistics.getTouchedTables().getAsMap()
+          .entrySet()) {
         sumTouched += touchedTableEntry.getValue();
         sumWidth += touchedTableEntry.getKey().getColumnCnt();
-        sumWidthWeighted += touchedTableEntry.getValue() * touchedTableEntry.getKey().getColumnCnt();
-        tableWidths.put(touchedTableEntry.getKey().getName(), touchedTableEntry.getKey().getColumnCnt());
+        sumWidthWeighted +=
+            touchedTableEntry.getValue() * touchedTableEntry.getKey().getColumnCnt();
+        tableWidths
+            .put(touchedTableEntry.getKey().getName(), touchedTableEntry.getKey().getColumnCnt());
         tableTouched.put(touchedTableEntry.getKey().getName(), touchedTableEntry.getValue());
-        tableSizes.put(touchedTableEntry.getKey().getName(), touchedTableEntry.getKey().getRowCnt());
+        tableSizes
+            .put(touchedTableEntry.getKey().getName(), touchedTableEntry.getKey().getRowCnt());
       }
 
       row[2] = Integer.toString(sumTouched);

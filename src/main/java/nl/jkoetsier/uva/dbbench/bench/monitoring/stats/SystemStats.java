@@ -1,8 +1,5 @@
 package nl.jkoetsier.uva.dbbench.bench.monitoring.stats;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Stream;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.util.StringArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,15 +42,15 @@ public class SystemStats implements WritableStats {
   }
 
   public SystemStats normalise(SystemStats baseStats) {
-     SystemStats normalised = new SystemStats(
-         cpuStats.normalise(baseStats.getCpuStats()),
-         memoryStats.normalise(baseStats.getMemoryStats()),
-         diskStats.normalise(baseStats.getDiskStats())
-     );
+    SystemStats normalised = new SystemStats(
+        cpuStats.normalise(baseStats.getCpuStats()),
+        memoryStats.normalise(baseStats.getMemoryStats()),
+        diskStats.normalise(baseStats.getDiskStats())
+    );
 
-     normalised.setTimeStampMillis(timeStampMillis - baseStats.getTimeStampMillis());
+    normalised.setTimeStampMillis(timeStampMillis - baseStats.getTimeStampMillis());
 
-     return normalised;
+    return normalised;
   }
 
 

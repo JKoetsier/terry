@@ -215,7 +215,8 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Query query) {
-    logger.debug("Validating Query {}\n{}", query.getIdentifier(), StringFormatter.format(query.toString()));
+    logger.debug("Validating Query {}\n{}", query.getIdentifier(),
+        StringFormatter.format(query.toString()));
   }
 
   @Override

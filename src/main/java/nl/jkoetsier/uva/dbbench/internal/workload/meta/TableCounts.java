@@ -21,6 +21,16 @@ public class TableCounts {
     add(table, count);
   }
 
+  public static TableCounts add(TableCounts... touchedTables) {
+    TableCounts result = new TableCounts();
+
+    for (TableCounts tt : touchedTables) {
+      result.addAllFrom(tt);
+    }
+
+    return result;
+  }
+
   public void add(Table table, Integer count) {
     Integer existingCnt = get(table);
 
@@ -37,16 +47,6 @@ public class TableCounts {
 
   public HashMap<Table, Integer> getAsMap() {
     return touchedTables;
-  }
-
-  public static TableCounts add(TableCounts... touchedTables) {
-    TableCounts result = new TableCounts();
-
-    for (TableCounts tt : touchedTables) {
-      result.addAllFrom(tt);
-    }
-
-    return result;
   }
 
   public void add(TableCounts tableCounts) {

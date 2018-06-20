@@ -1,11 +1,11 @@
 package nl.jkoetsier.uva.dbbench.connector.mysql;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.mysql.schema.MySqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.mysql.workload.MySqlWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
@@ -42,7 +42,7 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) throws SQLException {
+  protected void importCsvFile(String tableName, String file) throws DatabaseException {
     String query = String.format("LOAD DATA INFILE '%s' INTO TABLE `%s` "
         + "CHARACTER SET 'utf8' "
         + "FIELDS TERMINATED BY ',' "

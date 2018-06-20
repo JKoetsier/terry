@@ -1,18 +1,16 @@
 package nl.jkoetsier.uva.dbbench.bench;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import nl.jkoetsier.uva.dbbench.bench.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.MonitoringThread;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollection;
 import nl.jkoetsier.uva.dbbench.bench.querystripper.QueryStripper;
 import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
+import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.QueryResultRow;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
@@ -65,34 +63,30 @@ public class BenchRunner {
   }
 
   public void setup() throws DatabaseException {
-    try {
-      databaseInterface.connect();
+    databaseInterface.connect();
 
-      if (schema != null && importDataModel) {
-        logger.info("Importing Schema");
-        databaseInterface.importSchema(schema);
-      }
+    if (schema != null && importDataModel) {
+      logger.info("Importing Schema");
+      databaseInterface.importSchema(schema);
+    }
 
-      if (schema != null) {
-        readTableSizes();
-      }
+    if (schema != null) {
+      readTableSizes();
+    }
 
-      if (dataDirectory != null) {
-        logger.info("Importing CSV Data");
-        long start = System.nanoTime();
+    if (dataDirectory != null) {
+      logger.info("Importing CSV Data");
+      long start = System.nanoTime();
 
-        databaseInterface.importCsvData(dataDirectory);
+      databaseInterface.importCsvData(dataDirectory);
 
-        long end = System.nanoTime();
+      long end = System.nanoTime();
 
-        logger.info("Importing CSV took {} seconds", nanoToSeconds(end - start));
-      }
-    } catch (SQLException e) {
-      throw new DatabaseException(e);
+      logger.info("Importing CSV took {} seconds", nanoToSeconds(end - start));
     }
   }
 
-  private void readTableSizes() throws SQLException {
+  private void readTableSizes() throws DatabaseException {
     for (Table table : schema.getTables().values()) {
       int tableSize = databaseInterface.getTableSize(table.getName());
       table.setRowCnt(tableSize);
@@ -135,44 +129,40 @@ public class BenchRunner {
 
     for (int i = 0; i < noRuns + skipFirst; i++) {
       for (Entry<String, String> entry : queries.entrySet()) {
+        logger.debug("Running query {}", entry.getKey());
+
+        long time;
         try {
-          logger.debug("Running query {}", entry.getKey());
+          time = timeQuery(entry.getValue());
 
-          long time;
-          try {
-            time = timeQuery(entry.getValue());
-
-            // TODO Tmp dirty hack for failing subqueries (that don't have all necessary fields included etc)
-          } catch (SQLException e) {
-            if (entry.getKey().contains("-")) {
-              time = 0;
-            } else {
-              throw e;
-            }
+          // TODO Tmp dirty hack for failing subqueries (that don't have all necessary fields included etc)
+        } catch (DatabaseException e) {
+          if (entry.getKey().contains("-")) {
+            time = 0;
+          } else {
+            throw e;
           }
-
-          if (i < skipFirst) {
-            continue;
-          }
-
-          results.get(entry.getKey())[i - skipFirst] = nanoToMicro(time);
-
-          logger.debug("Query {} Execution time: {}", entry.getKey(), formatTimeMicro(time));
-
-          if (time != 0) {
-            lastResult = databaseInterface.getLastResults();
-            logger.debug("Have {} results", lastResult.size());
-          }
-
-          Query query = workload.getQuery(entry.getKey());
-
-          if (query.getExpectedResult() != null) {
-            validateQueryResult(lastResult, query.getExpectedResult());
-          }
-
-        } catch (SQLException e) {
-          throw new DatabaseException(e);
         }
+
+        if (i < skipFirst) {
+          continue;
+        }
+
+        results.get(entry.getKey())[i - skipFirst] = nanoToMicro(time);
+
+        logger.debug("Query {} Execution time: {}", entry.getKey(), formatTimeMicro(time));
+
+        if (time != 0) {
+          lastResult = databaseInterface.getLastResults();
+          logger.debug("Have {} results", lastResult.size());
+        }
+
+        Query query = workload.getQuery(entry.getKey());
+
+        if (query.getExpectedResult() != null) {
+          validateQueryResult(lastResult, query.getExpectedResult());
+        }
+
       }
     }
 
@@ -267,7 +257,7 @@ public class BenchRunner {
   /**
    * Returns execution time of query in nanoseconds.
    */
-  private long timeQuery(String query) throws SQLException {
+  private long timeQuery(String query) throws DatabaseException {
     long start = System.nanoTime();
 
     databaseInterface.executeQuery(query);

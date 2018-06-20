@@ -1,7 +1,6 @@
 package nl.jkoetsier.uva.dbbench.input.yaml;
 
 import java.util.List;
-import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

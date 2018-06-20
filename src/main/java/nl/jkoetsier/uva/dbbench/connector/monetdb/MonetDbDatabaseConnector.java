@@ -8,7 +8,7 @@ import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.schema.MonetDbSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadVisitor;
-import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
+import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
@@ -47,12 +47,16 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected Connection getConnection() throws SQLException {
+  protected Connection getConnection() throws DatabaseException {
     if (connection == null) {
-      connection = DriverManager.getConnection(getConnectionString(),
-          dbConfigProperties.getUsername(),
-          dbConfigProperties.getPassword()
-      );
+      try {
+        connection = DriverManager.getConnection(getConnectionString(),
+            dbConfigProperties.getUsername(),
+            dbConfigProperties.getPassword()
+        );
+      } catch (SQLException e) {
+        throw new DatabaseException(e);
+      }
     }
 
     return connection;
@@ -80,7 +84,7 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) throws SQLException {
+  protected void importCsvFile(String tableName, String file) throws DatabaseException {
     String query = String.format("COPY OFFSET %d INTO \"%s\" FROM '%s' "
             + "USING DELIMITERS ',', '\\n', '\"' NULL AS ''",
         applicationConfigProperties.getCsvHeader() ? 2 : 1,

@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.dbbench.bench.exception;
+package nl.jkoetsier.uva.dbbench.connector.util.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
