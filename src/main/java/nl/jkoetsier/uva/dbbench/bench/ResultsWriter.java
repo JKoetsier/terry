@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollection;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollectionWriter;
+import nl.jkoetsier.uva.dbbench.bench.statistics.QueryStatistics;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
@@ -167,7 +168,10 @@ public class ResultsWriter {
       HashMap<String, Integer> tableTouched = new HashMap<>();
       HashMap<String, Integer> tableSizes = new HashMap<>();
 
-      for (Entry<Table, Integer> touchedTableEntry : query.getTouchedTables().entrySet()) {
+      QueryStatistics queryStatistics = new QueryStatistics(query);
+
+      // TODO move this logic to QueryStatistics
+      for (Entry<Table, Integer> touchedTableEntry : queryStatistics.getTouchedTables().getAsMap().entrySet()) {
         sumTouched += touchedTableEntry.getValue();
         sumWidth += touchedTableEntry.getKey().getColumnCnt();
         sumWidthWeighted += touchedTableEntry.getValue() * touchedTableEntry.getKey().getColumnCnt();

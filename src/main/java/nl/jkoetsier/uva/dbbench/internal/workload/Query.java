@@ -1,8 +1,7 @@
 package nl.jkoetsier.uva.dbbench.internal.workload;
 
-import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
-import nl.jkoetsier.uva.dbbench.internal.schema.Table;
+import nl.jkoetsier.uva.dbbench.internal.workload.meta.TableCounts;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadElement;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
@@ -39,10 +38,6 @@ public class Query implements WorkloadElement {
 
   public void setExpectedResult(QueryResult expectedResult) {
     this.expectedResult = expectedResult;
-  }
-
-  public HashMap<Table, Integer> getTouchedTables() {
-    return relation.getTouchedTables();
   }
 
   @Override

@@ -120,7 +120,7 @@ public class BenchRunner {
 
     TreeMap<String, String> queries = new TreeMap<>(
         databaseInterface.getWorkloadQueries(workload));
-    HashMap<String, long[]> results = new HashMap<>();
+    TreeMap<String, long[]> results = new TreeMap<>();
 
     printQueries(queries);
 
@@ -141,7 +141,6 @@ public class BenchRunner {
           long time;
           try {
             time = timeQuery(entry.getValue());
-
 
             // TODO Tmp dirty hack for failing subqueries (that don't have all necessary fields included etc)
           } catch (SQLException e) {

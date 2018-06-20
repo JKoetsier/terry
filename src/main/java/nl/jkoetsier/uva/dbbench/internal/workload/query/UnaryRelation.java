@@ -15,8 +15,4 @@ public abstract class UnaryRelation extends Relation {
     this.input = input;
   }
 
-  @Override
-  public HashMap<Table, Integer> getTouchedTables() {
-    return input.getTouchedTables();
-  }
 }

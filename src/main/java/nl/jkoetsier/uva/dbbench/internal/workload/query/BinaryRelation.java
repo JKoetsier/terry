@@ -29,23 +29,4 @@ public abstract class BinaryRelation extends Relation {
   public void setRightInput(Relation rightInput) {
     this.rightInput = rightInput;
   }
-
-  @Override
-  public HashMap<Table, Integer> getTouchedTables() {
-    return addMaps(leftInput.getTouchedTables(), rightInput.getTouchedTables());
-  }
-
-  static HashMap<Table, Integer> addMaps(HashMap<Table, Integer> mapA, HashMap<Table, Integer> mapB) {
-    HashMap<Table, Integer> result = new HashMap<>(mapA);
-
-    for (Entry<Table, Integer> entry : mapB.entrySet()) {
-      if (result.containsKey(entry.getKey())) {
-        result.put(entry.getKey(), result.get(entry.getKey()) + entry.getValue());
-      } else {
-        result.put(entry.getKey(), entry.getValue());
-      }
-    }
-
-    return result;
-  }
 }
