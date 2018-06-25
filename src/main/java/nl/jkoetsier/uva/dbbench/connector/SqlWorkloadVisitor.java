@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
@@ -52,12 +53,16 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   protected Logger logger = LoggerFactory.getLogger(SqlWorkloadVisitor.class);
 
-  protected HashMap<String, String> result = new HashMap<String, String>();
+  protected HashMap<String, SqlQuery> result = new HashMap<>();
   protected Stack<String> currentStack = new Stack<>();
+
+  // Flag can be set by child visitors when an unsupported action is encountered. Will be set on
+  // output queries.
+  protected boolean supported = true;
 
   protected abstract SqlIdentifierQuoter getIdentifierQuoter();
 
-  public HashMap<String, String> getResult() {
+  public HashMap<String, SqlQuery> getResult() {
     return result;
   }
 
@@ -294,7 +299,11 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
       }
     }
 
-    result.put(query.getIdentifier(), queryString);
+    SqlQuery sqlQuery = new SqlQuery(queryString);
+    sqlQuery.setSupported(supported);
+
+    result.put(query.getIdentifier(), sqlQuery);
+    supported = true;
   }
 
   @Override

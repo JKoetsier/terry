@@ -10,7 +10,9 @@ import nl.jkoetsier.uva.dbbench.connector.monetdb.schema.MonetDbSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
+import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -63,7 +65,7 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<String, String> getCreateQueries(Schema schema) {
+  public HashMap<String, SqlQuery> getCreateQueries(Schema schema) {
     MonetDbSchemaVisitor schemaVisitor = new MonetDbSchemaVisitor();
     schema.acceptVisitor(schemaVisitor);
 
@@ -71,7 +73,7 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<String, String> getWorkloadQueries(Workload workload) {
+  public HashMap<String, SqlQuery> getWorkloadQueries(Workload workload) {
     MonetDbWorkloadVisitor workloadVisitor = new MonetDbWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 
@@ -85,10 +87,10 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   protected void importCsvFile(String tableName, String file) throws DatabaseException {
-    String query = String.format("COPY OFFSET %d INTO \"%s\" FROM '%s' "
+    SqlQuery query = new SqlQuery(String.format("COPY OFFSET %d INTO \"%s\" FROM '%s' "
             + "USING DELIMITERS ',', '\\n', '\"' NULL AS ''",
         applicationConfigProperties.getCsvHeader() ? 2 : 1,
-        tableName, file);
+        tableName, file));
 
     executeQuery(query);
   }

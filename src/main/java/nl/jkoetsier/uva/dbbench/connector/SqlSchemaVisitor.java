@@ -3,6 +3,7 @@ package nl.jkoetsier.uva.dbbench.connector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BigIntegerColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BooleanColumn;
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public abstract class SqlSchemaVisitor extends SchemaVisitor {
 
   private static Logger logger = LoggerFactory.getLogger(SqlSchemaVisitor.class);
-  protected HashMap<String, String> createQueries = new HashMap<>();
+  protected HashMap<String, SqlQuery> createQueries = new HashMap<>();
   protected List<ColumnDef> columnDefStack = new ArrayList<>();
 
   protected abstract SqlIdentifierQuoter getIdentifierQuoter();
@@ -52,7 +53,7 @@ public abstract class SqlSchemaVisitor extends SchemaVisitor {
   }
 
   @Override
-  public HashMap<String, String> getCreateQueries() {
+  public HashMap<String, SqlQuery> getCreateQueries() {
     return createQueries;
   }
 

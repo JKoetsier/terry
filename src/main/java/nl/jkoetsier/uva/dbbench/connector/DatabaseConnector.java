@@ -5,6 +5,7 @@ import java.util.HashMap;
 import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
+import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
@@ -15,14 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class DatabaseConnector {
 
   private static Logger logger = LoggerFactory.getLogger(DatabaseConnector.class);
+
   @Autowired
   protected DbConfigProperties dbConfigProperties;
+
   @Autowired
   protected ApplicationConfigProperties applicationConfigProperties;
 
   public abstract void connect() throws DatabaseException;
 
-  public abstract void executeQuery(String query) throws DatabaseException;
+  public abstract void executeQuery(ExecutableQuery query) throws DatabaseException;
 
   public abstract QueryResult getLastResults() throws DatabaseException;
 
@@ -30,13 +33,13 @@ public abstract class DatabaseConnector {
 
   protected abstract void importCsvFile(String tableName, String file) throws DatabaseException;
 
-  public abstract int getTableSize(String tableName) throws DatabaseException;
+  public abstract long getTableSize(String tableName) throws DatabaseException;
 
   public abstract void closeConnection();
 
-  public abstract HashMap<String, String> getWorkloadQueries(Workload workload);
+  public abstract HashMap<String, ? extends ExecutableQuery> getWorkloadQueries(Workload workload);
 
-  public abstract HashMap<String, String> getCreateQueries(Schema schema);
+  public abstract HashMap<String, ? extends ExecutableQuery> getCreateQueries(Schema schema);
 
   public abstract String getSimpleName();
 

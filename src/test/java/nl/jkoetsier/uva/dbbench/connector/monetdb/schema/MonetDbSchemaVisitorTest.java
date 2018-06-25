@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.SchemaTest;
 import nl.jkoetsier.uva.dbbench.input.schema.sql.SqlSchemaReader;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
     return reader.fromFile(testDataHelper.getFilePath("sql/" + filename));
   }
 
-  private List<String> getCreateQueries(String filename) {
+  private List<SqlQuery> getCreateQueries(String filename) {
     Schema schema = getSchemaFromFile(filename);
 
     MonetDbSchemaVisitor schemaVisitor = new MonetDbSchemaVisitor();
@@ -35,20 +36,20 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
   }
 
   private void compareSingleQueryFromFile(String filename, String expected) {
-    List<String> result = getCreateQueries(filename);
+    List<SqlQuery> result = getCreateQueries(filename);
 
     assertEquals(1, result.size());
-    assertEqual(expected, normalise(result.get(0)));
+    assertEqual(expected, normalise(result.get(0).getQueryString()));
   }
 
   private void compareMultipleQueriesFromFile(String filename, List<String> expected) {
     Collections.reverse(expected);
-    List<String> result = getCreateQueries(filename);
+    List<SqlQuery> result = getCreateQueries(filename);
 
     assertEquals(expected.size(), result.size());
 
     for (int i = 0; i < expected.size(); i++) {
-      assertEqual(expected.get(i), normalise(result.get(i)));
+      assertEqual(expected.get(i), normalise(result.get(i).getQueryString()));
     }
   }
 

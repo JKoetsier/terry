@@ -11,6 +11,7 @@ import nl.jkoetsier.uva.dbbench.bench.querystripper.QueryStripper;
 import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
+import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.QueryResultRow;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
@@ -88,7 +89,7 @@ public class BenchRunner {
 
   private void readTableSizes() throws DatabaseException {
     for (Table table : schema.getTables().values()) {
-      int tableSize = databaseInterface.getTableSize(table.getName());
+      long tableSize = databaseInterface.getTableSize(table.getName());
       table.setRowCnt(tableSize);
 
       logger.debug("Table {} size: {}", table.getName(), tableSize);
@@ -100,9 +101,9 @@ public class BenchRunner {
     databaseInterface.closeConnection();
   }
 
-  private void printQueries(TreeMap<String, String> queries) {
-    for (Entry<String, String> entry : queries.entrySet()) {
-      logger.info("{}: {}", entry.getKey(), entry.getValue());
+  private void printQueries(TreeMap<String, ExecutableQuery> queries) {
+    for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
+      logger.info("{}: {}", entry.getKey(), entry.getValue().toString());
     }
   }
 
@@ -112,13 +113,13 @@ public class BenchRunner {
     int noRuns = applicationConfigProperties.getNoRuns();
     int skipFirst = applicationConfigProperties.getSkipFirst();
 
-    TreeMap<String, String> queries = new TreeMap<>(
+    TreeMap<String, ExecutableQuery> queries = new TreeMap<>(
         databaseInterface.getWorkloadQueries(workload));
     TreeMap<String, long[]> results = new TreeMap<>();
 
     printQueries(queries);
 
-    for (Entry<String, String> entry : queries.entrySet()) {
+    for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
       results.put(entry.getKey(), new long[noRuns]);
     }
 
@@ -128,20 +129,25 @@ public class BenchRunner {
     waitMilliseconds(3000);
 
     for (int i = 0; i < noRuns + skipFirst; i++) {
-      for (Entry<String, String> entry : queries.entrySet()) {
+      for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
         logger.debug("Running query {}", entry.getKey());
 
         long time;
-        try {
-          time = timeQuery(entry.getValue());
 
-          // TODO Tmp dirty hack for failing subqueries (that don't have all necessary fields included etc)
-        } catch (DatabaseException e) {
-          if (entry.getKey().contains("-")) {
-            time = 0;
-          } else {
-            throw e;
+        if (entry.getValue().isSupported()) {
+          try {
+            time = timeQuery(entry.getValue());
+
+            // TODO Tmp dirty hack for failing subqueries (that don't have all necessary fields included etc)
+          } catch (DatabaseException e) {
+            if (entry.getKey().contains("-")) {
+              time = 0;
+            } else {
+              throw e;
+            }
           }
+        } else {
+          time = 0;
         }
 
         if (i < skipFirst) {
@@ -257,7 +263,7 @@ public class BenchRunner {
   /**
    * Returns execution time of query in nanoseconds.
    */
-  private long timeQuery(String query) throws DatabaseException {
+  private long timeQuery(ExecutableQuery query) throws DatabaseException {
     long start = System.nanoTime();
 
     databaseInterface.executeQuery(query);

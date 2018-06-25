@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.WorkloadTest;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.util.TestDataHelper;
 import org.junit.Test;
@@ -21,31 +22,31 @@ public class PostgresWorkloadVisitorTest implements WorkloadTest {
     return reader.fromFile(testDataHelper.getFilePath("sql/" + filename));
   }
 
-  private List<String> getGeneratedWorkload(String filename) {
+  private List<SqlQuery> getGeneratedWorkload(String filename) {
     Workload workload = getWorkloadFromFile(filename);
 
     PostgresWorkloadVisitor workloadVisitor = new PostgresWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
-    HashMap<String, String> result = workloadVisitor.getResult();
+    HashMap<String, SqlQuery> result = workloadVisitor.getResult();
 
     return new ArrayList<>(result.values());
   }
 
 
   private void compareSingleQueryFromFile(String filename, String expected) {
-    List<String> result = getGeneratedWorkload(filename);
+    List<SqlQuery> result = getGeneratedWorkload(filename);
 
     assertEquals(1, result.size());
-    assertQueryEquals(expected, result.get(0));
+    assertQueryEquals(expected, result.get(0).getQueryString());
   }
 
   private void compareMultipleQueriesFromFile(String filename, List<String> expected) {
-    List<String> result = getGeneratedWorkload(filename);
+    List<SqlQuery> result = getGeneratedWorkload(filename);
 
     assertEquals(expected.size(), result.size());
 
     for (int i = 0; i < expected.size(); i++) {
-      assertQueryEquals(expected.get(i), result.get(i));
+      assertQueryEquals(expected.get(i), result.get(i).getQueryString());
     }
   }
 

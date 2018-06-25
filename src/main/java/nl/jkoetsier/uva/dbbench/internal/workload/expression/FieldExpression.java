@@ -36,6 +36,12 @@ public class FieldExpression extends Expression {
     return fieldName;
   }
 
+  public String getColumnName() {
+    String[] splitted = fieldName.split("\\.");
+
+    return splitted[splitted.length - 1];
+  }
+
   private void setFieldName(String fieldName) {
     this.fieldName = fieldName.toLowerCase();
   }

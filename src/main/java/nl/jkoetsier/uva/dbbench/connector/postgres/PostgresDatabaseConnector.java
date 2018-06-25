@@ -9,6 +9,7 @@ import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<String, String> getCreateQueries(Schema schema) {
+  public HashMap<String, SqlQuery> getCreateQueries(Schema schema) {
     PostgresSchemaVisitor schemaVisitor = new PostgresSchemaVisitor();
     schema.acceptVisitor(schemaVisitor);
 
@@ -65,7 +66,7 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<String, String> getWorkloadQueries(Workload workload) {
+  public HashMap<String, SqlQuery> getWorkloadQueries(Workload workload) {
     PostgresWorkloadVisitor workloadVisitor = new PostgresWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 
@@ -74,9 +75,9 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   protected void importCsvFile(String tableName, String file) throws DatabaseException {
-    String query = String.format("COPY \"%s\" FROM '%s' "
+    SqlQuery query = new SqlQuery(String.format("COPY \"%s\" FROM '%s' "
             + "WITH (FORMAT csv, %sDELIMITER ',', NULL 'NULL')", tableName, file,
-        applicationConfigProperties.getCsvHeader() ? "HEADER true, " : "");
+        applicationConfigProperties.getCsvHeader() ? "HEADER true, " : ""));
 
     executeQuery(query);
   }

@@ -11,8 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
+import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.QueryResultRow;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +24,13 @@ import org.springframework.stereotype.Component;
 public abstract class JdbcDatabaseConnector extends DatabaseConnector {
 
   private static Logger logger = LoggerFactory.getLogger(JdbcDatabaseConnector.class);
-  protected Connection connection;
   private Statement lastStatement;
 
-  protected abstract String getConnectionString();
+  protected Connection connection;
 
+  protected abstract String getConnectionString();
   protected abstract SqlIdentifierQuoter getIdentifierQuoter();
+  public abstract HashMap<String, SqlQuery> getCreateQueries(Schema schema);
 
   @Override
   public void connect() throws DatabaseException {
@@ -60,14 +63,16 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
   }
 
   @Override
-  public void executeQuery(String query) throws DatabaseException {
+  public void executeQuery(ExecutableQuery query) throws DatabaseException {
+    assert(query instanceof SqlQuery);
+
     Connection connection = getConnection();
 
     logger.debug("Query: {}", query);
 
     try {
       lastStatement = connection.createStatement();
-      lastStatement.execute(query);
+      lastStatement.execute(((SqlQuery) query).getQueryString());
     } catch (SQLException e) {
       throw new DatabaseException(e);
     }
@@ -138,11 +143,11 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
 
   @Override
   public void importSchema(Schema schema) throws DatabaseException {
-    HashMap<String, String> createQueries = getCreateQueries(schema);
+    HashMap<String, SqlQuery> createQueries = getCreateQueries(schema);
 
     logger.info(String.format("Start import of %d tables", createQueries.size()));
 
-    for (Entry<String, String> queryEntrySet : createQueries.entrySet()) {
+    for (Entry<String, SqlQuery> queryEntrySet : createQueries.entrySet()) {
       logger.info(String.format("Creating table %s", queryEntrySet.getKey()));
 
       executeQuery(queryEntrySet.getValue());
@@ -150,9 +155,9 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
   }
 
   @Override
-  public int getTableSize(String tableName) throws DatabaseException {
-    String query = String
-        .format("SELECT COUNT(*) FROM %s", getIdentifierQuoter().quoteString(tableName));
+  public long getTableSize(String tableName) throws DatabaseException {
+    SqlQuery query = new SqlQuery(String
+        .format("SELECT COUNT(*) FROM %s", getIdentifierQuoter().quoteString(tableName)));
 
     executeQuery(query);
 

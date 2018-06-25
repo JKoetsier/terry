@@ -4,6 +4,7 @@ import nl.jkoetsier.uva.dbbench.connector.ColumnDef;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.SqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.postgres.PostgresIdentifierQuoter;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DateTimeColumn;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.DecimalColumn;
@@ -72,7 +73,7 @@ public class PostgresSchemaVisitor extends SqlSchemaVisitor {
 
     createTable = createTable.concat("\n);");
 
-    createQueries.put(table.getName(), createTable);
+    createQueries.put(table.getName(), new SqlQuery(createTable));
     columnDefStack.clear();
   }
 }

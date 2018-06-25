@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.internal.schema.visitor;
 
 import java.util.HashMap;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.schema.fields.BigIntegerColumn;
@@ -46,5 +47,5 @@ public abstract class SchemaVisitor {
   /**
    * @return Returns a Hashmap of <EntityName, QueryString> pairs
    */
-  public abstract HashMap<String, String> getCreateQueries();
+  public abstract HashMap<String, SqlQuery> getCreateQueries();
 }

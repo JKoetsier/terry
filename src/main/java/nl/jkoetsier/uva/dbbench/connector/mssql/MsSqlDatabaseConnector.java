@@ -6,7 +6,9 @@ import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.mssql.schema.MsSqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
+import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -17,7 +19,7 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
   protected static Logger logger = LoggerFactory.getLogger(MsSqlDatabaseConnector.class);
 
   @Override
-  public HashMap<String, String> getCreateQueries(Schema schema) {
+  public HashMap<String, SqlQuery> getCreateQueries(Schema schema) {
     MsSqlSchemaVisitor schemaVisitor = new MsSqlSchemaVisitor();
     schema.acceptVisitor(schemaVisitor);
 
@@ -25,7 +27,7 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<String, String> getWorkloadQueries(Workload workload) {
+  public HashMap<String, SqlQuery> getWorkloadQueries(Workload workload) {
     MsSqlWorkloadVisitor workloadVisitor = new MsSqlWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 
@@ -71,8 +73,8 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   protected void importCsvFile(String tableName, String file) throws DatabaseException {
-    String query = String.format("BULK INSERT [%s] FROM '%s' WITH (FIRSTROW = %d)", tableName, file,
-        applicationConfigProperties.getCsvHeader() ? 2 : 1);
+    SqlQuery query = new SqlQuery(String.format("BULK INSERT [%s] FROM '%s' WITH (FIRSTROW = %d)", tableName, file,
+        applicationConfigProperties.getCsvHeader() ? 2 : 1));
 
     executeQuery(query);
   }

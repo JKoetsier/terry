@@ -2,7 +2,7 @@ package nl.jkoetsier.uva.dbbench.internal.workload.expression.operator;
 
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
 
-public class GteOp extends Operator {
+public class GteOp extends RelationalOperator {
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {

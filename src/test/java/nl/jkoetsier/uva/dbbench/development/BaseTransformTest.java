@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import nl.jkoetsier.uva.dbbench.connector.SqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.util.FileReader;
@@ -52,7 +53,7 @@ public abstract class BaseTransformTest {
     return query;
   }
 
-  protected String getOutputQuery(String inputQuery) {
+  protected SqlQuery getOutputQuery(String inputQuery) {
     SqlWorkloadReader workloadReader = new SqlWorkloadReader();
     Workload workload = workloadReader.fromString(inputQuery);
 
@@ -65,7 +66,7 @@ public abstract class BaseTransformTest {
 
     query.acceptVisitor(workloadVisitor);
 
-    Collection<String> queriesAsString = workloadVisitor.getResult().values();
+    Collection<SqlQuery> queriesAsString = workloadVisitor.getResult().values();
 
     assertEquals(1, queriesAsString.size());
 
@@ -82,7 +83,7 @@ public abstract class BaseTransformTest {
 
     for (int i = start; i < queries.length && i < start + count; i++) {
       String inputQuery = queries[i];
-      String outputQuery = getOutputQuery(inputQuery);
+      String outputQuery = getOutputQuery(inputQuery).getQueryString();
       String msSqlOutput = msSqlTransformTest.getOutputQuery(inputQuery);
 
       if (printInfo) {
@@ -92,7 +93,7 @@ public abstract class BaseTransformTest {
       assertEquals(stripQuery(msSqlOutput), stripQuery(outputQuery));
 
       // Check reflexivity
-      String output2Query = getOutputQuery(outputQuery);
+      String output2Query = getOutputQuery(outputQuery).getQueryString();
       assertEquals(output2Query, outputQuery);
     }
   }

@@ -8,7 +8,9 @@ import nl.jkoetsier.uva.dbbench.connector.mysql.workload.MySqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
+import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.slf4j.Logger;
@@ -43,18 +45,18 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   protected void importCsvFile(String tableName, String file) throws DatabaseException {
-    String query = String.format("LOAD DATA INFILE '%s' INTO TABLE `%s` "
+    SqlQuery query = new SqlQuery(String.format("LOAD DATA INFILE '%s' INTO TABLE `%s` "
         + "CHARACTER SET 'utf8' "
         + "FIELDS TERMINATED BY ',' "
         + "ENCLOSED BY '\"' "
         + "LINES TERMINATED BY '\\n' "
-        + "IGNORE %d LINES", file, tableName, applicationConfigProperties.getCsvHeader() ? 1 : 0);
+        + "IGNORE %d LINES", file, tableName, applicationConfigProperties.getCsvHeader() ? 1 : 0));
 
     executeQuery(query);
   }
 
   @Override
-  public HashMap<String, String> getCreateQueries(Schema schema) {
+  public HashMap<String, SqlQuery> getCreateQueries(Schema schema) {
     MySqlSchemaVisitor schemavisitor = new MySqlSchemaVisitor();
     schema.acceptVisitor(schemavisitor);
 
@@ -67,7 +69,7 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<String, String> getWorkloadQueries(Workload workload) {
+  public HashMap<String, SqlQuery> getWorkloadQueries(Workload workload) {
     MySqlWorkloadVisitor workloadVisitor = new MySqlWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 

@@ -19,7 +19,8 @@ public class MySqlWorkloadVisitor extends SqlWorkloadVisitor {
 
   @Override
   public void visit(FullJoin fullJoin) {
-    throw new RuntimeException("Not supported in MySQL. Do something with this");
+    supported = false;
+    super.visit(fullJoin);
   }
 
   @Override

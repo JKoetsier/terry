@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.input.workload.sql.SqlWorkloadReader;
+import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import nl.jkoetsier.uva.dbbench.testclass.DevelopmentTest;
@@ -43,11 +44,11 @@ public class MsSqlTransformTest {
 
     query.acceptVisitor(workloadVisitor);
 
-    Collection<String> queriesAsString = workloadVisitor.getResult().values();
+    Collection<SqlQuery> queriesAsString = workloadVisitor.getResult().values();
 
     assertEquals(1, queriesAsString.size());
 
-    return queriesAsString.iterator().next();
+    return queriesAsString.iterator().next().getQueryString();
   }
 
   private String stripQuery(String query) {

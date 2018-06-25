@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollection;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollectionWriter;
 import nl.jkoetsier.uva.dbbench.bench.statistics.QueryStatistics;
+import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
 import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
@@ -56,7 +57,7 @@ public class ResultsWriter {
   }
 
   public void writeResults(Workload workload,
-      Schema schema, Map<String, String> queries,
+      Schema schema, Map<String, ExecutableQuery> queries,
       Map<String, long[]> results)
       throws IOException {
 
@@ -132,7 +133,7 @@ public class ResultsWriter {
   }
 
   private void writeQueryStats(Workload workload,
-      Schema schema, Map<String, String> queries,
+      Schema schema, Map<String, ExecutableQuery> queries,
       Map<String,
           long[]> results, String filePath) throws IOException {
 
@@ -150,7 +151,7 @@ public class ResultsWriter {
     String[][] rows = new String[queries.size()][headers.length];
 
     int ri = 0;
-    for (Entry<String, String> entry : queries.entrySet()) {
+    for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
       long[] queryResults = results.get(entry.getKey());
       Query query = workload.getQuery(entry.getKey());
 
@@ -165,7 +166,7 @@ public class ResultsWriter {
 
       HashMap<String, Integer> tableWidths = new HashMap<>();
       HashMap<String, Integer> tableTouched = new HashMap<>();
-      HashMap<String, Integer> tableSizes = new HashMap<>();
+      HashMap<String, Long> tableSizes = new HashMap<>();
 
       QueryStatistics queryStatistics = new QueryStatistics(query);
 
@@ -206,11 +207,11 @@ public class ResultsWriter {
   }
 
 
-  private void writeQueries(Map<String, String> queries, String filePath) throws IOException {
+  private void writeQueries(Map<String, ExecutableQuery> queries, String filePath) throws IOException {
     PrintWriter printWriter = new PrintWriter(filePath);
 
-    for (Entry<String, String> entry : queries.entrySet()) {
-      printWriter.printf("%3s - %s%n", entry.getKey(), entry.getValue());
+    for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
+      printWriter.printf("%3s - %s%n", entry.getKey(), entry.getValue().toString());
     }
 
     printWriter.close();
