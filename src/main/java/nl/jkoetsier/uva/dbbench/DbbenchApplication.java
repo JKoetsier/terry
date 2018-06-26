@@ -108,7 +108,7 @@ public class DbbenchApplication implements ApplicationRunner {
     if (error) {
       System.err.format(
           "\nRun program with parameters:\n --workload=workloadfile.sql\n --datamodel=datamodel.sql\n "
-              + "--output_db=(%s)\nOptional:\n %s%n",
+              + "--outputdb=(%s)\nOptional:\n %s%n",
           String.join("|", applicationConfigProperties.getAcceptedDatabases()),
           String.join("\n ", options)
       );
@@ -118,6 +118,8 @@ public class DbbenchApplication implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) {
+    System.out.println(applicationConfigProperties.getNoRuns());
+    System.exit(0);
     checkParameters(args);
 
     Schema schema = null;
