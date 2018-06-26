@@ -118,8 +118,6 @@ public class DbbenchApplication implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) {
-    System.out.println(applicationConfigProperties.getNoRuns());
-    System.exit(0);
     checkParameters(args);
 
     Schema schema = null;
