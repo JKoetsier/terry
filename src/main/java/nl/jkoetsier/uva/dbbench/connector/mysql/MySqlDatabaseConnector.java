@@ -23,7 +23,7 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   protected String getConnectionString() {
-    String otherProperties = "&useSSL=false";
+    String otherProperties = "&useSSL=false&allowPublicKeyRetrieval=true";
 
     String connectionString = String.format("jdbc:mysql://%s:%s/%s?user=%s&password=%s%s",
         dbConfigProperties.getHost(),
