@@ -8,20 +8,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollection;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollectionWriter;
+import nl.jkoetsier.uva.dbbench.bench.results.Results;
+import nl.jkoetsier.uva.dbbench.bench.results.RunResult;
+import nl.jkoetsier.uva.dbbench.bench.results.RunResultList;
+import nl.jkoetsier.uva.dbbench.bench.results.RunResultStringValueSupplier;
 import nl.jkoetsier.uva.dbbench.bench.statistics.QueryStatistics;
 import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
-import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
-import nl.jkoetsier.uva.dbbench.internal.schema.Table;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
-import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
@@ -56,12 +53,16 @@ public class ResultsWriter {
     }
   }
 
-  public void writeResults(Workload workload,
-      Schema schema, Map<String, ExecutableQuery> queries,
-      Map<String, long[]> results)
+  public void writeResults(Results results)
       throws IOException {
 
-    String outputCsvFilename = String.format("%s/%s_%s_timings.csv",
+    String outputResponseTimesFilename = String.format("%s/%s_%s_responsetimes.csv",
+        outputDirectory,
+        dateTimeStr,
+        dbIdentifier
+    );
+
+    String outputResultTimesFilename = String.format("%s/%s_%s_resulttimes.csv",
         outputDirectory,
         dateTimeStr,
         dbIdentifier
@@ -81,9 +82,10 @@ public class ResultsWriter {
 
     createDirectory();
 
-    writeResults(results, outputCsvFilename);
-    writeQueries(queries, outputQueriesFilename);
-    writeQueryStats(workload, schema, queries, results, queryStatsFilename);
+    writeResponseTimes(results, outputResponseTimesFilename);
+    writeResultTimes(results, outputResultTimesFilename);
+    writeQueries(results, outputQueriesFilename);
+    writeQueryStats(results, queryStatsFilename);
   }
 
   public void writeSystemStats(SystemStatsCollection systemStatsCollection) throws IOException {
@@ -98,32 +100,44 @@ public class ResultsWriter {
     writer.writeCsv(systemStatsCollection, outputFilename);
   }
 
-  private void writeResults(Map<String, long[]> results, String filePath) throws IOException {
+
+  /**
+   * Writes a CSV matrix of values from a RunResult.
+   * Value should be provided by a RunResultStringValueSupplier
+   *
+   * @param results Results from a bench run
+   * @param valueSupplier Provides the value to print to CSV
+   * @param filePath Path to write the CSV to
+   * @throws IOException When something goes wrong with IO
+   */
+  private void writeRunResultValuesMatrix(Results results, RunResultStringValueSupplier valueSupplier, String filePath) throws IOException {
+
     if (results.size() == 0) {
       return;
     }
 
-    List<String> keys = new ArrayList<>(results.keySet());
-    long[] firstRow = results.get(keys.get(0));
+    List<ExecutableQuery> keys = results.keys();
+    RunResultList firstRow = results.get(keys.get(0));
 
-    String[] headers = new String[firstRow.length + 1];
+    String[] headers = new String[firstRow.size() + 1];
     headers[0] = "query";
 
-    for (int i = 1; i <= firstRow.length; i++) {
+    for (int i = 1; i <= firstRow.size(); i++) {
       headers[i] = Integer.toString(i - 1);
     }
 
-    String[][] rows = new String[results.size()][firstRow.length + 1];
+    String[][] rows = new String[results.size()][firstRow.size() + 1];
 
     int ri = 0;
 
-    for (Entry<String, long[]> entry : results.entrySet()) {
-      String[] row = new String[firstRow.length + 1];
+    for (Entry<ExecutableQuery, RunResultList> entry : results.getResults().entrySet()) {
+      String[] row = new String[firstRow.size() + 1];
 
-      row[0] = entry.getKey();
+      row[0] = entry.getKey().getIdentifier();
 
-      for (int i = 0; i < entry.getValue().length; i++) {
-        row[i + 1] = Long.toString(entry.getValue()[i]);
+      for (int i = 0; i < entry.getValue().size(); i++) {
+        RunResult runResult = entry.getValue().get(i);
+        row[i + 1] = valueSupplier.getValue(runResult);
       }
 
       rows[ri++] = row;
@@ -132,14 +146,26 @@ public class ResultsWriter {
     writeCsv(headers, rows, filePath);
   }
 
-  private void writeQueryStats(Workload workload,
-      Schema schema, Map<String, ExecutableQuery> queries,
-      Map<String,
-          long[]> results, String filePath) throws IOException {
+  private void writeResponseTimes(Results results, String filePath) throws IOException {
+    RunResultStringValueSupplier vs = (r) -> (Long.toString(r.getResponseTimeNs()));
+
+    writeRunResultValuesMatrix(results, vs, filePath);
+  }
+
+  private void writeResultTimes(Results results, String filePath) throws IOException {
+    RunResultStringValueSupplier vs = (r) -> (Long.toString(r.getResultsTimeNs()));
+
+    writeRunResultValuesMatrix(results, vs, filePath);
+  }
+
+  private void writeQueryStats(Results results, String filePath) throws IOException {
 
     String[] headers = new String[]{
         "query",
-        "avg",
+        "avg_response",
+        "avg_results",
+        "result_rows",
+        "result_width",
         "touched_tables",
         "total_table_width",
         "total_table_widht_weighted",
@@ -148,48 +174,34 @@ public class ResultsWriter {
         "table_sizes"
     };
 
-    String[][] rows = new String[queries.size()][headers.length];
+    String[][] rows = new String[results.size()][headers.length];
 
     int ri = 0;
-    for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
-      long[] queryResults = results.get(entry.getKey());
-      Query query = workload.getQuery(entry.getKey());
+
+    for (Entry<ExecutableQuery, RunResultList> entry : results.getResults().entrySet()) {
+      Query query = entry.getKey().getQueryObject();
+
 
       String[] row = new String[headers.length];
 
-      row[0] = entry.getKey();
-      row[1] = Double.toString(Arrays.stream(queryResults).average().getAsDouble());
+      int curIndex = 0;
 
-      int sumTouched = 0;
-      int sumWidth = 0;
-      int sumWidthWeighted = 0;
+      RunResult firstResult = entry.getValue().get(0);
 
-      HashMap<String, Integer> tableWidths = new HashMap<>();
-      HashMap<String, Integer> tableTouched = new HashMap<>();
-      HashMap<String, Long> tableSizes = new HashMap<>();
+      row[curIndex++] = entry.getKey().getIdentifier(); // query
+      row[curIndex++] = Double.toString(entry.getValue().getAverageResponseTime()); // avg_response
+      row[curIndex++] = Double.toString(entry.getValue().getAverageResultsTime()); // avg_results
+      row[curIndex++] = Integer.toString(firstResult.getResultLength()); // result_rows
+      row[curIndex++] = Integer.toString(firstResult.getResultWidth()); // result_width
 
       QueryStatistics queryStatistics = new QueryStatistics(query);
 
-      // TODO move this logic to QueryStatistics
-      for (Entry<Table, Integer> touchedTableEntry : queryStatistics.getTouchedTables().getAsMap()
-          .entrySet()) {
-        sumTouched += touchedTableEntry.getValue();
-        sumWidth += touchedTableEntry.getKey().getColumnCnt();
-        sumWidthWeighted +=
-            touchedTableEntry.getValue() * touchedTableEntry.getKey().getColumnCnt();
-        tableWidths
-            .put(touchedTableEntry.getKey().getName(), touchedTableEntry.getKey().getColumnCnt());
-        tableTouched.put(touchedTableEntry.getKey().getName(), touchedTableEntry.getValue());
-        tableSizes
-            .put(touchedTableEntry.getKey().getName(), touchedTableEntry.getKey().getRowCnt());
-      }
-
-      row[2] = Integer.toString(sumTouched);
-      row[3] = Integer.toString(sumWidth);
-      row[4] = Integer.toString(sumWidthWeighted);
-      row[5] = tableTouched.toString();
-      row[6] = tableWidths.toString();
-      row[7] = tableSizes.toString();
+      row[curIndex++] = Integer.toString(queryStatistics.getSumTablesTouched()); // touched_tables
+      row[curIndex++] = Integer.toString(queryStatistics.getSumTableWidth()); // total_table_width
+      row[curIndex++] = Integer.toString(queryStatistics.getSumTableWidthWeighted()); // total_table_width_weighted
+      row[curIndex++] = queryStatistics.getTablesTouched().toString(); // touched_cnt
+      row[curIndex++] = queryStatistics.getTableWidths().toString(); // columns_cnt
+      row[curIndex] = queryStatistics.getTableLengths().toString(); // table_sizes
 
       rows[ri++] = row;
     }
@@ -207,11 +219,11 @@ public class ResultsWriter {
   }
 
 
-  private void writeQueries(Map<String, ExecutableQuery> queries, String filePath) throws IOException {
+  private void writeQueries(Results results, String filePath) throws IOException {
     PrintWriter printWriter = new PrintWriter(filePath);
 
-    for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
-      printWriter.printf("%3s - %s%n", entry.getKey(), entry.getValue().toString());
+    for (Entry<ExecutableQuery, RunResultList> entry : results.getResults().entrySet()) {
+      printWriter.printf("%3s - %s%n", entry.getKey().getIdentifier(), entry.getKey().toString());
     }
 
     printWriter.close();

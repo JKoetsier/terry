@@ -59,7 +59,6 @@ public class WhereExpressionVisitor extends ExpressionVisitorAdapter {
 
   public BasicDBObject getWhereExpression() {
     Object fromStack = stack.pop();
-    System.out.println(fromStack);
     return (BasicDBObject)fromStack;
   }
 
@@ -86,7 +85,6 @@ public class WhereExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(StringConstant stringConstant) {
-    System.out.println("Stringconstant: " + stringConstant.getValue());
     stack.push(stringConstant.getValue());
   }
 

@@ -29,9 +29,7 @@ public class MongoDbWorkloadVisitorTest implements WorkloadTest {
 
     MongoDbWorkloadVisitor visitor = new MongoDbWorkloadVisitor();
     workload.acceptVisitor(visitor);
-    TreeMap<String, ExecutableQuery> result = new TreeMap<>(visitor.getResult());
-
-    return new ArrayList<>(result.values());
+    return visitor.getResult();
   }
 
   @Test

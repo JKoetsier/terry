@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.connector.mysql;
 
 import java.util.HashMap;
+import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.mysql.schema.MySqlSchemaVisitor;
@@ -69,7 +70,7 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<String, SqlQuery> getWorkloadQueries(Workload workload) {
+  public List<SqlQuery> getWorkloadQueries(Workload workload) {
     MySqlWorkloadVisitor workloadVisitor = new MySqlWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 

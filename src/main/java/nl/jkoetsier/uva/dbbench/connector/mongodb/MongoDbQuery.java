@@ -2,6 +2,7 @@ package nl.jkoetsier.uva.dbbench.connector.mongodb;
 
 import com.mongodb.BasicDBObject;
 import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
+import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +17,10 @@ public class MongoDbQuery extends ExecutableQuery {
   private Long offset;
   private BasicDBObject sort;
 
-  public MongoDbQuery() {
+  public MongoDbQuery(Query queryObject) {
+    super(queryObject);
   }
+
 
   public String getCollection() {
     return collection;

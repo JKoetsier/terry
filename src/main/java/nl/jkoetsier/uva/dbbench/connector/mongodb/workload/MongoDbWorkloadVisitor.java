@@ -2,6 +2,7 @@ package nl.jkoetsier.uva.dbbench.connector.mongodb.workload;
 
 import com.mongodb.BasicDBObject;
 import com.sun.javafx.binding.IntegerConstant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.mongodb.MongoDbQuery;
@@ -53,7 +54,7 @@ public class MongoDbWorkloadVisitor extends WorkloadVisitor {
 
   private static Logger logger = LoggerFactory.getLogger(MongoDbWorkloadVisitor.class);
 
-  private HashMap<String, ExecutableQuery> result;
+  private List<ExecutableQuery> result;
 
   private BasicDBObject projection;
   private BasicDBObject find;
@@ -65,10 +66,10 @@ public class MongoDbWorkloadVisitor extends WorkloadVisitor {
   private boolean supported = true;
 
   public MongoDbWorkloadVisitor() {
-    result = new HashMap<>();
+    result = new ArrayList<>();
   }
 
-  public HashMap<String, ExecutableQuery> getResult() {
+  public List<ExecutableQuery> getResult() {
     return result;
   }
 
@@ -220,7 +221,7 @@ public class MongoDbWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Query query) {
-    MongoDbQuery mongoDbQuery = new MongoDbQuery();
+    MongoDbQuery mongoDbQuery = new MongoDbQuery(query);
 
     if (find != null) {
       mongoDbQuery.setFind(find);
@@ -255,7 +256,7 @@ public class MongoDbWorkloadVisitor extends WorkloadVisitor {
     mongoDbQuery.setSupported(supported);
     supported = true;
 
-    result.put(query.getIdentifier(), mongoDbQuery);
+    result.add(mongoDbQuery);
   }
 
   @Override
@@ -296,8 +297,7 @@ public class MongoDbWorkloadVisitor extends WorkloadVisitor {
     } else if (selectExpression.getExpression() instanceof SelectAllColumnsExpression) {
       // Do nothing
     } else {
-      System.out.println(selectExpression.getExpression());
-      logger.error("Don't have something here");
+      logger.error("Don't have something here for Expression {}", selectExpression.getExpression());
     }
   }
 

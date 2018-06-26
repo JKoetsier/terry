@@ -29,9 +29,8 @@ public class MySqlWorkloadVisitorTest implements WorkloadTest {
 
     MySqlWorkloadVisitor workloadVisitor = new MySqlWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
-    HashMap<String, SqlQuery> result = workloadVisitor.getResult();
 
-    return new ArrayList<>(result.values());
+    return workloadVisitor.getResult();
   }
 
 

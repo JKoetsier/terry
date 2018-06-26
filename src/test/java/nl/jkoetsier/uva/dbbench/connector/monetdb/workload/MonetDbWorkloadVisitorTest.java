@@ -28,9 +28,8 @@ public class MonetDbWorkloadVisitorTest implements WorkloadTest {
 
     MonetDbWorkloadVisitor workloadVisitor = new MonetDbWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
-    HashMap<String, SqlQuery> result = workloadVisitor.getResult();
 
-    return new ArrayList<>(result.values());
+    return workloadVisitor.getResult();
   }
 
 

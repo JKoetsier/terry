@@ -1,6 +1,7 @@
 package nl.jkoetsier.uva.dbbench.connector.postgres;
 
 import java.util.HashMap;
+import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
@@ -66,7 +67,7 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<String, SqlQuery> getWorkloadQueries(Workload workload) {
+  public List<SqlQuery> getWorkloadQueries(Workload workload) {
     PostgresWorkloadVisitor workloadVisitor = new PostgresWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 

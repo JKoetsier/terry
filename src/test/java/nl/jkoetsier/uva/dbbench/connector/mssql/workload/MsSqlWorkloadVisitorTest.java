@@ -27,9 +27,8 @@ public class MsSqlWorkloadVisitorTest implements WorkloadTest {
 
     MsSqlWorkloadVisitor workloadVisitor = new MsSqlWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
-    HashMap<String, SqlQuery> result = workloadVisitor.getResult();
 
-    return new ArrayList<>(result.values());
+    return workloadVisitor.getResult();
   }
 
 

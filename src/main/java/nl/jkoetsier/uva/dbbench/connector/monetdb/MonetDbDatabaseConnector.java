@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.schema.MonetDbSchemaVisitor;
@@ -73,7 +74,7 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  public HashMap<String, SqlQuery> getWorkloadQueries(Workload workload) {
+  public List<SqlQuery> getWorkloadQueries(Workload workload) {
     MonetDbWorkloadVisitor workloadVisitor = new MonetDbWorkloadVisitor();
     workload.acceptVisitor(workloadVisitor);
 

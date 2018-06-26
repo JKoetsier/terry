@@ -3,11 +3,11 @@ package nl.jkoetsier.uva.dbbench.bench;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.MonitoringThread;
 import nl.jkoetsier.uva.dbbench.bench.monitoring.stats.SystemStatsCollection;
 import nl.jkoetsier.uva.dbbench.bench.querystripper.QueryStripper;
+import nl.jkoetsier.uva.dbbench.bench.results.Results;
+import nl.jkoetsier.uva.dbbench.bench.results.RunResult;
 import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
@@ -101,9 +101,9 @@ public class BenchRunner {
     databaseInterface.closeConnection();
   }
 
-  private void printQueries(TreeMap<String, ExecutableQuery> queries) {
-    for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
-      logger.info("{}: {}", entry.getKey(), entry.getValue().toString());
+  private void printQueries(List<ExecutableQuery> queries) {
+    for (ExecutableQuery query : queries) {
+      logger.info("{}: {}", query.getIdentifier(), query.toString());
     }
   }
 
@@ -113,15 +113,11 @@ public class BenchRunner {
     int noRuns = applicationConfigProperties.getNoRuns();
     int skipFirst = applicationConfigProperties.getSkipFirst();
 
-    TreeMap<String, ExecutableQuery> queries = new TreeMap<>(
-        databaseInterface.getWorkloadQueries(workload));
-    TreeMap<String, long[]> results = new TreeMap<>();
+    List<ExecutableQuery> queries = new ArrayList<>(databaseInterface.getWorkloadQueries(workload));
 
     printQueries(queries);
 
-    for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
-      results.put(entry.getKey(), new long[noRuns]);
-    }
+    Results results = new Results(queries);
 
     MonitoringThread monitoringThread = new MonitoringThread();
     monitoringThread.start();
@@ -129,44 +125,42 @@ public class BenchRunner {
     waitMilliseconds(3000);
 
     for (int i = 0; i < noRuns + skipFirst; i++) {
-      for (Entry<String, ExecutableQuery> entry : queries.entrySet()) {
-        logger.debug("Running query {}", entry.getKey());
+      for (ExecutableQuery query : queries) {
+        logger.debug("Running query {}", query.getIdentifier());
 
-        long time;
-
-        if (entry.getValue().isSupported()) {
+        RunResult result = new RunResult();
+        if (query.isSupported()) {
           try {
-            time = timeQuery(entry.getValue());
+            result = timeQuery(query);
 
             // TODO Tmp dirty hack for failing subqueries (that don't have all necessary fields included etc)
           } catch (DatabaseException e) {
-            if (entry.getKey().contains("-")) {
-              time = 0;
+            if (query.getIdentifier().contains("-")) {
+              result.setValid(false);
             } else {
               throw e;
             }
           }
         } else {
-          time = 0;
+          result.setSupported(false);
+          result.setValid(false);
         }
 
         if (i < skipFirst) {
           continue;
         }
 
-        results.get(entry.getKey())[i - skipFirst] = nanoToMicro(time);
+        result.setResultLength(lastResult.size());
+        result.setResultWidth(lastResult.rowWidth());
 
-        logger.debug("Query {} Execution time: {}", entry.getKey(), formatTimeMicro(time));
+        results.add(query, result);
 
-        if (time != 0) {
-          lastResult = databaseInterface.getLastResults();
-          logger.debug("Have {} results", lastResult.size());
-        }
+        logger.debug("Query {} Execution time: {}/{}", query.getIdentifier(),
+            formatTimeMicro(result.getResponseTimeNs()),
+            formatTimeMicro(result.getResultsTimeNs()));
 
-        Query query = workload.getQuery(entry.getKey());
-
-        if (query.getExpectedResult() != null) {
-          validateQueryResult(lastResult, query.getExpectedResult());
+        if (query.getQueryObject().getExpectedResult() != null) {
+          validateQueryResult(lastResult, query.getQueryObject().getExpectedResult());
         }
 
       }
@@ -185,7 +179,7 @@ public class BenchRunner {
       SystemStatsCollection stats = monitoringThread.getSystemStatsCollection();
 
       try {
-        resultsWriter.writeResults(workload, schema, queries, results);
+        resultsWriter.writeResults(results);
         resultsWriter.writeSystemStats(stats);
       } catch (IOException e) {
         logger.error("Error occurred while trying to write results to file: {}", e.getMessage());
@@ -263,14 +257,19 @@ public class BenchRunner {
   /**
    * Returns execution time of query in nanoseconds.
    */
-  private long timeQuery(ExecutableQuery query) throws DatabaseException {
+  private RunResult timeQuery(ExecutableQuery query) throws DatabaseException {
+    RunResult result = new RunResult();
+
     long start = System.nanoTime();
 
     databaseInterface.executeQuery(query);
 
-    long end = System.nanoTime();
+    result.setResponseTimeNs(System.nanoTime() - start);
 
-    return end - start;
+    lastResult = databaseInterface.getLastResults();
+    result.setResultsTimeNs(System.nanoTime() - start);
+
+    return result;
   }
 
   public void setDataDirectory(String dataDirectory) {

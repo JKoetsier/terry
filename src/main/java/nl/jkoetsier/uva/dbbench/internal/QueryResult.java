@@ -30,6 +30,14 @@ public class QueryResult {
     return rows.size();
   }
 
+  public int rowWidth() {
+    if (size() == 0) {
+      return 0;
+    }
+
+    return rows.get(0).size();
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

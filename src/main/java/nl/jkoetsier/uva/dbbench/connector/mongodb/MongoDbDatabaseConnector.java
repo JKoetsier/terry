@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.util.HashMap;
+import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.mongodb.workload.MongoDbWorkloadVisitor;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
@@ -66,7 +67,7 @@ public class MongoDbDatabaseConnector extends DatabaseConnector {
 
 
   @Override
-  public HashMap<String, ExecutableQuery> getWorkloadQueries(Workload workload) {
+  public List<ExecutableQuery> getWorkloadQueries(Workload workload) {
     MongoDbWorkloadVisitor visitor = new MongoDbWorkloadVisitor();
     workload.acceptVisitor(visitor);
     return visitor.getResult();

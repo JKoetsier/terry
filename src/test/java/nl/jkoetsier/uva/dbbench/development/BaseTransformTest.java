@@ -66,7 +66,7 @@ public abstract class BaseTransformTest {
 
     query.acceptVisitor(workloadVisitor);
 
-    Collection<SqlQuery> queriesAsString = workloadVisitor.getResult().values();
+    Collection<SqlQuery> queriesAsString = workloadVisitor.getResult();
 
     assertEquals(1, queriesAsString.size());
 

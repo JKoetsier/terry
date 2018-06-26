@@ -2,6 +2,7 @@ package nl.jkoetsier.uva.dbbench.connector;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
@@ -37,7 +38,7 @@ public abstract class DatabaseConnector {
 
   public abstract void closeConnection();
 
-  public abstract HashMap<String, ? extends ExecutableQuery> getWorkloadQueries(Workload workload);
+  public abstract List<? extends ExecutableQuery> getWorkloadQueries(Workload workload);
 
   public abstract HashMap<String, ? extends ExecutableQuery> getCreateQueries(Schema schema);
 

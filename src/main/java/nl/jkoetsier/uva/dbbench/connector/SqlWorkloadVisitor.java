@@ -53,7 +53,7 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   protected Logger logger = LoggerFactory.getLogger(SqlWorkloadVisitor.class);
 
-  protected HashMap<String, SqlQuery> result = new HashMap<>();
+  protected List<SqlQuery> result = new ArrayList<>();
   protected Stack<String> currentStack = new Stack<>();
 
   // Flag can be set by child visitors when an unsupported action is encountered. Will be set on
@@ -62,7 +62,7 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
   protected abstract SqlIdentifierQuoter getIdentifierQuoter();
 
-  public HashMap<String, SqlQuery> getResult() {
+  public List<SqlQuery> getResult() {
     return result;
   }
 
@@ -299,10 +299,11 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
       }
     }
 
-    SqlQuery sqlQuery = new SqlQuery(queryString);
+    SqlQuery sqlQuery = new SqlQuery(query);
+    sqlQuery.setQueryString(queryString);
     sqlQuery.setSupported(supported);
 
-    result.put(query.getIdentifier(), sqlQuery);
+    result.add(sqlQuery);
     supported = true;
   }
 
