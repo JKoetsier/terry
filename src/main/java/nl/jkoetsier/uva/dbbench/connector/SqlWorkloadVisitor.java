@@ -8,18 +8,25 @@ import java.util.Stack;
 import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.BetweenExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Case;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.DateExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExistsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExtractExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.InExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.IntervalExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.LikeExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.RelationExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectAllColumnsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.StarExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
@@ -44,8 +51,10 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.SimpleJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 import nl.jkoetsier.uva.dbbench.internal.workload.visitor.WorkloadVisitor;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -322,6 +331,50 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
   }
 
   @Override
+  public void visit(SimpleJoin simpleJoin) {
+    String rightInp = currentStack.pop();
+    String leftInp = currentStack.pop();
+
+    currentStack.push(String.format("%s, %s", leftInp, rightInp));
+  }
+
+  @Override
+  public void visit(BetweenExpression betweenExpression) {
+    String rightExpr = currentStack.pop();
+    String leftExpr = currentStack.pop();
+    String subjectExpr = currentStack.pop();
+
+    currentStack.push(String.format("%s%s BETWEEN %s AND %s",
+        subjectExpr,
+        betweenExpression.isNot() ? " NOT" : "",
+        leftExpr, rightExpr));
+  }
+
+  @Override
+  public void visit(ExistsExpression existsExpression) {
+    String inputExpr = currentStack.pop();
+
+    currentStack.push(String.format("%sEXISTS %S", existsExpression.isNot() ? "NOT " : "", inputExpr));
+  }
+
+  @Override
+  public void visit(LikeExpression likeExpression) {
+    String likeExpr = currentStack.pop();
+    String subjectExpr = currentStack.pop();
+
+    currentStack.push(String.format("%s%s LIKE %s", subjectExpr, likeExpression.isNot() ? " NOT" : "",
+        likeExpr));
+  }
+
+  @Override
+  public void visit(ExtractExpression extractExpression) {
+    String from = currentStack.pop();
+
+    currentStack.push(String.format("EXTRACT (%s FROM %s)", extractExpression.getWhat(),
+        from));
+  }
+
+  @Override
   public void visit(SelectExpression selectExpression) {
     String alias = "";
 
@@ -363,7 +416,7 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
     String right = currentStack.pop();
     String left = currentStack.pop();
 
-    currentStack.push(String.format("%s IN (%s)", left, right));
+    currentStack.push(String.format("%s%s IN (%s)", left, inExpression.isNot() ? " NOT" : "", right));
   }
 
   @Override
@@ -420,4 +473,21 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
 
     currentStack.push(str);
   }
+
+  @Override
+  public void visit(StarExpression starExpression) {
+    currentStack.push("*");
+  }
+
+  @Override
+  public void visit(DateExpression dateExpression) {
+    currentStack.push(String.format("DATE %s", dateExpression.getDate()));
+  }
+
+  @Override
+  public void visit(IntervalExpression intervalExpression) {
+    currentStack.push(String.format("INTERVAL %s %s", intervalExpression.getParameter(),
+        intervalExpression.getType()));
+  }
 }
+

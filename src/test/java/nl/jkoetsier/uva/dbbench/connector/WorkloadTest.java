@@ -39,4 +39,9 @@ public interface WorkloadTest {
 
   @Test
   void testAllFromTable();
+
+
+  // TODO IMPLEMENT
+//  @Test
+//  void testSelectSimpleJoin();
 }

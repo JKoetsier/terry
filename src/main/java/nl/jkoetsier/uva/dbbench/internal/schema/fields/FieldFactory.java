@@ -11,6 +11,7 @@ public class FieldFactory {
 
     /* Integer fields */
     mapping.put("int", IntegerColumn.class);
+    mapping.put("integer", IntegerColumn.class);
     mapping.put("bigint", BigIntegerColumn.class);
 
     /* Character fields */

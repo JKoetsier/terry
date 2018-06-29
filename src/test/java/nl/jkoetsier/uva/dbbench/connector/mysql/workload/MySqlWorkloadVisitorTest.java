@@ -165,4 +165,11 @@ public class MySqlWorkloadVisitorTest implements WorkloadTest {
     compareSingleQueryFromFile("select_all_from_table.sql", expected);
   }
 
+  @Test
+  public void testSelectSimpleJoin() {
+    String expected = "SELECT `tablename`.`a`, `table2name`.`b` FROM `tablename`, `table2name`";
+
+    compareSingleQueryFromFile("select_simple_join.sql", expected);
+  }
+
 }

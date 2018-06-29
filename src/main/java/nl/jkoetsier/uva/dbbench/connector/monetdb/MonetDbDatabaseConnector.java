@@ -9,9 +9,9 @@ import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.schema.MonetDbSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.monetdb.workload.MonetDbWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.util.csvlayout.CsvLayout;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
-import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
@@ -87,11 +87,16 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) throws DatabaseException {
+  protected void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException {
     SqlQuery query = new SqlQuery(String.format("COPY OFFSET %d INTO \"%s\" FROM '%s' "
-            + "USING DELIMITERS ',', '\\n', '\"' NULL AS ''",
-        applicationConfigProperties.getCsvHeader() ? 2 : 1,
-        tableName, file));
+            + "USING DELIMITERS '%s', '%s', '%s' NULL AS ''",
+        csvLayout.hasHeader() ? 2 : 1,
+        tableName,
+        file,
+        csvLayout.getFieldSeparator(),
+        csvLayout.getLineTerminator(),
+        csvLayout.getFieldEnclosing()
+    ));
 
     executeQuery(query);
   }

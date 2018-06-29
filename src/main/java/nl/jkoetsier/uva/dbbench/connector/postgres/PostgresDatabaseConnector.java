@@ -6,6 +6,7 @@ import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.postgres.schema.PostgresSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.postgres.workload.PostgresWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.util.csvlayout.CsvLayout;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
@@ -75,10 +76,14 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) throws DatabaseException {
+  protected void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException {
     SqlQuery query = new SqlQuery(String.format("COPY \"%s\" FROM '%s' "
-            + "WITH (FORMAT csv, %sDELIMITER ',', NULL 'NULL')", tableName, file,
-        applicationConfigProperties.getCsvHeader() ? "HEADER true, " : ""));
+            + "WITH (FORMAT csv, %sDELIMITER '%s', NULL 'NULL')",
+        tableName,
+        file,
+        csvLayout.hasHeader() ? "HEADER true, " : "",
+        csvLayout.getFieldSeparator()
+    ));
 
     executeQuery(query);
   }

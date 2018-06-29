@@ -6,10 +6,10 @@ import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.mysql.schema.MySqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.mysql.workload.MySqlWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.util.csvlayout.CsvLayout;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.DateTimeValueTranslator;
 import nl.jkoetsier.uva.dbbench.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
-import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
 import nl.jkoetsier.uva.dbbench.internal.SqlQuery;
 import nl.jkoetsier.uva.dbbench.internal.schema.Schema;
@@ -45,13 +45,19 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) throws DatabaseException {
+  protected void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException {
     SqlQuery query = new SqlQuery(String.format("LOAD DATA INFILE '%s' INTO TABLE `%s` "
         + "CHARACTER SET 'utf8' "
-        + "FIELDS TERMINATED BY ',' "
-        + "ENCLOSED BY '\"' "
-        + "LINES TERMINATED BY '\\n' "
-        + "IGNORE %d LINES", file, tableName, applicationConfigProperties.getCsvHeader() ? 1 : 0));
+        + "FIELDS TERMINATED BY '%s' "
+        + "ENCLOSED BY '%s' "
+        + "LINES TERMINATED BY '%s' "
+        + "IGNORE %d LINES",
+        file,
+        tableName,
+        csvLayout.getFieldSeparator(),
+        csvLayout.getFieldEnclosing(),
+        csvLayout.getLineTerminator(),
+        csvLayout.hasHeader() ? 1 : 0));
 
     executeQuery(query);
   }

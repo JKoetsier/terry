@@ -73,14 +73,17 @@ import net.sf.jsqlparser.statement.select.PivotXml;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import nl.jkoetsier.uva.dbbench.input.util.StringUtil;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.BetweenExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Case;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.DateExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Expression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.RelationExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.StarExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
@@ -200,12 +203,12 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(Addition expr) {
-    throw new RuntimeException("Not Implemented");
+    visitBinaryExpression(expr);
   }
 
   @Override
   public void visit(Division expr) {
-    throw new RuntimeException("Not Implemented");
+    visitBinaryExpression(expr);
   }
 
   @Override
@@ -230,8 +233,22 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(Between expr) {
-    System.out.println(expr.toString());
-    throw new RuntimeException("Not Implemented");
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
+
+    expr.getLeftExpression().accept(expressionVisitor);
+    Expression subjectExpr = expressionVisitor.getExpression();
+
+    expressionVisitor.reset();
+
+    expr.getBetweenExpressionStart().accept(expressionVisitor);
+    Expression leftBetweenExpr = expressionVisitor.getExpression();
+
+    expressionVisitor.reset();
+
+    expr.getBetweenExpressionEnd().accept(expressionVisitor);
+    Expression rightBetweenExpr = expressionVisitor.getExpression();
+
+    expression = new BetweenExpression(subjectExpr, leftBetweenExpr, rightBetweenExpr, expr.isNot());
   }
 
   @Override
@@ -273,7 +290,20 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(LikeExpression expr) {
-    throw new RuntimeException("Not Implemented");
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
+    expr.getLeftExpression().accept(expressionVisitor);
+
+    Expression leftExpr = expressionVisitor.getExpression();
+    expressionVisitor.reset();
+    expr.getRightExpression().accept(expressionVisitor);
+
+    Expression rightExpr = expressionVisitor.getExpression();
+
+    expression = new nl.jkoetsier.uva.dbbench.internal.workload.expression.LikeExpression(
+        leftExpr,
+        rightExpr,
+        expr.isNot()
+    );
   }
 
   @Override
@@ -332,7 +362,13 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(ExistsExpression expr) {
-    throw new RuntimeException("Not Implemented");
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
+    expr.getRightExpression().accept(expressionVisitor);
+
+    expression = new nl.jkoetsier.uva.dbbench.internal.workload.expression.ExistsExpression(
+        expressionVisitor.getExpression(),
+        expr.isNot()
+    );
   }
 
   @Override
@@ -390,12 +426,22 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(ExtractExpression expr) {
-    throw new RuntimeException("Not Implemented");
+    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
+    expr.getExpression().accept(expressionVisitor);
+
+    Expression fromExpr = expressionVisitor.getExpression();
+
+    expression = new nl.jkoetsier.uva.dbbench.internal.workload.expression.ExtractExpression(
+        expr.getName(),
+        fromExpr
+    );
   }
 
   @Override
   public void visit(IntervalExpression expr) {
-    throw new RuntimeException("Not Implemented");
+    expression = new nl.jkoetsier.uva.dbbench.internal.workload.expression.IntervalExpression(
+        expr.getParameter(), expr.getIntervalType()
+    );
   }
 
   @Override
@@ -522,7 +568,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(DateTimeLiteralExpression literal) {
-    throw new RuntimeException("Not Implemented");
+    expression = new DateExpression(literal.getValue());
   }
 
   @Override
@@ -530,13 +576,23 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
     List<Expression> expressions = new ArrayList<>();
     ExpressionVisitor expressionVisitor = new ExpressionVisitor();
 
-    for (net.sf.jsqlparser.expression.Expression expr : function.getParameters().getExpressions()) {
-      expressionVisitor.reset();
-      expr.accept(expressionVisitor);
-      expressions.add(expressionVisitor.getExpression());
+    if (function.getParameters() != null) {
+      for (net.sf.jsqlparser.expression.Expression expr : function.getParameters().getExpressions()) {
+        expressionVisitor.reset();
+        expr.accept(expressionVisitor);
+        expressions.add(expressionVisitor.getExpression());
+      }
+    } else if (function.isAllColumns()) {
+      expressions.add(new StarExpression());
     }
 
-    expression = new FunctionExpr(function.getName(),
+    FunctionExpr functionExpr = new FunctionExpr(function.getName(),
         new nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList(expressions));
+
+    if (function.isDistinct()) {
+      functionExpr.setDistinct(true);
+    }
+
+    expression = functionExpr;
   }
 }

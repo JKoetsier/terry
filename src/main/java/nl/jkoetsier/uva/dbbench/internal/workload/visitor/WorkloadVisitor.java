@@ -2,18 +2,25 @@ package nl.jkoetsier.uva.dbbench.internal.workload.visitor;
 
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.BetweenExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.BinExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Case;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.Cast;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.DateExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExistsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExpressionList;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.ExtractExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.InExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.IntervalExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.IsNullExpr;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.LikeExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.NullValue;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.RelationExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectAllColumnsExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.SelectExpression;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.StarExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DateConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.constant.LongConstant;
@@ -38,6 +45,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.SimpleJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 
 public abstract class WorkloadVisitor {
@@ -119,4 +127,20 @@ public abstract class WorkloadVisitor {
   public abstract void visit(InExpression inExpression);
 
   public abstract void visit(SelectAllColumnsExpression selectAllColumnsExpression);
+
+  public abstract void visit(StarExpression starExpression);
+
+  public abstract void visit(DateExpression dateExpression);
+
+  public abstract void visit(IntervalExpression intervalExpression);
+
+  public abstract void visit(SimpleJoin simpleJoin);
+
+  public abstract void visit(BetweenExpression betweenExpression);
+
+  public abstract void visit(ExistsExpression existsExpression);
+
+  public abstract void visit(LikeExpression likeExpression);
+
+  public abstract void visit(ExtractExpression extractExpression);
 }

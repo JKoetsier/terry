@@ -6,6 +6,7 @@ import nl.jkoetsier.uva.dbbench.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.dbbench.connector.mssql.schema.MsSqlSchemaVisitor;
 import nl.jkoetsier.uva.dbbench.connector.mssql.workload.MsSqlWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.util.csvlayout.CsvLayout;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
@@ -73,9 +74,9 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) throws DatabaseException {
+  protected void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException {
     SqlQuery query = new SqlQuery(String.format("BULK INSERT [%s] FROM '%s' WITH (FIRSTROW = %d)", tableName, file,
-        applicationConfigProperties.getCsvHeader() ? 2 : 1));
+        csvLayout.hasHeader() ? 2 : 1));
 
     executeQuery(query);
   }

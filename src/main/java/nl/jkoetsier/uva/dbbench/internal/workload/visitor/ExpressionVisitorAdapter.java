@@ -2,6 +2,7 @@ package nl.jkoetsier.uva.dbbench.internal.workload.visitor;
 
 import nl.jkoetsier.uva.dbbench.internal.workload.Query;
 import nl.jkoetsier.uva.dbbench.internal.workload.Workload;
+import nl.jkoetsier.uva.dbbench.internal.workload.expression.DateExpression;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.AndOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.DivideOp;
 import nl.jkoetsier.uva.dbbench.internal.workload.expression.operator.EqualsOp;
@@ -22,6 +23,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.OuterJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Rename;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.SimpleJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +104,11 @@ public abstract class ExpressionVisitorAdapter extends WorkloadVisitor {
 
   @Override
   public void visit(InnerJoin innerJoin) {
+
+  }
+
+  @Override
+  public void visit(SimpleJoin simpleJoin) {
 
   }
 

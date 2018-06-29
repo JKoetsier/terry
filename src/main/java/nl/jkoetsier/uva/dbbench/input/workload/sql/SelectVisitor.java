@@ -18,6 +18,7 @@ import nl.jkoetsier.uva.dbbench.internal.workload.query.Projection;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.RAJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Relation;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Selection;
+import nl.jkoetsier.uva.dbbench.internal.workload.query.SimpleJoin;
 import nl.jkoetsier.uva.dbbench.internal.workload.query.Union;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,6 +137,8 @@ public class SelectVisitor extends SelectVisitorAdapter {
       raJoin = new InnerJoin(leftInput, fromVisitor.getInputRelation());
     } else if (join.isFull()) {
       raJoin = new FullJoin(leftInput, fromVisitor.getInputRelation());
+    } else if (join.isSimple()) {
+      raJoin = new SimpleJoin(leftInput, fromVisitor.getInputRelation());
     } else if (join.isCross() || join.isNatural() || join.isSimple() || join.isSemi()) {
       throw new RuntimeException(
           String.format("Could not determine join type. Not implemented (%s)", join.toString())
@@ -145,9 +148,12 @@ public class SelectVisitor extends SelectVisitorAdapter {
       raJoin = new InnerJoin(leftInput, fromVisitor.getInputRelation());
     }
 
-    ExpressionVisitor expressionVisitor = new ExpressionVisitor();
-    join.getOnExpression().accept(expressionVisitor);
-    raJoin.setOnExpression(expressionVisitor.getExpression());
+
+    if (join.getOnExpression() != null) {
+      ExpressionVisitor expressionVisitor = new ExpressionVisitor();
+      join.getOnExpression().accept(expressionVisitor);
+      raJoin.setOnExpression(expressionVisitor.getExpression());
+    }
 
     return raJoin;
   }

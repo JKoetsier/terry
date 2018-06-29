@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.dbbench.config.DbConfigProperties;
+import nl.jkoetsier.uva.dbbench.connector.util.csvlayout.CsvLayout;
+import nl.jkoetsier.uva.dbbench.connector.util.csvlayout.DefaultCsvLayout;
+import nl.jkoetsier.uva.dbbench.connector.util.csvlayout.TpcCsvLayout;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
@@ -32,7 +35,7 @@ public abstract class DatabaseConnector {
 
   public abstract void importSchema(Schema schema) throws DatabaseException;
 
-  protected abstract void importCsvFile(String tableName, String file) throws DatabaseException;
+  protected abstract void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException;
 
   public abstract long getTableSize(String tableName) throws DatabaseException;
 
@@ -65,10 +68,21 @@ public abstract class DatabaseConnector {
     if (files != null) {
 
       for (File file : files) {
-        if (file.isFile() && file.getName().endsWith(".csv")) {
+        CsvLayout csvLayout = null;
+
+        // TODO move this logic out of here. Move to config.
+        if (file.isFile()) {
+          if (file.getName().endsWith(".csv")) {
+            csvLayout = new DefaultCsvLayout();
+          } else if (file.getName().endsWith(".tbl")) {
+            csvLayout = new TpcCsvLayout();
+          }
+        }
+
+        if (csvLayout != null) {
           String[] fileNameParts = file.getName().split("\\.");
 
-          importCsvFile(fileNameParts[0].toLowerCase(), file.getAbsolutePath());
+          importCsvFile(fileNameParts[0].toLowerCase(), file.getAbsolutePath(), csvLayout);
 
           File renamedFile = new File(file.getAbsolutePath() + ".done");
 

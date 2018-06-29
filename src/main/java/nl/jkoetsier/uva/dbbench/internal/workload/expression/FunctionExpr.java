@@ -7,6 +7,7 @@ public class FunctionExpr extends Expression {
 
   private String name;
   private ExpressionList expressionList;
+  private boolean distinct = false;
 
   public FunctionExpr(String name,
       ExpressionList expressionList) {
@@ -40,5 +41,13 @@ public class FunctionExpr extends Expression {
         "name='" + name + '\'' +
         ", expressionList=" + expressionList +
         '}';
+  }
+
+  public void setDistinct(boolean distinct) {
+    this.distinct = distinct;
+  }
+
+  public boolean isDistinct() {
+    return distinct;
   }
 }

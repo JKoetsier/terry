@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.dbbench.connector.DatabaseConnector;
 import nl.jkoetsier.uva.dbbench.connector.mongodb.workload.MongoDbWorkloadVisitor;
+import nl.jkoetsier.uva.dbbench.connector.util.csvlayout.CsvLayout;
 import nl.jkoetsier.uva.dbbench.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.dbbench.internal.ExecutableQuery;
 import nl.jkoetsier.uva.dbbench.internal.QueryResult;
@@ -55,7 +56,7 @@ public class MongoDbDatabaseConnector extends DatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file) throws DatabaseException {
+  protected void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException {
     throw new RuntimeException("Not implemented for MongoDB. Use bash script instead (see helpers repo)");
   }
 

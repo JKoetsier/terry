@@ -71,10 +71,6 @@ public class BenchRunner {
       databaseInterface.importSchema(schema);
     }
 
-    if (schema != null) {
-      readTableSizes();
-    }
-
     if (dataDirectory != null) {
       logger.info("Importing CSV Data");
       long start = System.nanoTime();
@@ -84,6 +80,10 @@ public class BenchRunner {
       long end = System.nanoTime();
 
       logger.info("Importing CSV took {} seconds", nanoToSeconds(end - start));
+    }
+
+    if (schema != null) {
+      readTableSizes();
     }
   }
 
