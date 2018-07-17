@@ -21,6 +21,11 @@ public abstract class DatabaseConnector {
 
   private static Logger logger = LoggerFactory.getLogger(DatabaseConnector.class);
 
+  public enum Direction {
+    ASC,
+    DESC
+  }
+
   @Autowired
   protected DbConfigProperties dbConfigProperties;
 
@@ -33,7 +38,7 @@ public abstract class DatabaseConnector {
 
   public abstract QueryResult getLastResults() throws DatabaseException;
 
-  public abstract void importSchema(Schema schema) throws DatabaseException;
+  public abstract void createSchema(Schema schema) throws DatabaseException;
 
   protected abstract void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException;
 
@@ -46,6 +51,9 @@ public abstract class DatabaseConnector {
   public abstract HashMap<String, ? extends ExecutableQuery> getCreateQueries(Schema schema);
 
   public abstract String getSimpleName();
+
+  public abstract void createIndex(String tableName, String columnName, Direction direction)
+      throws DatabaseException;
 
   /**
    * Transforms the given QueryResults to match the actual database output. May be an empty

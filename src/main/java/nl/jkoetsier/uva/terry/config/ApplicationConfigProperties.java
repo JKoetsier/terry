@@ -19,6 +19,78 @@ public class ApplicationConfigProperties {
   private String outputDirectory;
   private boolean skipResultValidation = false;
   private boolean renameImportedCsvFiles = false;
+  private String dbType = "";
+  private String workload = "";
+  private String schema = "";
+  private String dataDirectory = "";
+  private boolean stopContainer = true;
+  private boolean checkWorkload = false;
+  private boolean skipCreateSchema = false;
+  private boolean createIndices = false;
+
+  public boolean createIndices() {
+    return createIndices;
+  }
+
+  public void setCreateIndices(boolean createIndices) {
+    this.createIndices = createIndices;
+  }
+
+  public String getDbType() {
+    return dbType;
+  }
+
+  public void setDbType(String dbType) {
+    this.dbType = dbType;
+  }
+
+  public String getWorkload() {
+    return workload;
+  }
+
+  public void setWorkload(String workload) {
+    this.workload = workload;
+  }
+
+  public String getSchema() {
+    return schema;
+  }
+
+  public void setSchema(String schema) {
+    this.schema = schema;
+  }
+
+  public String getDataDirectory() {
+    return dataDirectory;
+  }
+
+  public void setDataDirectory(String dataDirectory) {
+    this.dataDirectory = dataDirectory;
+  }
+
+  public boolean isStopContainer() {
+    return stopContainer;
+  }
+
+  public void setStopContainer(boolean stopContainer) {
+    this.stopContainer = stopContainer;
+  }
+
+  public boolean isCheckWorkload() {
+    return checkWorkload;
+  }
+
+  public void setCheckWorkload(boolean checkWorkload) {
+    this.checkWorkload = checkWorkload;
+  }
+
+  public boolean isSkipCreateSchema() {
+    return skipCreateSchema;
+  }
+
+  public void setSkipCreateSchema(boolean skipCreateSchema) {
+    this.skipCreateSchema = skipCreateSchema;
+  }
 
   public List<String> getAcceptedDatabases() {
     return acceptedDatabases;

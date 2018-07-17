@@ -46,12 +46,18 @@ public class MongoDbDatabaseConnector extends DatabaseConnector {
   }
 
   @Override
+  public void createIndex(String tableName, String columnName, Direction direction)
+      throws DatabaseException {
+    // yet to be implemented
+  }
+
+  @Override
   public QueryResult getLastResults() throws DatabaseException {
     return null;
   }
 
   @Override
-  public void importSchema(Schema schema) throws DatabaseException {
+  public void createSchema(Schema schema) throws DatabaseException {
     // Schemaless, do nothing
   }
 

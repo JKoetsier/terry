@@ -1,12 +1,10 @@
 package nl.jkoetsier.uva.terry;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import nl.jkoetsier.uva.terry.bench.BenchPreparer;
 import nl.jkoetsier.uva.terry.bench.BenchRunner;
+import nl.jkoetsier.uva.terry.bench.DatabaseInitialiser;
+import nl.jkoetsier.uva.terry.bench.analyser.IndexAnalyser;
 import nl.jkoetsier.uva.terry.config.ApplicationConfigProperties;
-import nl.jkoetsier.uva.terry.config.CommandLineConfigProperties;
 import nl.jkoetsier.uva.terry.config.DbConfigProperties;
 import nl.jkoetsier.uva.terry.connector.DatabaseConnector;
 import nl.jkoetsier.uva.terry.docker.DockerContainer;
@@ -31,8 +29,6 @@ public class DbbenchApplication implements ApplicationRunner {
 
   private static Logger logger = LoggerFactory.getLogger(DbbenchApplication.class);
 
-  @Autowired
-  private CommandLineConfigProperties commandLineConfigProperties;
 
   @Autowired
   private ApplicationConfigProperties applicationConfigProperties;
@@ -49,9 +45,6 @@ public class DbbenchApplication implements ApplicationRunner {
   @Autowired
   private DatabaseConnector databaseConnector;
 
-  private Boolean verifyWorkload = true;
-  private Boolean skipDataModel = false;
-  private Boolean skipImportDataModel = false;
 
   public static void main(String[] args) {
     ApplicationContext applicationContext = SpringApplication.run(DbbenchApplication.class, args);
@@ -61,56 +54,30 @@ public class DbbenchApplication implements ApplicationRunner {
     }
   }
 
-  private void checkParameters(ApplicationArguments args) {
+  private void checkParameters() {
     boolean error = false;
 
-    logger.debug("Option Names: {}", args.getOptionNames());
-    logger.debug("NonOptionArgs: {}", args.getNonOptionArgs());
-    logger.debug("Source args: {}", Arrays.toString(args.getSourceArgs()));
-
-    Set<String> optionNames = args.getOptionNames();
-
-    List<String> options = new ArrayList<>();
-    options.add("--no-check-workload");
-    options.add("--skip-datamodel");
-    options.add("--stop-container=(true|false)");
-    options.add("--skip-import-datamodel");
-
-    if (optionNames.contains("no-check-workload")) {
-      verifyWorkload = false;
-    }
-
-    if (optionNames.contains("skip-datamodel")) {
-      verifyWorkload = false;
-      skipDataModel = true;
-    }
-
-    if (optionNames.contains("skip-import-datamodel")) {
-      skipImportDataModel = true;
-    }
-
-    if (commandLineConfigProperties.getWorkload().trim().equals("")) {
+    if (applicationConfigProperties.getWorkload().trim().equals("")) {
       System.err.println("No workload provided. Provide workload");
       error = true;
     }
 
-    if (commandLineConfigProperties.getDatamodel().trim().equals("") && !skipDataModel) {
-      System.err.println("No datamodel provided. Provide datamodel");
+    if (applicationConfigProperties.getSchema().trim().equals("")) {
+      System.err.println("No schema provided. Provide schema");
       error = true;
     }
 
-    if (commandLineConfigProperties.getOutputDb().trim().equals("") ||
+    if (applicationConfigProperties.getDbType().trim().equals("") ||
         !applicationConfigProperties.getAcceptedDatabases()
-            .contains(commandLineConfigProperties.getOutputDb())) {
+            .contains(applicationConfigProperties.getDbType())) {
       System.err.println("No correct output database provided. Provide output database");
     }
 
     if (error) {
       System.err.format(
-          "\nRun program with parameters:\n --workload=workloadfile.sql\n --datamodel=datamodel.sql\n "
-              + "--outputdb=(%s)\nOptional:\n %s%n",
-          String.join("|", applicationConfigProperties.getAcceptedDatabases()),
-          String.join("\n ", options)
+          "\nRun program with parameters:\n --workload=workloadfile.sql\n --schema=schema.sql\n "
+              + "--outputdb=(%s)%n",
+          String.join("|", applicationConfigProperties.getAcceptedDatabases())
       );
       System.exit(1);
     }
@@ -118,17 +85,12 @@ public class DbbenchApplication implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) {
-    checkParameters(args);
+    checkParameters();
 
-    Schema schema = null;
+    Schema schema = schemaReader.fromFile(applicationConfigProperties.getSchema());
+    Workload workload = workloadReader.fromFile(applicationConfigProperties.getWorkload());
 
-    if (!skipDataModel) {
-      schema = schemaReader.fromFile(commandLineConfigProperties.getDatamodel());
-    }
-
-    Workload workload = workloadReader.fromFile(commandLineConfigProperties.getWorkload());
-
-    if (verifyWorkload && schema != null) {
+    if (applicationConfigProperties.isCheckWorkload()) {
       try {
         workload.validate(schema);
       } catch (NotMatchingWorkloadException e) {
@@ -136,9 +98,10 @@ public class DbbenchApplication implements ApplicationRunner {
       }
     }
 
-    logger.info("Output database: {}", commandLineConfigProperties.getOutputDb());
+    logger.info("Output database: {}", applicationConfigProperties.getDbType());
 
-    BenchRunner benchRunner = new BenchRunner(databaseConnector, applicationConfigProperties);
+    BenchRunner benchRunner = new BenchRunner(databaseConnector, applicationConfigProperties,
+        schema, workload);
 
     logger.info("Is docker: {}", databaseConnector.isDocker());
 
@@ -147,47 +110,25 @@ public class DbbenchApplication implements ApplicationRunner {
     try {
 
       if (databaseConnector.isDocker()) {
-
-        if (!validateDockerConfig()) {
-          System.err.println("Missing docker settings");
-          System.exit(1);
-        }
-
-        Integer port = applicationConfigProperties.getDefaultPort();
-        dockerContainer = new DockerContainer(dbConfigProperties.getDockerImage());
-        dockerContainer.addPortMapping(port, dbConfigProperties.getDefaultDbPort());
-        dockerContainer.setReadyLogLine(dbConfigProperties.getDockerReadyLogLine());
-
-        if (dbConfigProperties.getDockerEnvvars() != null) {
-          dockerContainer.addEnvironmentVariables(dbConfigProperties.getDockerEnvvars());
-        }
-
-        if (!commandLineConfigProperties.getDataDirectory().equals("")) {
-          // Map data directory to docker Volume
-          dockerContainer.addVolumeMapping(
-              commandLineConfigProperties.getDataDirectory(),
-              dbConfigProperties.getDockerDataDirectory()
-          );
-        }
-
-        dockerContainer.run();
-
-        dbConfigProperties.setPort(port);
+        dockerContainer = setupDocker();
       }
 
-      benchRunner.setWorkload(workload);
+      DatabaseInitialiser databaseInitialiser = new DatabaseInitialiser(databaseConnector, schema);
+      databaseInitialiser.setSkipCreateSchema(applicationConfigProperties.isSkipCreateSchema());
 
-      if (schema != null) {
-        benchRunner.setSchema(schema);
+      if (!applicationConfigProperties.getDataDirectory().equals("")) {
+        databaseInitialiser.setDataDirectory(applicationConfigProperties.getDataDirectory());
       }
 
-      if (!commandLineConfigProperties.getDataDirectory().equals("")) {
-        benchRunner.setDataDirectory(commandLineConfigProperties.getDataDirectory());
+      databaseInitialiser.initialise();
+
+      BenchPreparer benchPreparer = new BenchPreparer(databaseConnector, schema, workload);
+      benchPreparer.prepare();
+
+      if (applicationConfigProperties.createIndices()) {
+        IndexAnalyser indexAnalyser = new IndexAnalyser(databaseConnector, schema, workload);
+        indexAnalyser.analyse();
       }
-
-      benchRunner.setImportDataModel(!skipImportDataModel);
-
-      benchRunner.setup();
 
       benchRunner.run();
 
@@ -195,13 +136,43 @@ public class DbbenchApplication implements ApplicationRunner {
       e.printStackTrace();
 
     } finally {
-      if (dockerContainer != null && commandLineConfigProperties.isStopContainer()) {
+      if (dockerContainer != null && applicationConfigProperties.isStopContainer()) {
         dockerContainer.stop();
       } else if (dockerContainer != null) {
         logger.info("Keeping container running");
       }
     }
 
+  }
+
+  private DockerContainer setupDocker() {
+    if (!validateDockerConfig()) {
+      System.err.println("Missing docker settings");
+      System.exit(1);
+    }
+
+    Integer port = applicationConfigProperties.getDefaultPort();
+    DockerContainer dockerContainer = new DockerContainer(dbConfigProperties.getDockerImage());
+    dockerContainer.addPortMapping(port, dbConfigProperties.getDefaultDbPort());
+    dockerContainer.setReadyLogLine(dbConfigProperties.getDockerReadyLogLine());
+
+    if (dbConfigProperties.getDockerEnvvars() != null) {
+      dockerContainer.addEnvironmentVariables(dbConfigProperties.getDockerEnvvars());
+    }
+
+    if (!applicationConfigProperties.getDataDirectory().equals("")) {
+      // Map data directory to docker Volume
+      dockerContainer.addVolumeMapping(
+          applicationConfigProperties.getDataDirectory(),
+          dbConfigProperties.getDockerDataDirectory()
+      );
+    }
+
+    dockerContainer.run();
+
+    dbConfigProperties.setPort(port);
+
+    return dockerContainer;
   }
 
   private boolean validateDockerConfig() {

@@ -3,7 +3,6 @@ package nl.jkoetsier.uva.terry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import nl.jkoetsier.uva.terry.config.CommandLineConfigProperties;
 import nl.jkoetsier.uva.terry.config.DbConfigProperties;
 import nl.jkoetsier.uva.terry.input.SchemaReader;
 import nl.jkoetsier.uva.terry.input.WorkloadReader;
@@ -32,9 +31,6 @@ public class DbbenchApplicationTests {
   }
 
   @Autowired
-  private CommandLineConfigProperties commandLineConfigProperties;
-
-  @Autowired
   private DbConfigProperties dbConfigProperties;
 
   @Autowired
@@ -48,7 +44,6 @@ public class DbbenchApplicationTests {
     Mockito.when(workloadReader.fromFile("workload.sql")).thenReturn(new Workload());
     Mockito.when(schemaReader.fromFile("datamodel.sql")).thenReturn(new Schema());
     assertNotNull(dbConfigProperties);
-    assertNotNull(commandLineConfigProperties);
 
     assertEquals("testUser", dbConfigProperties.getUsername());
   }

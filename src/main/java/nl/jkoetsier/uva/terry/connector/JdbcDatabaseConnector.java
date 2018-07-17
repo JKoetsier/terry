@@ -142,7 +142,7 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
   }
 
   @Override
-  public void importSchema(Schema schema) throws DatabaseException {
+  public void createSchema(Schema schema) throws DatabaseException {
     HashMap<String, SqlQuery> createQueries = getCreateQueries(schema);
 
     logger.info(String.format("Start import of %d tables", createQueries.size()));
@@ -163,5 +163,23 @@ public abstract class JdbcDatabaseConnector extends DatabaseConnector {
 
     QueryResult queryResult = getLastResults();
     return Integer.valueOf(queryResult.getRows().get(0).getValues()[0]);
+  }
+
+  public String getCreateIndexQuery(String tableName, String columnName, Direction direction) {
+    return String.format("CREATE INDEX %s_%s_%s ON %s (%s %s)",
+        tableName,
+        columnName,
+        direction.toString().toLowerCase(),
+        tableName,
+        columnName,
+        direction.toString()
+    );
+  }
+
+  @Override
+  public void createIndex(String tableName, String columnName, Direction direction)
+      throws DatabaseException {
+    SqlQuery query = new SqlQuery(getCreateIndexQuery(tableName, columnName, direction));
+    executeQuery(query);
   }
 }

@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.terry.bench;
+package nl.jkoetsier.uva.terry.bench.results;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,10 +12,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import nl.jkoetsier.uva.terry.bench.monitoring.stats.SystemStatsCollection;
 import nl.jkoetsier.uva.terry.bench.monitoring.stats.SystemStatsCollectionWriter;
-import nl.jkoetsier.uva.terry.bench.results.Results;
-import nl.jkoetsier.uva.terry.bench.results.RunResult;
-import nl.jkoetsier.uva.terry.bench.results.RunResultList;
-import nl.jkoetsier.uva.terry.bench.results.RunResultStringValueSupplier;
 import nl.jkoetsier.uva.terry.bench.statistics.QueryStatistics;
 import nl.jkoetsier.uva.terry.internal.ExecutableQuery;
 import nl.jkoetsier.uva.terry.internal.schema.Schema;

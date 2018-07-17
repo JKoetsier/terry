@@ -107,4 +107,15 @@ public class MonetDbDatabaseConnector extends JdbcDatabaseConnector {
     queryResult.replaceValues("true", "1");
     queryResult.replaceValues(new RemoveLineBreaksValueTranslator());
   }
+
+  @Override
+  public String getCreateIndexQuery(String tableName, String columnName, Direction direction) {
+    return String.format("CREATE INDEX %s_%s_%s ON %s (%s)",
+        tableName,
+        columnName,
+        direction.toString().toLowerCase(),
+        tableName,
+        columnName
+    );
+  }
 }

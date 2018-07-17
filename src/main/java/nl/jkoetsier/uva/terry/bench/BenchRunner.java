@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import nl.jkoetsier.uva.terry.bench.monitoring.MonitoringThread;
 import nl.jkoetsier.uva.terry.bench.monitoring.stats.SystemStatsCollection;
-import nl.jkoetsier.uva.terry.bench.querystripper.QueryStripper;
 import nl.jkoetsier.uva.terry.bench.results.Results;
+import nl.jkoetsier.uva.terry.bench.results.ResultsWriter;
 import nl.jkoetsier.uva.terry.bench.results.RunResult;
+import nl.jkoetsier.uva.terry.bench.util.TimeConverter;
 import nl.jkoetsier.uva.terry.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.terry.connector.DatabaseConnector;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
@@ -15,8 +16,6 @@ import nl.jkoetsier.uva.terry.internal.ExecutableQuery;
 import nl.jkoetsier.uva.terry.internal.QueryResult;
 import nl.jkoetsier.uva.terry.internal.QueryResultRow;
 import nl.jkoetsier.uva.terry.internal.schema.Schema;
-import nl.jkoetsier.uva.terry.internal.schema.Table;
-import nl.jkoetsier.uva.terry.internal.workload.Query;
 import nl.jkoetsier.uva.terry.internal.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,80 +24,20 @@ public class BenchRunner {
 
   private static Logger logger = LoggerFactory.getLogger(BenchRunner.class);
 
-  private DatabaseConnector databaseInterface;
+  private DatabaseConnector databaseConnector;
+  private ApplicationConfigProperties applicationConfigProperties;
   private Schema schema;
   private Workload workload;
-  private ApplicationConfigProperties applicationConfigProperties;
-  private String dataDirectory;
-  private boolean importDataModel;
   private QueryResult lastResult;
 
-  public BenchRunner(DatabaseConnector databaseInterface,
-      ApplicationConfigProperties applicationConfigProperties) {
-    this.databaseInterface = databaseInterface;
+  public BenchRunner(DatabaseConnector databaseConnector,
+      ApplicationConfigProperties applicationConfigProperties,
+      Schema schema,
+      Workload workload) {
+    this.databaseConnector = databaseConnector;
     this.applicationConfigProperties = applicationConfigProperties;
-  }
-
-  public void setSchema(Schema schema) {
     this.schema = schema;
-  }
-
-  public void setWorkload(Workload workload) {
     this.workload = workload;
-
-    List<Query> subQueries = new ArrayList<>();
-
-    for (Query query : workload.getQueries().values()) {
-      List<Query> stripped = QueryStripper.stripQuery(query);
-
-      for (int i = 0; i < stripped.size(); i++) {
-        Query subQuery = stripped.get(i);
-        subQuery.setIdentifier(query.getIdentifier() + "-" + i);
-        subQueries.add(subQuery);
-      }
-    }
-
-    for (Query subQuery : subQueries) {
-      workload.addQuery(subQuery);
-    }
-  }
-
-  public void setup() throws DatabaseException {
-    databaseInterface.connect();
-
-    if (schema != null && importDataModel) {
-      logger.info("Importing Schema");
-      databaseInterface.importSchema(schema);
-    }
-
-    if (dataDirectory != null) {
-      logger.info("Importing Data");
-      long start = System.nanoTime();
-
-      databaseInterface.importCsvData(dataDirectory);
-
-      long end = System.nanoTime();
-
-      logger.info("Importing CSV took {} ms", nanoToMilliSeconds(end - start));
-    }
-
-    if (schema != null) {
-      readTableSizes();
-    }
-  }
-
-  private void readTableSizes() throws DatabaseException {
-    for (Table table : schema.getTables().values()) {
-      long tableSize = databaseInterface.getTableSize(table.getName());
-      table.setRowCnt(tableSize);
-
-      logger.debug("Table {} size: {}", table.getName(), tableSize);
-    }
-  }
-
-
-  private void tearDown() {
-    databaseInterface.closeConnection();
   }
 
   private void printQueries(List<ExecutableQuery> queries) {
@@ -108,12 +47,13 @@ public class BenchRunner {
   }
 
   public void run() throws DatabaseException {
+
     logger.info("Start running bench");
 
     int noRuns = applicationConfigProperties.getNoRuns();
     int skipFirst = applicationConfigProperties.getSkipFirst();
 
-    List<ExecutableQuery> queries = new ArrayList<>(databaseInterface.getWorkloadQueries(workload));
+    List<ExecutableQuery> queries = new ArrayList<>(databaseConnector.getWorkloadQueries(workload));
 
     printQueries(queries);
 
@@ -156,8 +96,8 @@ public class BenchRunner {
         results.add(query, result);
 
         logger.debug("Query {} Execution time: {}/{}", query.getIdentifier(),
-            formatTimeMicro(result.getResponseTimeNs()),
-            formatTimeMicro(result.getResultsTimeNs()));
+            TimeConverter.formatTimeNanoToMicro(result.getResponseTimeNs()),
+            TimeConverter.formatTimeNanoToMicro(result.getResultsTimeNs()));
 
         if (!applicationConfigProperties.skipResultValidation() && query.getQueryObject().getExpectedResult() != null) {
           validateQueryResult(lastResult, query.getQueryObject().getExpectedResult());
@@ -173,7 +113,7 @@ public class BenchRunner {
     if (applicationConfigProperties.getOutputDirectory() != null) {
       ResultsWriter resultsWriter = new ResultsWriter(
           applicationConfigProperties.getOutputDirectory(),
-          databaseInterface.getSimpleName(),
+          databaseConnector.getSimpleName(),
           schema
       );
 
@@ -187,12 +127,12 @@ public class BenchRunner {
       }
     }
 
-    tearDown();
+    databaseConnector.closeConnection();
   }
 
   private void validateQueryResult(QueryResult lastResult, QueryResult expectedResult) {
     lastResult.order();
-    databaseInterface.translateQueryResults(lastResult, expectedResult);
+    databaseConnector.translateQueryResults(lastResult, expectedResult);
     expectedResult.order();
 
     // do something here
@@ -243,17 +183,6 @@ public class BenchRunner {
   }
 
 
-  private long nanoToMicro(long nano) {
-    return nano / 1000;
-  }
-
-  private long nanoToMilliSeconds(long nano) {
-    return nanoToMicro(nano) / 1000;
-  }
-
-  private String formatTimeMicro(long nanoTime) {
-    return String.format("%d\u00B5s", nanoToMicro(nanoTime));
-  }
 
   /**
    * Returns execution time of query in nanoseconds.
@@ -263,21 +192,13 @@ public class BenchRunner {
 
     long start = System.nanoTime();
 
-    databaseInterface.executeQuery(query);
+    databaseConnector.executeQuery(query);
 
     result.setResponseTimeNs(System.nanoTime() - start);
 
-    lastResult = databaseInterface.getLastResults();
+    lastResult = databaseConnector.getLastResults();
     result.setResultsTimeNs(System.nanoTime() - start);
 
     return result;
-  }
-
-  public void setDataDirectory(String dataDirectory) {
-    this.dataDirectory = dataDirectory;
-  }
-
-  public void setImportDataModel(boolean importDataModel) {
-    this.importDataModel = importDataModel;
   }
 }

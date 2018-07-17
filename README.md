@@ -1,6 +1,16 @@
 # DBBENCH
 
-## Run Tests
+For building and/or testing this project, Maven needs to be installed locally.
+If Maven is not installed, replace ```mvn``` in the commands below with either ```mvnw``` (UNIX) or ```mvnw.cmd``` (Windows).
+
+## Build
+Run
+
+    mvn package
+   
+To build and test the application. This will place the executable JAR-file in the target/ directory.
+
+## Run Tests separately
 To run the default test suite, use
     
     mvn test

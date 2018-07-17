@@ -369,7 +369,7 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
   public void visit(ExtractExpression extractExpression) {
     String from = currentStack.pop();
 
-    currentStack.push(String.format("EXTRACT (%s FROM %s)", extractExpression.getWhat(),
+    currentStack.push(String.format("EXTRACT(%s FROM %s)", extractExpression.getWhat(),
         from));
   }
 

@@ -41,6 +41,82 @@ public abstract class ExecutableQuery implements Comparable<ExecutableQuery> {
 
   @Override
   public int compareTo(ExecutableQuery o) {
-    return getIdentifier().compareTo(o.getIdentifier());
+    return compareNumericIdentifiers(getIdentifier(), o.getIdentifier());
+  }
+
+  int compareIdentifiers(String identifierA, String identifierB) {
+    if (isNumericId(identifierA) && isNumericId(identifierB)) {
+      return compareNumericIdentifiers(identifierA, identifierB);
+
+    } else {
+      return identifierA.compareTo(identifierB);
+    }
+  }
+
+  private int compareNumericIdentifiers(String identifierA, String identifierB) {
+    Integer[] idAparts = getIdentifierAsIntegers(identifierA);
+    Integer[] idBparts = getIdentifierAsIntegers(identifierB);
+
+    if (idAparts[0] < idBparts[0]) {
+      return -1;
+    }
+
+    if (idAparts[0] > idBparts[0]) {
+      return 1;
+    }
+
+    if (idAparts.length < 2 && idBparts.length < 2) {
+      return 0;
+    }
+
+    if (idAparts.length < 2) {
+      return -1;
+    }
+
+    if (idBparts.length < 2) {
+      return 1;
+    }
+
+    if (idAparts[1] < idBparts[1]) {
+      return -1;
+    }
+
+    if (idAparts[1] > idBparts[1]) {
+      return 1;
+    }
+
+    return 0;
+  }
+
+  private Integer[] getIdentifierAsIntegers(String identifier) {
+    String[] parts = identifier.split("-");
+    Integer[] intParts = new Integer[parts.length];
+
+    for (int i = 0; i < parts.length; i++) {
+      intParts[i] = Integer.parseInt(parts[i]);
+    }
+
+    return intParts;
+  }
+
+  private boolean isNumericId(String identifier) {
+    String[] splittedIdentifier = identifier.split("-");
+
+    for (String part : splittedIdentifier) {
+      if (!isInteger(part)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private boolean isInteger(String strNum) {
+    try {
+      double d = Integer.parseInt(strNum);
+    } catch (NumberFormatException | NullPointerException nfe) {
+      return false;
+    }
+    return true;
   }
 }

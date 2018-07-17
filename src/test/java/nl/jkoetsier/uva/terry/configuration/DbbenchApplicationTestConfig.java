@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.terry.configuration;
 
-import nl.jkoetsier.uva.terry.config.CommandLineConfigProperties;
 import nl.jkoetsier.uva.terry.input.SchemaReader;
 import nl.jkoetsier.uva.terry.input.WorkloadReader;
 import nl.jkoetsier.uva.terry.input.schema.sql.SqlSchemaReader;
@@ -18,17 +17,6 @@ import org.springframework.context.annotation.Profile;
 public class DbbenchApplicationTestConfig {
 
   private static Logger logger = LoggerFactory.getLogger(DbbenchApplicationTestConfig.class);
-
-  @Bean
-  @Primary
-  public CommandLineConfigProperties commandLineConfigProperties() {
-    CommandLineConfigProperties commandLineConfigProperties = new CommandLineConfigProperties();
-    commandLineConfigProperties.setDatamodel("datamodel.sql");
-    commandLineConfigProperties.setOutputDb("outputdb");
-    commandLineConfigProperties.setWorkload("workload.sql");
-
-    return commandLineConfigProperties;
-  }
 
   @Bean
   @Primary
