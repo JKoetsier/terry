@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import nl.jkoetsier.uva.terry.connector.SchemaTest;
 import nl.jkoetsier.uva.terry.input.schema.sql.SqlSchemaReader;
-import nl.jkoetsier.uva.terry.internal.SqlQuery;
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.SqlQuery;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
 import nl.jkoetsier.uva.terry.util.TestDataHelper;
 import org.junit.Test;
 

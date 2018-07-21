@@ -2,10 +2,10 @@ package nl.jkoetsier.uva.terry.bench.statistics;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
-import nl.jkoetsier.uva.terry.internal.schema.Table;
-import nl.jkoetsier.uva.terry.internal.workload.Query;
-import nl.jkoetsier.uva.terry.internal.workload.meta.TableCounts;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.schema.Table;
+import nl.jkoetsier.uva.terry.intrep.workload.Query;
+import nl.jkoetsier.uva.terry.intrep.workload.meta.TableCounts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

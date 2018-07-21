@@ -4,7 +4,7 @@ import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.ItemsListVisitorAdapter;
 import net.sf.jsqlparser.expression.operators.relational.MultiExpressionList;
 import net.sf.jsqlparser.statement.select.SubSelect;
-import nl.jkoetsier.uva.terry.internal.workload.expression.Expression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.Expression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -10,17 +10,17 @@ import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.statement.select.SelectVisitorAdapter;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
-import nl.jkoetsier.uva.terry.internal.workload.element.OrderBy;
-import nl.jkoetsier.uva.terry.internal.workload.expression.constant.LongConstant;
-import nl.jkoetsier.uva.terry.internal.workload.query.FullJoin;
-import nl.jkoetsier.uva.terry.internal.workload.query.InnerJoin;
-import nl.jkoetsier.uva.terry.internal.workload.query.OuterJoin;
-import nl.jkoetsier.uva.terry.internal.workload.query.Projection;
-import nl.jkoetsier.uva.terry.internal.workload.query.RAJoin;
-import nl.jkoetsier.uva.terry.internal.workload.query.Relation;
-import nl.jkoetsier.uva.terry.internal.workload.query.Selection;
-import nl.jkoetsier.uva.terry.internal.workload.query.SimpleJoin;
-import nl.jkoetsier.uva.terry.internal.workload.query.Union;
+import nl.jkoetsier.uva.terry.intrep.workload.element.OrderBy;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.constant.LongConstant;
+import nl.jkoetsier.uva.terry.intrep.workload.query.FullJoin;
+import nl.jkoetsier.uva.terry.intrep.workload.query.InnerJoin;
+import nl.jkoetsier.uva.terry.intrep.workload.query.OuterJoin;
+import nl.jkoetsier.uva.terry.intrep.workload.query.Projection;
+import nl.jkoetsier.uva.terry.intrep.workload.query.RAJoin;
+import nl.jkoetsier.uva.terry.intrep.workload.query.Relation;
+import nl.jkoetsier.uva.terry.intrep.workload.query.Selection;
+import nl.jkoetsier.uva.terry.intrep.workload.query.SimpleJoin;
+import nl.jkoetsier.uva.terry.intrep.workload.query.Union;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +67,7 @@ public class SelectVisitor extends SelectVisitorAdapter {
 
     if (plainSelect.getGroupByColumnReferences() != null) {
 
-      List<nl.jkoetsier.uva.terry.internal.workload.expression.Expression> groupBy =
+      List<nl.jkoetsier.uva.terry.intrep.workload.expression.Expression> groupBy =
           new ArrayList<>();
 
       for (Expression expr : plainSelect.getGroupByColumnReferences()) {

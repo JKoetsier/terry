@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @ConfigurationProperties
-@PropertySource("classpath:db.${outputdb:mssql}.properties")
+@PropertySource("classpath:db.${dbtype:mssql}.properties")
 public class DbConfigProperties {
 
   private String type = "";

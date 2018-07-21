@@ -1,5 +1,6 @@
 package nl.jkoetsier.uva.terry.bench.analyser;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -7,10 +8,10 @@ import java.util.Set;
 import nl.jkoetsier.uva.terry.connector.DatabaseConnector;
 import nl.jkoetsier.uva.terry.connector.DatabaseConnector.Direction;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
-import nl.jkoetsier.uva.terry.internal.schema.Table;
-import nl.jkoetsier.uva.terry.internal.schema.fields.Column;
-import nl.jkoetsier.uva.terry.internal.workload.Workload;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.schema.Table;
+import nl.jkoetsier.uva.terry.intrep.schema.column.Column;
+import nl.jkoetsier.uva.terry.intrep.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,12 @@ public class IndexAnalyser {
   }
 
   private void createIndex(TableColumn tableColumn) throws DatabaseException {
-     databaseConnector.createIndex(tableColumn.getTable().getName(),
-         tableColumn.getColumn().getName(), Direction.ASC);
+    try {
+      databaseConnector.createIndex(tableColumn.getTable().getName(),
+          tableColumn.getColumn().getName(), Direction.ASC);
+    } catch (Exception e) {
+      logger.error("Error creating index: {}", e.getMessage());
+    }
+
   }
 }

@@ -5,10 +5,10 @@ import java.util.List;
 import nl.jkoetsier.uva.terry.bench.querystripper.QueryStripper;
 import nl.jkoetsier.uva.terry.connector.DatabaseConnector;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
-import nl.jkoetsier.uva.terry.internal.schema.Table;
-import nl.jkoetsier.uva.terry.internal.workload.Query;
-import nl.jkoetsier.uva.terry.internal.workload.Workload;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.schema.Table;
+import nl.jkoetsier.uva.terry.intrep.workload.Query;
+import nl.jkoetsier.uva.terry.intrep.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

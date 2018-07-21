@@ -8,7 +8,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statements;
 import nl.jkoetsier.uva.terry.input.SchemaReader;
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
 import org.springframework.stereotype.Service;
 
 @Service

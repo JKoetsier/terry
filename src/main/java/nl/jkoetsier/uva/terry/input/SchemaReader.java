@@ -1,6 +1,6 @@
 package nl.jkoetsier.uva.terry.input;
 
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
 
 public interface SchemaReader {
 

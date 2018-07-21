@@ -3,7 +3,7 @@ package nl.jkoetsier.uva.terry.connector.postgres.workload;
 import nl.jkoetsier.uva.terry.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.terry.connector.SqlWorkloadVisitor;
 import nl.jkoetsier.uva.terry.connector.postgres.PostgresIdentifierQuoter;
-import nl.jkoetsier.uva.terry.internal.workload.expression.FunctionExpr;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.FunctionExpr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,8 +1,8 @@
 package nl.jkoetsier.uva.terry.bench.analyser;
 
 import java.util.Objects;
-import nl.jkoetsier.uva.terry.internal.schema.Table;
-import nl.jkoetsier.uva.terry.internal.schema.fields.Column;
+import nl.jkoetsier.uva.terry.intrep.schema.Table;
+import nl.jkoetsier.uva.terry.intrep.schema.column.Column;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

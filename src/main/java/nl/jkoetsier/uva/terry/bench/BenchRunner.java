@@ -12,11 +12,11 @@ import nl.jkoetsier.uva.terry.bench.util.TimeConverter;
 import nl.jkoetsier.uva.terry.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.terry.connector.DatabaseConnector;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
-import nl.jkoetsier.uva.terry.internal.ExecutableQuery;
-import nl.jkoetsier.uva.terry.internal.QueryResult;
-import nl.jkoetsier.uva.terry.internal.QueryResultRow;
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
-import nl.jkoetsier.uva.terry.internal.workload.Workload;
+import nl.jkoetsier.uva.terry.intrep.ExecutableQuery;
+import nl.jkoetsier.uva.terry.intrep.QueryResult;
+import nl.jkoetsier.uva.terry.intrep.QueryResultRow;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

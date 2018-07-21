@@ -8,10 +8,10 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 import nl.jkoetsier.uva.terry.input.exception.InvalidQueryException;
 import nl.jkoetsier.uva.terry.input.util.StringUtil;
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
-import nl.jkoetsier.uva.terry.internal.schema.Table;
-import nl.jkoetsier.uva.terry.internal.schema.fields.Column;
-import nl.jkoetsier.uva.terry.internal.schema.fields.FieldFactory;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.schema.Table;
+import nl.jkoetsier.uva.terry.intrep.schema.column.Column;
+import nl.jkoetsier.uva.terry.intrep.schema.column.FieldFactory;
 
 public class SqlSchemaStatementVisitor extends StatementVisitorAdapter {
 

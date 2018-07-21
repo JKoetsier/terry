@@ -6,8 +6,8 @@ import java.util.List;
 import nl.jkoetsier.uva.terry.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.terry.connector.SqlWorkloadVisitor;
 import nl.jkoetsier.uva.terry.connector.mssql.MsSqlIdentifierQuoter;
-import nl.jkoetsier.uva.terry.internal.workload.expression.SelectExpression;
-import nl.jkoetsier.uva.terry.internal.workload.query.Projection;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.SelectExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.query.Projection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

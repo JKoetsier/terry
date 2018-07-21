@@ -1,8 +1,8 @@
 package nl.jkoetsier.uva.terry.connector.mongodb;
 
 import com.mongodb.BasicDBObject;
-import nl.jkoetsier.uva.terry.internal.ExecutableQuery;
-import nl.jkoetsier.uva.terry.internal.workload.Query;
+import nl.jkoetsier.uva.terry.intrep.ExecutableQuery;
+import nl.jkoetsier.uva.terry.intrep.workload.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

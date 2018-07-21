@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import nl.jkoetsier.uva.terry.internal.ExecutableQuery;
+import nl.jkoetsier.uva.terry.intrep.ExecutableQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

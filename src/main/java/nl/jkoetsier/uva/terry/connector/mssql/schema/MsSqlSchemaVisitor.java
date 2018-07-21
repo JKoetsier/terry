@@ -4,10 +4,10 @@ import nl.jkoetsier.uva.terry.connector.ColumnDef;
 import nl.jkoetsier.uva.terry.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.terry.connector.SqlSchemaVisitor;
 import nl.jkoetsier.uva.terry.connector.mssql.MsSqlIdentifierQuoter;
-import nl.jkoetsier.uva.terry.internal.SqlQuery;
-import nl.jkoetsier.uva.terry.internal.schema.Table;
-import nl.jkoetsier.uva.terry.internal.schema.fields.BooleanColumn;
-import nl.jkoetsier.uva.terry.internal.schema.fields.DateTimeTimezoneColumn;
+import nl.jkoetsier.uva.terry.intrep.SqlQuery;
+import nl.jkoetsier.uva.terry.intrep.schema.Table;
+import nl.jkoetsier.uva.terry.intrep.schema.column.BooleanColumn;
+import nl.jkoetsier.uva.terry.intrep.schema.column.DateTimeTimezoneColumn;
 
 public class MsSqlSchemaVisitor extends SqlSchemaVisitor {
 

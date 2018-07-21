@@ -2,8 +2,8 @@ package nl.jkoetsier.uva.terry.input.workload.sql;
 
 import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.OrderByVisitorAdapter;
-import nl.jkoetsier.uva.terry.internal.workload.element.OrderBy;
-import nl.jkoetsier.uva.terry.internal.workload.expression.FieldExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.element.OrderBy;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
 
 public class OrderByVisitor extends OrderByVisitorAdapter {
 

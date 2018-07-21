@@ -6,13 +6,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
-import nl.jkoetsier.uva.terry.internal.schema.Table;
-import nl.jkoetsier.uva.terry.internal.schema.fields.BooleanColumn;
-import nl.jkoetsier.uva.terry.internal.schema.fields.DateColumn;
-import nl.jkoetsier.uva.terry.internal.schema.fields.DecimalColumn;
-import nl.jkoetsier.uva.terry.internal.schema.fields.IntegerColumn;
-import nl.jkoetsier.uva.terry.internal.schema.fields.VarCharColumn;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.schema.Table;
+import nl.jkoetsier.uva.terry.intrep.schema.column.BooleanColumn;
+import nl.jkoetsier.uva.terry.intrep.schema.column.DateColumn;
+import nl.jkoetsier.uva.terry.intrep.schema.column.DecimalColumn;
+import nl.jkoetsier.uva.terry.intrep.schema.column.IntegerColumn;
+import nl.jkoetsier.uva.terry.intrep.schema.column.VarCharColumn;
 import nl.jkoetsier.uva.terry.util.TestDataHelper;
 import org.junit.Test;
 

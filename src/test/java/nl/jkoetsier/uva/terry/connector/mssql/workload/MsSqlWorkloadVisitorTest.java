@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import nl.jkoetsier.uva.terry.connector.WorkloadTest;
 import nl.jkoetsier.uva.terry.input.workload.sql.SqlWorkloadReader;
-import nl.jkoetsier.uva.terry.internal.SqlQuery;
-import nl.jkoetsier.uva.terry.internal.workload.Workload;
+import nl.jkoetsier.uva.terry.intrep.SqlQuery;
+import nl.jkoetsier.uva.terry.intrep.workload.Workload;
 import nl.jkoetsier.uva.terry.util.TestDataHelper;
 import org.junit.Test;
 

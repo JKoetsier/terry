@@ -1,6 +1,6 @@
 package nl.jkoetsier.uva.terry.input;
 
-import nl.jkoetsier.uva.terry.internal.workload.Workload;
+import nl.jkoetsier.uva.terry.intrep.workload.Workload;
 
 public interface WorkloadReader {
 

@@ -3,7 +3,7 @@ package nl.jkoetsier.uva.terry.bench;
 import nl.jkoetsier.uva.terry.bench.util.TimeConverter;
 import nl.jkoetsier.uva.terry.connector.DatabaseConnector;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

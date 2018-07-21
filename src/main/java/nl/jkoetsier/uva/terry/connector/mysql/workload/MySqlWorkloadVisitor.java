@@ -3,8 +3,8 @@ package nl.jkoetsier.uva.terry.connector.mysql.workload;
 import nl.jkoetsier.uva.terry.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.terry.connector.SqlWorkloadVisitor;
 import nl.jkoetsier.uva.terry.connector.mysql.MySqlIdentifierQuoter;
-import nl.jkoetsier.uva.terry.internal.workload.expression.FunctionExpr;
-import nl.jkoetsier.uva.terry.internal.workload.query.FullJoin;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.FunctionExpr;
+import nl.jkoetsier.uva.terry.intrep.workload.query.FullJoin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

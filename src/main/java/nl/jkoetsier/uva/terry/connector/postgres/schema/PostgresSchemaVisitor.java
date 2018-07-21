@@ -4,11 +4,11 @@ import nl.jkoetsier.uva.terry.connector.ColumnDef;
 import nl.jkoetsier.uva.terry.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.terry.connector.SqlSchemaVisitor;
 import nl.jkoetsier.uva.terry.connector.postgres.PostgresIdentifierQuoter;
-import nl.jkoetsier.uva.terry.internal.SqlQuery;
-import nl.jkoetsier.uva.terry.internal.schema.Table;
-import nl.jkoetsier.uva.terry.internal.schema.fields.DateTimeColumn;
-import nl.jkoetsier.uva.terry.internal.schema.fields.DecimalColumn;
-import nl.jkoetsier.uva.terry.internal.schema.fields.DoubleColumn;
+import nl.jkoetsier.uva.terry.intrep.SqlQuery;
+import nl.jkoetsier.uva.terry.intrep.schema.Table;
+import nl.jkoetsier.uva.terry.intrep.schema.column.DateTimeColumn;
+import nl.jkoetsier.uva.terry.intrep.schema.column.DecimalColumn;
+import nl.jkoetsier.uva.terry.intrep.schema.column.DoubleColumn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

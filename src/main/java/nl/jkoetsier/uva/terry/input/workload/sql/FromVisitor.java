@@ -8,9 +8,9 @@ import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.select.TableFunction;
 import net.sf.jsqlparser.statement.select.ValuesList;
 import nl.jkoetsier.uva.terry.input.util.StringUtil;
-import nl.jkoetsier.uva.terry.internal.workload.query.InputRelation;
-import nl.jkoetsier.uva.terry.internal.workload.query.Relation;
-import nl.jkoetsier.uva.terry.internal.workload.query.Rename;
+import nl.jkoetsier.uva.terry.intrep.workload.query.InputRelation;
+import nl.jkoetsier.uva.terry.intrep.workload.query.Relation;
+import nl.jkoetsier.uva.terry.intrep.workload.query.Rename;
 
 public class FromVisitor extends FromItemVisitorAdapter {
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.select.Select;
-import nl.jkoetsier.uva.terry.internal.workload.Query;
+import nl.jkoetsier.uva.terry.intrep.workload.Query;
 
 public class StatementVisitor extends StatementVisitorAdapter {
 

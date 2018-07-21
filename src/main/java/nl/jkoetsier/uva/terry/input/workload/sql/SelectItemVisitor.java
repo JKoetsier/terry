@@ -7,10 +7,10 @@ import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItemVisitorAdapter;
 import nl.jkoetsier.uva.terry.input.util.StringUtil;
-import nl.jkoetsier.uva.terry.internal.workload.expression.SelectAllColumnsExpression;
-import nl.jkoetsier.uva.terry.internal.workload.expression.SelectExpression;
-import nl.jkoetsier.uva.terry.internal.workload.query.Projection;
-import nl.jkoetsier.uva.terry.internal.workload.query.Selection;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.SelectAllColumnsExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.SelectExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.query.Projection;
+import nl.jkoetsier.uva.terry.intrep.workload.query.Selection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

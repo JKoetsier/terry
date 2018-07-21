@@ -73,23 +73,23 @@ import net.sf.jsqlparser.statement.select.PivotXml;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import nl.jkoetsier.uva.terry.input.util.StringUtil;
-import nl.jkoetsier.uva.terry.internal.workload.expression.BetweenExpression;
-import nl.jkoetsier.uva.terry.internal.workload.expression.BinExpression;
-import nl.jkoetsier.uva.terry.internal.workload.expression.Case;
-import nl.jkoetsier.uva.terry.internal.workload.expression.Cast;
-import nl.jkoetsier.uva.terry.internal.workload.expression.DateExpression;
-import nl.jkoetsier.uva.terry.internal.workload.expression.Expression;
-import nl.jkoetsier.uva.terry.internal.workload.expression.FieldExpression;
-import nl.jkoetsier.uva.terry.internal.workload.expression.FunctionExpr;
-import nl.jkoetsier.uva.terry.internal.workload.expression.IsNullExpr;
-import nl.jkoetsier.uva.terry.internal.workload.expression.RelationExpression;
-import nl.jkoetsier.uva.terry.internal.workload.expression.StarExpression;
-import nl.jkoetsier.uva.terry.internal.workload.expression.constant.DateConstant;
-import nl.jkoetsier.uva.terry.internal.workload.expression.constant.DoubleConstant;
-import nl.jkoetsier.uva.terry.internal.workload.expression.constant.LongConstant;
-import nl.jkoetsier.uva.terry.internal.workload.expression.constant.StringConstant;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.Operator;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.OperatorFactory;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.BetweenExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.BinExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.Case;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.Cast;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.DateExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.Expression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.FunctionExpr;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.IsNullExpr;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.RelationExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.StarExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.constant.DateConstant;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.constant.DoubleConstant;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.constant.LongConstant;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.constant.StringConstant;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.Operator;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.OperatorFactory;
 
 public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
@@ -159,7 +159,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(NullValue value) {
-    expression = new nl.jkoetsier.uva.terry.internal.workload.expression.NullValue();
+    expression = new nl.jkoetsier.uva.terry.intrep.workload.expression.NullValue();
   }
 
   @Override
@@ -263,8 +263,8 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(InExpression expr) {
-    nl.jkoetsier.uva.terry.internal.workload.expression.InExpression inExpression
-        = new nl.jkoetsier.uva.terry.internal.workload.expression.InExpression();
+    nl.jkoetsier.uva.terry.intrep.workload.expression.InExpression inExpression
+        = new nl.jkoetsier.uva.terry.intrep.workload.expression.InExpression();
 
     ExpressionVisitor expressionVisitor = new ExpressionVisitor();
     expr.getLeftExpression().accept(expressionVisitor);
@@ -299,7 +299,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     Expression rightExpr = expressionVisitor.getExpression();
 
-    expression = new nl.jkoetsier.uva.terry.internal.workload.expression.LikeExpression(
+    expression = new nl.jkoetsier.uva.terry.intrep.workload.expression.LikeExpression(
         leftExpr,
         rightExpr,
         expr.isNot()
@@ -365,7 +365,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
     ExpressionVisitor expressionVisitor = new ExpressionVisitor();
     expr.getRightExpression().accept(expressionVisitor);
 
-    expression = new nl.jkoetsier.uva.terry.internal.workload.expression.ExistsExpression(
+    expression = new nl.jkoetsier.uva.terry.intrep.workload.expression.ExistsExpression(
         expressionVisitor.getExpression(),
         expr.isNot()
     );
@@ -431,7 +431,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
     Expression fromExpr = expressionVisitor.getExpression();
 
-    expression = new nl.jkoetsier.uva.terry.internal.workload.expression.ExtractExpression(
+    expression = new nl.jkoetsier.uva.terry.intrep.workload.expression.ExtractExpression(
         expr.getName(),
         fromExpr
     );
@@ -439,7 +439,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(IntervalExpression expr) {
-    expression = new nl.jkoetsier.uva.terry.internal.workload.expression.IntervalExpression(
+    expression = new nl.jkoetsier.uva.terry.intrep.workload.expression.IntervalExpression(
         expr.getParameter(), expr.getIntervalType()
     );
   }
@@ -467,7 +467,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
       expressions.add(expressionVisitor.getExpression());
     }
 
-    expression = new nl.jkoetsier.uva.terry.internal.workload.expression.ExpressionList(
+    expression = new nl.jkoetsier.uva.terry.intrep.workload.expression.ExpressionList(
         expressions);
   }
 
@@ -587,7 +587,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
     }
 
     FunctionExpr functionExpr = new FunctionExpr(function.getName(),
-        new nl.jkoetsier.uva.terry.internal.workload.expression.ExpressionList(expressions));
+        new nl.jkoetsier.uva.terry.intrep.workload.expression.ExpressionList(expressions));
 
     if (function.isDistinct()) {
       functionExpr.setDistinct(true);

@@ -8,10 +8,10 @@ import nl.jkoetsier.uva.terry.connector.mssql.schema.MsSqlSchemaVisitor;
 import nl.jkoetsier.uva.terry.connector.mssql.workload.MsSqlWorkloadVisitor;
 import nl.jkoetsier.uva.terry.connector.util.csvlayout.CsvLayout;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
-import nl.jkoetsier.uva.terry.internal.QueryResult;
-import nl.jkoetsier.uva.terry.internal.SqlQuery;
-import nl.jkoetsier.uva.terry.internal.schema.Schema;
-import nl.jkoetsier.uva.terry.internal.workload.Workload;
+import nl.jkoetsier.uva.terry.intrep.QueryResult;
+import nl.jkoetsier.uva.terry.intrep.SqlQuery;
+import nl.jkoetsier.uva.terry.intrep.schema.Schema;
+import nl.jkoetsier.uva.terry.intrep.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

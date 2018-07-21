@@ -1,19 +1,19 @@
 package nl.jkoetsier.uva.terry.connector.mongodb.workload;
 
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.AndOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.DivideOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.EqualsOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.GtOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.GteOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.LtOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.LteOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.MinusOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.ModuloOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.MultiplyOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.NeqOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.OrOp;
-import nl.jkoetsier.uva.terry.internal.workload.expression.operator.PlusOp;
-import nl.jkoetsier.uva.terry.internal.workload.visitor.OperatorVisitorAdapter;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.AndOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.DivideOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.EqualsOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.GtOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.GteOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.LtOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.LteOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.MinusOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.ModuloOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.MultiplyOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.NeqOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.OrOp;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.PlusOp;
+import nl.jkoetsier.uva.terry.intrep.workload.visitor.OperatorVisitorAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
