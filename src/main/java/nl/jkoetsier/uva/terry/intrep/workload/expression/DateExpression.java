@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +20,6 @@ public class DateExpression extends Expression {
 
   public void setDate(String date) {
     this.date = date;
-  }
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-
   }
 
   @Override

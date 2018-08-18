@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.query.Relation;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 import org.slf4j.Logger;
@@ -21,11 +20,6 @@ public class RelationExpression extends Expression {
 
   public void setRelation(Relation relation) {
     this.relation = relation;
-  }
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-
   }
 
   @Override

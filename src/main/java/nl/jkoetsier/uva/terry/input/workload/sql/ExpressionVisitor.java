@@ -77,9 +77,9 @@ import nl.jkoetsier.uva.terry.intrep.workload.expression.BetweenExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.BinExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Case;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Cast;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.ColumnNameExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.DateExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Expression;
-import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.IsNullExpr;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.RelationExpression;
@@ -130,7 +130,7 @@ public class ExpressionVisitor extends ExpressionVisitorAdapter {
 
   @Override
   public void visit(Column column) {
-    expression = new FieldExpression(StringUtil.unEscapeIdentifier(column.getFullyQualifiedName()));
+    expression = new ColumnNameExpression(StringUtil.unEscapeIdentifier(column.getFullyQualifiedName()));
   }
 
   @Override

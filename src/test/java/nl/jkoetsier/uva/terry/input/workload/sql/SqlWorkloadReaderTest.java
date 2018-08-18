@@ -15,7 +15,7 @@ import nl.jkoetsier.uva.terry.intrep.schema.column.IntegerColumn;
 import nl.jkoetsier.uva.terry.intrep.workload.Query;
 import nl.jkoetsier.uva.terry.intrep.workload.Workload;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.BinExpression;
-import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.ColumnNameExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.constant.DoubleConstant;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.constant.LongConstant;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.AndOp;
@@ -240,10 +240,10 @@ public class SqlWorkloadReaderTest {
     assertFalse(leftExpr.isNot());
     assertTrue(rightExpr.isNot());
 
-    assertTrue(leftExpr.getLeftExpr() instanceof FieldExpression);
+    assertTrue(leftExpr.getLeftExpr() instanceof ColumnNameExpression);
     assertTrue(leftExpr.getRightExpr() instanceof LongConstant);
 
-    assertTrue(rightExpr.getLeftExpr() instanceof FieldExpression);
+    assertTrue(rightExpr.getLeftExpr() instanceof ColumnNameExpression);
     assertTrue(rightExpr.getRightExpr() instanceof DoubleConstant);
 
     cleanup();
@@ -295,10 +295,9 @@ public class SqlWorkloadReaderTest {
 
     BinExpression binExpression = (BinExpression) raJoin.getOnExpression();
     assertTrue(binExpression.getOperator() instanceof EqualsOp);
-    assertTrue(binExpression.getLeftExpr() instanceof FieldExpression);
+    assertTrue(binExpression.getLeftExpr() instanceof ColumnNameExpression);
 
-    FieldExpression fieldExpression = (FieldExpression) binExpression.getLeftExpr();
-    assertNotNull(fieldExpression.getExposedField());
+    ColumnNameExpression columnNameExpression = (ColumnNameExpression) binExpression.getLeftExpr();
 
     cleanup();
   }
@@ -394,22 +393,22 @@ public class SqlWorkloadReaderTest {
     assertTrue(rightInput.getInput() instanceof Selection);
 
     assertEquals(2, leftInput.getSelectExpressions().size());
-    assertTrue(leftInput.getSelectExpressions().get(0).getExpression() instanceof FieldExpression);
-    assertTrue(leftInput.getSelectExpressions().get(1).getExpression() instanceof FieldExpression);
+    assertTrue(leftInput.getSelectExpressions().get(0).getExpression() instanceof ColumnNameExpression);
+    assertTrue(leftInput.getSelectExpressions().get(1).getExpression() instanceof ColumnNameExpression);
 
-    FieldExpression fieldExpressionA = (FieldExpression) (leftInput.getSelectExpressions().get(0)
+    ColumnNameExpression columnNameExpressionA = (ColumnNameExpression) (leftInput.getSelectExpressions().get(0)
         .getExpression());
-    FieldExpression fieldExpressionB = (FieldExpression) (leftInput.getSelectExpressions().get(1)
+    ColumnNameExpression columnNameExpressionB = (ColumnNameExpression) (leftInput.getSelectExpressions().get(1)
         .getExpression());
-    assertEquals("basetable.a", fieldExpressionA.getFieldName());
-    assertEquals("basetable.b", fieldExpressionB.getFieldName());
+    assertEquals("basetable.a", columnNameExpressionA.getFullName());
+    assertEquals("basetable.b", columnNameExpressionB.getFullName());
 
     Selection leftSelection = (Selection) leftInput.getInput();
 
     assertTrue(leftSelection.getWhereExpression() instanceof BinExpression);
 
     BinExpression binExpression = (BinExpression) leftSelection.getWhereExpression();
-    assertTrue(binExpression.getLeftExpr() instanceof FieldExpression);
+    assertTrue(binExpression.getLeftExpr() instanceof ColumnNameExpression);
     assertTrue(binExpression.getRightExpr() instanceof LongConstant);
     assertTrue(binExpression.getOperator() instanceof EqualsOp);
 

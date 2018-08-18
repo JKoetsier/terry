@@ -1,7 +1,5 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedField;
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 
 public class SelectExpression extends Expression {
@@ -30,24 +28,10 @@ public class SelectExpression extends Expression {
   }
 
   @Override
-  public ExposedFields getExposedFields() {
-    if (alias != null) {
-      return new ExposedFields(new ExposedField(alias));
-    }
-
-    return expression.getExposedFields();
-  }
-
-  @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     expression.acceptVisitor(workloadVisitor);
 
     workloadVisitor.visit(this);
-  }
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-    expression.validate(exposedFields);
   }
 
   @Override

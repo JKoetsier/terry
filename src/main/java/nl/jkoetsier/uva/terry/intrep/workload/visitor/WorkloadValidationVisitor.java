@@ -9,11 +9,11 @@ import nl.jkoetsier.uva.terry.intrep.workload.expression.BetweenExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.BinExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Case;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Cast;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.ColumnNameExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.DateExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExistsExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExtractExpression;
-import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.InExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.IntervalExpression;
@@ -41,7 +41,6 @@ import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.MultiplyOp;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.NeqOp;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.OrOp;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.PlusOp;
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.query.FullJoin;
 import nl.jkoetsier.uva.terry.intrep.workload.query.InnerJoin;
 import nl.jkoetsier.uva.terry.intrep.workload.query.InputRelation;
@@ -145,21 +144,15 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
   }
 
   @Override
-  public void visit(FieldExpression fieldExpression) {
+  public void visit(ColumnNameExpression columnNameExpression) {
   }
 
   @Override
   public void visit(FullJoin fullJoin) {
-    if (fullJoin.getOnExpression() != null) {
-      fullJoin.getOnExpression().validate(fullJoin.getExposedFields());
-    }
   }
 
   @Override
   public void visit(InnerJoin innerJoin) {
-    if (innerJoin.getOnExpression() != null) {
-      innerJoin.getOnExpression().validate(innerJoin.getExposedFields());
-    }
   }
 
   @Override
@@ -173,48 +166,18 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
     }
 
     inputRelation.setTable(table);
-
-    if (inputRelation.getTableAlias() != null) {
-      inputRelation.setExposedFields(ExposedFields.create(table, inputRelation.getTableAlias()));
-    } else {
-      inputRelation.setExposedFields(ExposedFields.create(table));
-    }
   }
 
   @Override
   public void visit(OuterJoin outerJoin) {
-    if (outerJoin.getOnExpression() != null) {
-      outerJoin.getOnExpression().validate(outerJoin.getExposedFields());
-    }
   }
 
   @Override
   public void visit(Projection projection) {
-    ExposedFields inputExposedFields = projection.getInput().getExposedFields();
-
-    // do some magic. check if exposedfields match with selectExpressions
-    ExposedFields outputExposedFields = new ExposedFields();
-
-    if (projection.getSelectExpressions() != null) {
-      for (SelectExpression selectExpression : projection.getSelectExpressions()) {
-        selectExpression.validate(inputExposedFields);
-
-        outputExposedFields.addAll(selectExpression.getExposedFields());
-      }
-    }
-
-    projection.setExposedFields(outputExposedFields);
-
-    logger.debug("ExposedFields: {}", projection.getExposedFields());
   }
 
   @Override
   public void visit(Selection selection) {
-    logger.debug("Have input: {}", selection.getInput());
-
-    if (selection.getWhereExpression() != null) {
-      // selection.getWhereExpression().validate(selection.getExposedFields());
-    }
   }
 
   @Override
@@ -245,7 +208,6 @@ public class WorkloadValidationVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(Rename rename) {
-    rename.getInput().getExposedFields();
   }
 
   @Override

@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @Category(IntegrationTest.class)
 @Ignore
-public class DbbenchApplicationTests {
+public class TerryApplicationTests {
 
   static {
     System.setProperty("outputdb", "testdb");

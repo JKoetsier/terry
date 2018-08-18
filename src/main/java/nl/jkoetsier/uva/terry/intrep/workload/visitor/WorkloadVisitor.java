@@ -6,11 +6,11 @@ import nl.jkoetsier.uva.terry.intrep.workload.expression.BetweenExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.BinExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Case;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Cast;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.ColumnNameExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.DateExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExistsExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExtractExpression;
-import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.InExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.IntervalExpression;
@@ -88,7 +88,7 @@ public abstract class WorkloadVisitor {
 
   public abstract void visit(BinExpression binExpression);
 
-  public abstract void visit(FieldExpression fieldExpression);
+  public abstract void visit(ColumnNameExpression columnNameExpression);
 
   public abstract void visit(FullJoin fullJoin);
 

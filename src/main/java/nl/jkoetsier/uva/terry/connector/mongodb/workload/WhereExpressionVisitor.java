@@ -8,11 +8,11 @@ import nl.jkoetsier.uva.terry.intrep.workload.expression.BetweenExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.BinExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Case;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Cast;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.ColumnNameExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.DateExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExistsExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExtractExpression;
-import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.InExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.IntervalExpression;
@@ -110,8 +110,8 @@ public class WhereExpressionVisitor extends ExpressionVisitorAdapter {
   }
 
   @Override
-  public void visit(FieldExpression fieldExpression) {
-    stack.push(fieldExpression.getColumnName());
+  public void visit(ColumnNameExpression columnNameExpression) {
+    stack.push(columnNameExpression.getColumnName());
   }
 
   @Override

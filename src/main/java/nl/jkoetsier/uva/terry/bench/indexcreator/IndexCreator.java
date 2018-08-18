@@ -1,6 +1,5 @@
-package nl.jkoetsier.uva.terry.bench.analyser;
+package nl.jkoetsier.uva.terry.bench.indexcreator;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -15,23 +14,22 @@ import nl.jkoetsier.uva.terry.intrep.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IndexAnalyser {
+public class IndexCreator {
 
-  private static Logger logger = LoggerFactory.getLogger(IndexAnalyser.class);
+  private static Logger logger = LoggerFactory.getLogger(IndexCreator.class);
   private static int INDEX_TABLE_MIN_SIZE = 0;
   private Schema schema;
   private Workload workload;
   private DatabaseConnector databaseConnector;
 
-  public IndexAnalyser(DatabaseConnector databaseConnector, Schema schema, Workload workload) {
+  public IndexCreator(DatabaseConnector databaseConnector, Schema schema, Workload workload) {
     this.schema = schema;
     this.workload = workload;
     this.databaseConnector = databaseConnector;
   }
 
-  // TODO improve. Only works with schema's that have unique column names throughout the database
-  // now, such as TPC-H.
-  public void analyse() throws DatabaseException {
+  // Limitation: Creates indices on all columns throughout the database with a given column name
+  public void createIndices() throws DatabaseException {
 
     WorkloadAnalyserVisitor visitor = new WorkloadAnalyserVisitor();
     workload.acceptVisitor(visitor);
@@ -84,6 +82,7 @@ public class IndexAnalyser {
           tableColumn.getColumn().getName(), Direction.ASC);
     } catch (Exception e) {
       logger.error("Error creating index: {}", e.getMessage());
+      throw new RuntimeException(e);
     }
 
   }

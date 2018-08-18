@@ -17,11 +17,6 @@ public class Union extends BinaryRelation {
   }
 
   @Override
-  public ExposedFields getExposedFields() {
-    return null;
-  }
-
-  @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     leftInput.acceptVisitor(workloadVisitor);
     rightInput.acceptVisitor(workloadVisitor);

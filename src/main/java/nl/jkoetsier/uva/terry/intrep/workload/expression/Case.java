@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +36,6 @@ public class Case extends Expression {
   public void setFalseExpression(
       Expression falseExpression) {
     this.falseExpression = falseExpression;
-  }
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-    condition.validate(exposedFields);
-    trueExpression.validate(exposedFields);
-    falseExpression.validate(exposedFields);
   }
 
   @Override

@@ -22,12 +22,4 @@ public abstract class RAJoin extends BinaryRelation {
   public void setOnExpression(Expression onExpression) {
     this.onExpression = onExpression;
   }
-
-  @Override
-  public ExposedFields getExposedFields() {
-    if (exposedFields == null) {
-      exposedFields = leftInput.getExposedFields().merge(rightInput.getExposedFields());
-    }
-    return exposedFields;
-  }
 }

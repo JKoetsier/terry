@@ -11,11 +11,11 @@ import nl.jkoetsier.uva.terry.intrep.workload.expression.BetweenExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.BinExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Case;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Cast;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.ColumnNameExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.DateExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExistsExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExtractExpression;
-import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.InExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.IntervalExpression;
@@ -175,7 +175,7 @@ public class MongoDbWorkloadVisitor extends WorkloadVisitor {
   }
 
   @Override
-  public void visit(FieldExpression fieldExpression) {
+  public void visit(ColumnNameExpression columnNameExpression) {
 
   }
 
@@ -317,13 +317,13 @@ public class MongoDbWorkloadVisitor extends WorkloadVisitor {
 
   @Override
   public void visit(SelectExpression selectExpression) {
-    if (selectExpression.getExpression() instanceof FieldExpression) {
-      FieldExpression fieldExpression = (FieldExpression) selectExpression.getExpression();
+    if (selectExpression.getExpression() instanceof ColumnNameExpression) {
+      ColumnNameExpression columnNameExpression = (ColumnNameExpression) selectExpression.getExpression();
 
       if (projection != null) {
-        projection.append(fieldExpression.getColumnName(), 1);
+        projection.append(columnNameExpression.getColumnName(), 1);
       } else {
-        projection = new BasicDBObject(fieldExpression.getColumnName(), 1);
+        projection = new BasicDBObject(columnNameExpression.getColumnName(), 1);
       }
     } else if (selectExpression.getExpression() instanceof SelectAllColumnsExpression) {
       // Do nothing

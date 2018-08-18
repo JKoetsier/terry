@@ -1,29 +1,23 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 
 public class IsNullExpr extends Expression {
 
-  private Expression leftExpression;
+  private Expression inExpression;
 
-  public IsNullExpr(Expression leftExpression, boolean isNot) {
+  public IsNullExpr(Expression inExpression, boolean isNot) {
     super(isNot);
-    this.leftExpression = leftExpression;
+    this.inExpression = inExpression;
   }
 
-  public Expression getLeftExpression() {
-    return leftExpression;
-  }
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-    leftExpression.validate(exposedFields);
+  public Expression getInExpression() {
+    return inExpression;
   }
 
   @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
-    leftExpression.acceptVisitor(workloadVisitor);
+    inExpression.acceptVisitor(workloadVisitor);
 
     workloadVisitor.visit(this);
   }
@@ -31,7 +25,7 @@ public class IsNullExpr extends Expression {
   @Override
   public String toString() {
     return "IsNullExpr{" +
-        "leftExpression=" + leftExpression +
+        "inExpression=" + inExpression +
         '}';
   }
 }

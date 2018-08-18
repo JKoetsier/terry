@@ -1,4 +1,4 @@
-package nl.jkoetsier.uva.terry.bench.analyser;
+package nl.jkoetsier.uva.terry.bench.indexcreator;
 
 import java.util.Objects;
 import nl.jkoetsier.uva.terry.intrep.schema.Table;

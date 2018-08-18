@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadElement;
 
 public abstract class Expression implements WorkloadElement {
@@ -22,10 +21,4 @@ public abstract class Expression implements WorkloadElement {
   public void setNot(boolean not) {
     this.not = not;
   }
-
-  public ExposedFields getExposedFields() {
-    return new ExposedFields();
-  }
-
-  public abstract void validate(ExposedFields exposedFields);
 }

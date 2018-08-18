@@ -6,7 +6,6 @@ import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 public class InputRelation extends Relation {
 
   private Table table;
-  private ExposedFields exposedFields;
   private String tableAlias;
   private String tableName;
 
@@ -17,16 +16,6 @@ public class InputRelation extends Relation {
   public InputRelation(String tableName, String tableAlias) {
     setTableAlias(tableAlias);
     setTableName(tableName);
-  }
-
-  @Override
-  public ExposedFields getExposedFields() {
-    return exposedFields;
-  }
-
-  public void setExposedFields(
-      ExposedFields exposedFields) {
-    this.exposedFields = exposedFields;
   }
 
   public Table getTable() {
@@ -57,7 +46,6 @@ public class InputRelation extends Relation {
   public String toString() {
     return "InputRelation{" +
         "table=" + table +
-        ", exposedFields=" + exposedFields +
         ", tableAlias='" + tableAlias + '\'' +
         ", tableName='" + tableName + '\'' +
         '}';

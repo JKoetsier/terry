@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +34,6 @@ public class InExpression extends Expression {
   public void setRightExpression(
       Expression rightExpression) {
     this.rightExpression = rightExpression;
-  }
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-    leftExpression.validate(exposedFields);
-    rightExpression.validate(exposedFields);
   }
 
   @Override

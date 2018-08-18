@@ -3,7 +3,7 @@ package nl.jkoetsier.uva.terry;
 import nl.jkoetsier.uva.terry.bench.BenchPreparer;
 import nl.jkoetsier.uva.terry.bench.BenchRunner;
 import nl.jkoetsier.uva.terry.bench.DatabaseInitialiser;
-import nl.jkoetsier.uva.terry.bench.analyser.IndexAnalyser;
+import nl.jkoetsier.uva.terry.bench.indexcreator.IndexCreator;
 import nl.jkoetsier.uva.terry.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.terry.config.DbConfigProperties;
 import nl.jkoetsier.uva.terry.connector.DatabaseConnector;
@@ -25,9 +25,9 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan("nl.jkoetsier.uva.terry")
-public class DbbenchApplication implements ApplicationRunner {
+public class TerryApplication implements ApplicationRunner {
 
-  private static Logger logger = LoggerFactory.getLogger(DbbenchApplication.class);
+  private static Logger logger = LoggerFactory.getLogger(TerryApplication.class);
 
 
   @Autowired
@@ -47,39 +47,10 @@ public class DbbenchApplication implements ApplicationRunner {
 
 
   public static void main(String[] args) {
-    ApplicationContext applicationContext = SpringApplication.run(DbbenchApplication.class, args);
+    ApplicationContext applicationContext = SpringApplication.run(TerryApplication.class, args);
 
     for (String name : applicationContext.getBeanDefinitionNames()) {
       logger.debug("Have bean: {}", name);
-    }
-  }
-
-  private void checkParameters() {
-    boolean error = false;
-
-    if (applicationConfigProperties.getWorkload().trim().equals("")) {
-      System.err.println("No workload provided. Provide workload");
-      error = true;
-    }
-
-    if (applicationConfigProperties.getSchema().trim().equals("")) {
-      System.err.println("No schema provided. Provide schema");
-      error = true;
-    }
-
-    if (applicationConfigProperties.getDbType().trim().equals("") ||
-        !applicationConfigProperties.getAcceptedDatabases()
-            .contains(applicationConfigProperties.getDbType())) {
-      System.err.println("No correct output database provided. Provide output database");
-    }
-
-    if (error) {
-      System.err.format(
-          "\nRun program with parameters:\n --workload=workloadfile.sql\n --schema=schema.sql\n "
-              + "--outputdb=(%s)%n",
-          String.join("|", applicationConfigProperties.getAcceptedDatabases())
-      );
-      System.exit(1);
     }
   }
 
@@ -126,8 +97,8 @@ public class DbbenchApplication implements ApplicationRunner {
       benchPreparer.prepare();
 
       if (applicationConfigProperties.createIndices()) {
-        IndexAnalyser indexAnalyser = new IndexAnalyser(databaseConnector, schema, workload);
-        indexAnalyser.analyse();
+        IndexCreator indexCreator = new IndexCreator(databaseConnector, schema, workload);
+        indexCreator.createIndices();
       }
 
       benchRunner.run();
@@ -180,5 +151,34 @@ public class DbbenchApplication implements ApplicationRunner {
         dbConfigProperties.getDefaultDbPort() == null ||
         dbConfigProperties.getDockerReadyLogLine() == null
     );
+  }
+
+  private void checkParameters() {
+    boolean error = false;
+
+    if (applicationConfigProperties.getWorkload().trim().equals("")) {
+      System.err.println("No workload provided. Provide workload");
+      error = true;
+    }
+
+    if (applicationConfigProperties.getSchema().trim().equals("")) {
+      System.err.println("No schema provided. Provide schema");
+      error = true;
+    }
+
+    if (applicationConfigProperties.getDbType().trim().equals("") ||
+        !applicationConfigProperties.getAcceptedDatabases()
+            .contains(applicationConfigProperties.getDbType())) {
+      System.err.println("No correct output database provided. Provide output database");
+    }
+
+    if (error) {
+      System.err.format(
+          "\nRun program with parameters:\n --workload=workloadfile.sql\n --schema=schema.sql\n "
+              + "--outputdb=(%s)%n",
+          String.join("|", applicationConfigProperties.getAcceptedDatabases())
+      );
+      System.exit(1);
+    }
   }
 }

@@ -1,7 +1,6 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
 import nl.jkoetsier.uva.terry.intrep.workload.expression.operator.Operator;
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 
 public class BinExpression extends Expression {
@@ -39,12 +38,6 @@ public class BinExpression extends Expression {
 
   public void setOperator(Operator operator) {
     this.operator = operator;
-  }
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-    leftExpr.validate(exposedFields);
-    rightExpr.validate(exposedFields);
   }
 
   @Override

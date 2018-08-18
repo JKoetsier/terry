@@ -77,6 +77,8 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
 
   @Override
   protected void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException {
+
+    // if header_lines > 1 throw UnsupportedConfigurationException
     SqlQuery query = new SqlQuery(String.format("COPY \"%s\" FROM '%s' "
             + "WITH (FORMAT csv, %sDELIMITER '%s'%s)",
         tableName,

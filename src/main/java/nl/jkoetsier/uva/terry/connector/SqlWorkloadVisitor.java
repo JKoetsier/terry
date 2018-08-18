@@ -11,12 +11,12 @@ import nl.jkoetsier.uva.terry.intrep.workload.expression.BetweenExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.BinExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Case;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Cast;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.ColumnNameExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.DateExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExistsExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.Expression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExpressionList;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.ExtractExpression;
-import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.FunctionExpr;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.InExpression;
 import nl.jkoetsier.uva.terry.intrep.workload.expression.IntervalExpression;
@@ -385,8 +385,8 @@ public abstract class SqlWorkloadVisitor extends WorkloadVisitor {
   }
 
   @Override
-  public void visit(FieldExpression fieldExpression) {
-    String[] fieldName = fieldExpression.getFieldName().split("\\.");
+  public void visit(ColumnNameExpression columnNameExpression) {
+    String[] fieldName = columnNameExpression.getFullName().split("\\.");
 
     for (int i = 0; i < fieldName.length; i++) {
       fieldName[i] = quoteString(fieldName[i]);

@@ -1,19 +1,19 @@
 package nl.jkoetsier.uva.terry.intrep.workload.element;
 
-import nl.jkoetsier.uva.terry.intrep.workload.expression.FieldExpression;
+import nl.jkoetsier.uva.terry.intrep.workload.expression.ColumnNameExpression;
 
 public class OrderBy {
 
-  private FieldExpression fieldExpression;
+  private ColumnNameExpression columnNameExpression;
   private Direction direction;
 
-  public OrderBy(FieldExpression fieldExpression, Direction direction) {
-    this.fieldExpression = fieldExpression;
+  public OrderBy(ColumnNameExpression columnNameExpression, Direction direction) {
+    this.columnNameExpression = columnNameExpression;
     this.direction = direction;
   }
 
-  public FieldExpression getFieldExpression() {
-    return fieldExpression;
+  public ColumnNameExpression getColumnNameExpression() {
+    return columnNameExpression;
   }
 
   public Direction getDirection() {
@@ -23,7 +23,7 @@ public class OrderBy {
   @Override
   public String toString() {
     return "OrderBy{" +
-        "fieldExpression=" + fieldExpression +
+        "columnNameExpression=" + columnNameExpression +
         ", direction=" + direction +
         '}';
   }

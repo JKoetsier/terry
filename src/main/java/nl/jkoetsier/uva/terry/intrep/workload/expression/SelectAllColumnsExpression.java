@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +20,6 @@ public class SelectAllColumnsExpression extends Expression {
 
   public void setTableName(String tableName) {
     this.tableName = tableName;
-  }
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-
   }
 
   @Override

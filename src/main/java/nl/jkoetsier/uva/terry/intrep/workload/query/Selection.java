@@ -27,11 +27,6 @@ public class Selection extends UnaryRelation {
   }
 
   @Override
-  public ExposedFields getExposedFields() {
-    return input.getExposedFields();
-  }
-
-  @Override
   public String toString() {
     return "Selection{" +
         "whereExpression=" + whereExpression +

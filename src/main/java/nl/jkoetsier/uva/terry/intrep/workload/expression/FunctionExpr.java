@@ -1,6 +1,5 @@
 package nl.jkoetsier.uva.terry.intrep.workload.expression;
 
-import nl.jkoetsier.uva.terry.intrep.workload.query.ExposedFields;
 import nl.jkoetsier.uva.terry.intrep.workload.visitor.WorkloadVisitor;
 
 public class FunctionExpr extends Expression {
@@ -21,11 +20,6 @@ public class FunctionExpr extends Expression {
 
   public ExpressionList getExpressionList() {
     return expressionList;
-  }
-
-  @Override
-  public void validate(ExposedFields exposedFields) {
-    expressionList.validate(exposedFields);
   }
 
   @Override

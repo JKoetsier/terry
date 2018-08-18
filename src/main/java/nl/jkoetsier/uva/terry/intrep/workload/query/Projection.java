@@ -15,7 +15,6 @@ public class Projection extends UnaryRelation {
   private List<OrderBy> orderBy;
   private List<SelectExpression> selectExpressions;
   private List<Expression> groupBy;
-  private ExposedFields exposedFields;
   private boolean distinct = false;
 
   public Projection() {
@@ -60,16 +59,6 @@ public class Projection extends UnaryRelation {
   }
 
   @Override
-  public ExposedFields getExposedFields() {
-    return exposedFields;
-  }
-
-  public void setExposedFields(
-      ExposedFields exposedFields) {
-    this.exposedFields = exposedFields;
-  }
-
-  @Override
   public void acceptVisitor(WorkloadVisitor workloadVisitor) {
     input.acceptVisitor(workloadVisitor);
 
@@ -105,7 +94,7 @@ public class Projection extends UnaryRelation {
 
     for (OrderBy orderByElm : orderBy) {
 
-      orderByList.add(String.format("%s %s", orderByElm.getFieldExpression().getFieldName(),
+      orderByList.add(String.format("%s %s", orderByElm.getColumnNameExpression().getFullName(),
           orderByElm.getDirection()));
     }
 
@@ -136,7 +125,6 @@ public class Projection extends UnaryRelation {
         ", offset=" + offset +
         ", orderBy=" + orderBy +
         ", selectExpressions=" + selectExpressions +
-        ", exposedFields=" + exposedFields +
         ", distinct=" + distinct +
         ", input=" + input +
         '}';
