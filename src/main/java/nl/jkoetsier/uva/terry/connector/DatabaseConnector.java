@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import nl.jkoetsier.uva.terry.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.terry.config.DbConfigProperties;
-import nl.jkoetsier.uva.terry.connector.util.csvlayout.CsvLayout;
-import nl.jkoetsier.uva.terry.connector.util.csvlayout.DefaultCsvLayout;
-import nl.jkoetsier.uva.terry.connector.util.csvlayout.TpcCsvLayout;
+import nl.jkoetsier.uva.terry.config.DsvConfigProperties;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.terry.intrep.ExecutableQuery;
 import nl.jkoetsier.uva.terry.intrep.QueryResult;
@@ -32,6 +30,9 @@ public abstract class DatabaseConnector {
   @Autowired
   protected ApplicationConfigProperties applicationConfigProperties;
 
+  @Autowired
+  protected DsvConfigProperties dsvConfigProperties;
+
   public abstract void connect() throws DatabaseException;
 
   public abstract void executeQuery(ExecutableQuery query) throws DatabaseException;
@@ -40,7 +41,7 @@ public abstract class DatabaseConnector {
 
   public abstract void createSchema(Schema schema) throws DatabaseException;
 
-  protected abstract void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException;
+  protected abstract void importCsvFile(String tableName, String file) throws DatabaseException;
 
   public abstract long getTableSize(String tableName) throws DatabaseException;
 
@@ -76,21 +77,10 @@ public abstract class DatabaseConnector {
     if (files != null) {
 
       for (File file : files) {
-        CsvLayout csvLayout = null;
-
-        // TODO move this logic out of here. Move to config.
-        if (file.isFile()) {
-          if (file.getName().endsWith(".csv")) {
-            csvLayout = new DefaultCsvLayout();
-          } else if (file.getName().endsWith(".tbl")) {
-            csvLayout = new TpcCsvLayout();
-          }
-        }
-
-        if (csvLayout != null) {
+        if (file.isFile() && file.getName().endsWith("." + dsvConfigProperties.getExtension())) {
           String[] fileNameParts = file.getName().split("\\.");
 
-          importCsvFile(fileNameParts[0].toLowerCase(), file.getAbsolutePath(), csvLayout);
+          importCsvFile(fileNameParts[0].toLowerCase(), file.getAbsolutePath());
 
           if (applicationConfigProperties.renameImportedCsvFiles()) {
             File renamedFile = new File(file.getAbsolutePath() + ".done");

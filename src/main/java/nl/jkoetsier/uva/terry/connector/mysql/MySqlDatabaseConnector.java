@@ -6,7 +6,6 @@ import nl.jkoetsier.uva.terry.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.terry.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.terry.connector.mysql.schema.MySqlSchemaVisitor;
 import nl.jkoetsier.uva.terry.connector.mysql.workload.MySqlWorkloadVisitor;
-import nl.jkoetsier.uva.terry.connector.util.csvlayout.CsvLayout;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.terry.connector.util.valuetranslator.DateTimeValueTranslator;
 import nl.jkoetsier.uva.terry.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
@@ -45,7 +44,7 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException {
+  protected void importCsvFile(String tableName, String file) throws DatabaseException {
     SqlQuery query = new SqlQuery(String.format("LOAD DATA INFILE '%s' INTO TABLE `%s` "
         + "CHARACTER SET 'utf8' "
         + "FIELDS TERMINATED BY '%s' "
@@ -54,10 +53,12 @@ public class MySqlDatabaseConnector extends JdbcDatabaseConnector {
         + "IGNORE %d LINES",
         file,
         tableName,
-        csvLayout.getFieldSeparator(),
-        csvLayout.getFieldEnclosing(),
-        csvLayout.getLineTerminator(),
-        csvLayout.hasHeader() ? 1 : 0));
+        dsvConfigProperties.getFieldSeparator(),
+        dsvConfigProperties.getQuote(),
+        dsvConfigProperties.getRecordTerminator(),
+        dsvConfigProperties.getHeaderLines()
+    )
+    );
 
     executeQuery(query);
   }

@@ -6,7 +6,6 @@ import nl.jkoetsier.uva.terry.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.terry.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.terry.connector.mssql.schema.MsSqlSchemaVisitor;
 import nl.jkoetsier.uva.terry.connector.mssql.workload.MsSqlWorkloadVisitor;
-import nl.jkoetsier.uva.terry.connector.util.csvlayout.CsvLayout;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
 import nl.jkoetsier.uva.terry.intrep.QueryResult;
 import nl.jkoetsier.uva.terry.intrep.SqlQuery;
@@ -73,14 +72,16 @@ public class MsSqlDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException {
+  protected void importCsvFile(String tableName, String file) throws DatabaseException {
     SqlQuery query = new SqlQuery(String.format("BULK INSERT [%s] FROM '%s' WITH (FIRSTROW = %d, "
             + "ROWTERMINATOR = '%s', FIELDTERMINATOR = '%s'%s)", tableName, file,
-        csvLayout.hasHeader() ? 2 : 1,
-        csvLayout.getLineTerminator(),
-        csvLayout.getFieldSeparator(),
-        csvLayout.getFieldEnclosing() != null ? String.format(", FIELDQUOTE = '%s'", csvLayout.getFieldEnclosing()) : ""
-    ));
+        dsvConfigProperties.getHeaderLines() + 1,
+        dsvConfigProperties.getRecordTerminator(),
+        dsvConfigProperties.getFieldSeparator(),
+        dsvConfigProperties.getQuote().equals("") ? ""
+            : String.format(", FIELDQUOTE = '%s'", dsvConfigProperties.getQuote())
+    )
+    );
 
     executeQuery(query);
   }

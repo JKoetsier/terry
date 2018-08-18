@@ -6,6 +6,7 @@ import nl.jkoetsier.uva.terry.bench.DatabaseInitialiser;
 import nl.jkoetsier.uva.terry.bench.indexcreator.IndexCreator;
 import nl.jkoetsier.uva.terry.config.ApplicationConfigProperties;
 import nl.jkoetsier.uva.terry.config.DbConfigProperties;
+import nl.jkoetsier.uva.terry.config.DsvConfigProperties;
 import nl.jkoetsier.uva.terry.connector.DatabaseConnector;
 import nl.jkoetsier.uva.terry.docker.DockerContainer;
 import nl.jkoetsier.uva.terry.input.SchemaReader;
@@ -44,6 +45,9 @@ public class TerryApplication implements ApplicationRunner {
 
   @Autowired
   private DatabaseConnector databaseConnector;
+
+  @Autowired
+  private DsvConfigProperties dsvConfigProperties;
 
 
   public static void main(String[] args) {

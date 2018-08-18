@@ -6,8 +6,8 @@ import nl.jkoetsier.uva.terry.connector.JdbcDatabaseConnector;
 import nl.jkoetsier.uva.terry.connector.SqlIdentifierQuoter;
 import nl.jkoetsier.uva.terry.connector.postgres.schema.PostgresSchemaVisitor;
 import nl.jkoetsier.uva.terry.connector.postgres.workload.PostgresWorkloadVisitor;
-import nl.jkoetsier.uva.terry.connector.util.csvlayout.CsvLayout;
 import nl.jkoetsier.uva.terry.connector.util.exception.DatabaseException;
+import nl.jkoetsier.uva.terry.connector.util.exception.UnsupportedConfigurationException;
 import nl.jkoetsier.uva.terry.connector.util.valuetranslator.DateTimeValueTranslator;
 import nl.jkoetsier.uva.terry.connector.util.valuetranslator.RemoveLineBreaksValueTranslator;
 import nl.jkoetsier.uva.terry.intrep.QueryResult;
@@ -76,16 +76,20 @@ public class PostgresDatabaseConnector extends JdbcDatabaseConnector {
   }
 
   @Override
-  protected void importCsvFile(String tableName, String file, CsvLayout csvLayout) throws DatabaseException {
+  protected void importCsvFile(String tableName, String file) throws DatabaseException {
+    if (dsvConfigProperties.getHeaderLines() > 1) {
+      throw new UnsupportedConfigurationException(
+          "Postgres does not support multiple header lines");
+    }
 
-    // if header_lines > 1 throw UnsupportedConfigurationException
     SqlQuery query = new SqlQuery(String.format("COPY \"%s\" FROM '%s' "
             + "WITH (FORMAT csv, %sDELIMITER '%s'%s)",
         tableName,
         file,
-        csvLayout.hasHeader() ? "HEADER true, " : "",
-        csvLayout.getFieldSeparator(),
-        csvLayout.getNullValue() != null ? String.format(", NULL '%s'", csvLayout.getNullValue()) : ""
+        dsvConfigProperties.getHeaderLines() > 0 ? "HEADER true, " : "",
+        dsvConfigProperties.getFieldSeparator(),
+        dsvConfigProperties.getNullValue().equals("") ? ""
+            : String.format(", NULL '%s'", dsvConfigProperties.getNullValue())
     ));
 
     executeQuery(query);
