@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>nl.jkoetsier.uva</groupId>
+  <groupId>nl.jkoetsier</groupId>
   <artifactId>terry</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -187,8 +187,8 @@
       <id>default</id>
       <properties>
         <excludedTestGroups>
-          nl.jkoetsier.uva.terry.testclass.IntegrationTest,
-          nl.jkoetsier.uva.terry.testclass.DevelopmentTest
+          nl.jkoetsier.terry.testclass.IntegrationTest,
+          nl.jkoetsier.terry.testclass.DevelopmentTest
         </excludedTestGroups>
         <includedTestGroups></includedTestGroups>
       </properties>
@@ -200,7 +200,7 @@
     <profile>
       <id>integration-tests</id>
       <properties>
-        <includedTestGroups>nl.jkoetsier.uva.terry.testclass.IntegrationTest</includedTestGroups>
+        <includedTestGroups>nl.jkoetsier.terry.testclass.IntegrationTest</includedTestGroups>
         <excludedTestGroups></excludedTestGroups>
       </properties>
     </profile>
@@ -208,7 +208,7 @@
     <profile>
       <id>development-tests</id>
       <properties>
-        <includedTestGroups>nl.jkoetsier.uva.terry.testclass.DevelopmentTest</includedTestGroups>
+        <includedTestGroups>nl.jkoetsier.terry.testclass.DevelopmentTest</includedTestGroups>
         <excludedTestGroups></excludedTestGroups>
       </properties>
     </profile>
