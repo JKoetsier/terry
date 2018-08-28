@@ -153,7 +153,7 @@ public class MonetDbWorkloadVisitorTest implements WorkloadTest {
 
   @Test
   public void testWhereNot() {
-    String expected = "SELECT \"table2name\".\"a\" FROM \"table2name\" WHERE ((\"b\" != 3) "
+    String expected = "SELECT \"table2name\".\"a\" FROM \"table2name\" WHERE ((\"b\" <> 3) "
         + "AND NOT (\"table2name\".\"a\" = 4.4))";
 
     compareSingleQueryFromFile("select_where.sql", expected);

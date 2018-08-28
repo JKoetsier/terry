@@ -1,4 +1,4 @@
-Cnt REATE TABLE db.TableName(
+CREATE TABLE db.TableName(
 	Id int IDENTITY(1,1) NOT NULL,
 	IntField int NULL,
 	VarChar250Field nvarchar(250) NULL,

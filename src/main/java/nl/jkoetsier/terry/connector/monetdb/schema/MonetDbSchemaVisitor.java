@@ -6,6 +6,7 @@ import nl.jkoetsier.terry.connector.SqlSchemaVisitor;
 import nl.jkoetsier.terry.connector.monetdb.MonetDbIdentifierQuoter;
 import nl.jkoetsier.terry.intrep.SqlQuery;
 import nl.jkoetsier.terry.intrep.schema.Table;
+import nl.jkoetsier.terry.intrep.schema.column.DateColumn;
 import nl.jkoetsier.terry.intrep.schema.column.DateTimeColumn;
 import nl.jkoetsier.terry.intrep.schema.column.DateTimeTimezoneColumn;
 import nl.jkoetsier.terry.intrep.schema.column.VarCharColumn;

@@ -67,7 +67,7 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
             + "\"DecimalField\" decimal(15, 6) NULL, "
             + "\"DateTimeOffsetField\" timestamp with time zone NULL, "
             + "\"VarCharMaxField\" text NULL, "
-            + "\"DateField\" timestamp NULL, "
+            + "\"DateField\" date NULL, "
             + "\"BitField\" boolean NULL, "
             + "\"DecimalField2\" decimal(38, 15) NULL, "
             + "CONSTRAINT \"TableNamePrimaryKey\" PRIMARY KEY ( \"Id\" ) );";
@@ -94,7 +94,7 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
             + "\"DecimalField\" decimal(15, 6) NULL, "
             + "\"DateTimeOffsetField\" timestamp with time zone NULL, "
             + "\"VarCharMaxField\" text NULL, "
-            + "\"DateField\" timestamp NULL, "
+            + "\"DateField\" date NULL, "
             + "\"BitField\" boolean NULL, "
             + "\"DecimalField2\" decimal(38, 15) NULL, "
             + "CONSTRAINT \"TableNamePrimaryKey\" PRIMARY KEY ( \"Id\", \"IntField\" ) );";
@@ -124,7 +124,7 @@ public class MonetDbSchemaVisitorTest implements SchemaTest {
     expected
         .add("CREATE TABLE \"Table2Name\" ( \"DateTimeOffsetField\" timestamp with time zone NULL, "
             + "\"VarCharMaxField\" text NULL, "
-            + "\"DateField\" timestamp NULL, "
+            + "\"DateField\" date NULL, "
             + "\"BitField\" boolean NULL, "
             + "\"DecimalField2\" decimal(38, 15) NULL, "
             + "CONSTRAINT \"Table2NamePrimaryKey\" PRIMARY KEY ( \"BitField\" ) );");

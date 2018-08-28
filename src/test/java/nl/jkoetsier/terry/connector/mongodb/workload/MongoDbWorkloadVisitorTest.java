@@ -92,9 +92,7 @@ public class MongoDbWorkloadVisitorTest implements WorkloadTest {
     List<ExecutableQuery> result = getGeneratedWorkload("output_sql_simple.sql");
 
     assertEquals(1, result.size());
-    assertTrue(result.get(0).isSupported());
-
-    // TODO Aggregation
+    assertFalse(result.get(0).isSupported());
   }
 
   @Override
@@ -121,7 +119,7 @@ public class MongoDbWorkloadVisitorTest implements WorkloadTest {
     List<ExecutableQuery> result = getGeneratedWorkload("select_join_simple.sql");
 
     assertEquals(1, result.size());
-    assertTrue(result.get(0).isSupported());
+    assertFalse(result.get(0).isSupported());
   }
 
   @Override

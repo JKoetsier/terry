@@ -139,6 +139,7 @@ public class SqlWorkloadReaderTest {
   }
 
   @Test
+  @Ignore("Workload validation on column existence is temporarily removed")
   public void testNonExistingTableSelect() {
     loadDataModel();
     Workload workload = getWorkloadFromString("SELECT notexisting.a FROM table2name");
@@ -153,6 +154,7 @@ public class SqlWorkloadReaderTest {
   }
 
   @Test
+  @Ignore("Workload validation on column existence is temporarily removed")
   public void testNonExistingTableFieldSelect() {
     loadDataModel();
     Workload workload = getWorkloadFromString("SELECT table2name.c FROM table2name");
@@ -196,6 +198,7 @@ public class SqlWorkloadReaderTest {
   }
 
   @Test
+  @Ignore("Workload validation on column existence is temporarily removed")
   public void testNonExistingSingleFieldInExistingTableSelect() {
     loadDataModel();
     Workload workload = getWorkloadFromString("SELECT c FROM table2name");
@@ -317,6 +320,7 @@ public class SqlWorkloadReaderTest {
   }
 
   @Test
+  @Ignore("Workload validation on column existence is temporarily removed")
   public void testJoinInvalidColumnSelect() {
     loadJoinDataModel();
     Workload workload = getWorkload("select_join_invalid_column.sql");
@@ -400,8 +404,8 @@ public class SqlWorkloadReaderTest {
         .getExpression());
     ColumnNameExpression columnNameExpressionB = (ColumnNameExpression) (leftInput.getSelectExpressions().get(1)
         .getExpression());
-    assertEquals("basetable.a", columnNameExpressionA.getFullName());
-    assertEquals("basetable.b", columnNameExpressionB.getFullName());
+    assertEquals("a", columnNameExpressionA.getFullName());
+    assertEquals("b", columnNameExpressionB.getFullName());
 
     Selection leftSelection = (Selection) leftInput.getInput();
 
